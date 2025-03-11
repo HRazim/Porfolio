@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header avec navigation -->
+    <header>
+        <div class="logo">
+            <a href="index.html"><h1>MAROUAN Hazim-Rayan</h1></a>
+        </div>
+        <nav role="navigation">
+            <ul>
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#a-propos">À propos</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projets</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Section Accueil -->
+    <section id="accueil" class="hero">
+        <div class="hero-content">
+            <div class="hero-image">
+                <img src="img/profile.jpg" alt="Photo de profil de MAROUAN Hazim-Rayan">
+            </div>
+            <div class="hero-text">
+                <h2>MAROUAN Hazim-Rayan</h2>
+                <p>Développeur Web | Designer | Étudiant</p>
+                <div class="social-icons">
+                    <a href="https://github.com/HRazim" target="_blank" aria-label="GitHub Profile">
+                        <i class="fab fa-github"></i>
+                        <span class="sr-only">GitHub</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/hazim-rayan-marouan-8bb382338" target="_blank" aria-label="LinkedIn Profile">
+                        <i class="fab fa-linkedin"></i>
+                        <span class="sr-only">LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section À propos -->
+    <section id="a-propos" class="about">
+        <div class="container">
+            <h2 class="section-title">À propos de moi</h2>
+            <div class="about-content">
+                <p>
+                    Je suis un étudiant passionné par le développement web et le design. Actuellement en formation,
+                    je cherche à améliorer mes compétences et à relever de nouveaux défis. Je suis curieux, créatif
+                    et j'aime résoudre des problèmes complexes.
+                </p>
+                <p>
+                    Mon objectif est de créer des expériences web fonctionnelles et esthétiques qui répondent
+                    aux besoins des utilisateurs.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Skills -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title">Mes compétences</h2>
+            <div class="skills-container">
+                <div class="skill-card">
+                    <i class="fab fa-html5"></i>
+                    <h3>HTML5</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-css3-alt"></i>
+                    <h3>CSS</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-js"></i>
+                    <h3>JavaScript</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-python"></i>
+                    <h3>Python</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-java"></i>
+                    <h3>Java</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-php"></i>
+                    <h3>PHP</h3>
+                </div>
+                <div class="skill-card">
+                    <i class="fas fa-database"></i>
+                    <h3>SQL</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Projects -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Mes Projets</h2>
+            <div class="projects-grid">
+                <!-- Projet 1 -->
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Plateforme Web de Calculs</h3>
+                        <p>
+                            Application web déployée sur Raspberry Pi permettant d'effectuer divers types de calculs, avec gestion d'utilisateurs hiérarchisée et sécurité intégrée.
+                        </p>
+                        <ul>
+                            <li><strong>Types d'utilisateurs :</strong> Administrateur système, administrateur web, utilisateur inscrit, visiteur.</li>
+                            <li><strong>Fonctionnalités :</strong> Inscription avec captcha, connexion sécurisée, modules de calculs, stockage des résultats, gestion des comptes.</li>
+                            <li><strong>Technologies :</strong> PHP, MySQL, HTML/CSS, JavaScript, architecture réseau, cryptographie.</li>
+                            <li><strong>Infrastructure :</strong> Déploiement sur Raspberry Pi 4, SSH, environnement sécurisé.</li>
+                            <li><strong>Méthodologie :</strong> Git/GitHub, documentation technique, livrables progressifs.</li>
+                        </ul>
+                        <div class="project-links">
+                            <a href="pages/plateformeWeb.html">Voir le projet</a>
+                            <a href="https://github.com/Ethan-Da/PROBABILITY" target="_blank">Code source</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projet 2 -->
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Archilog - Gestion Financière</h3>
+                        <p>
+                            Application de gestion financière développée avec Flask et SQLAlchemy Core, offrant une interface web et une interface en ligne de commande (CLI) pour manipuler les données.
+                        </p>
+                        <ul>
+                            <li><strong>Fonctionnalités principales :</strong>
+                                <ul>
+                                    <li>Affichage de toutes les entrées financières</li>
+                                    <li>Création, modification et suppression d'entrées</li>
+                                    <li>Importation et exportation de données au format CSV</li>
+                                    <li>Gestion des erreurs avec messages flash</li>
+                                </ul>
+                            </li>
+                            <li><strong>Interfaces :</strong>
+                                <ul>
+                                    <li>Interface web intuitive</li>
+                                    <li>Interface CLI pour automatisation et scripts</li>
+                                </ul>
+                            </li>
+                            <li><strong>Technologies :</strong> Python, Flask, SQLAlchemy Core, SQLite, HTML/CSS, JavaScript, Jinja2</li>
+                            <li><strong>Architecture :</strong> MVC, persistence des données avec SQLite</li>
+                        </ul>
+                        <div class="project-links">
+                            <a href="https://github.com/HRazim/Architecture-Logiciel" target="_blank">Code source</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section class="contact" id="contact">
+        <div class="content">
+            <h2 class="section-title">Contacts</h2>
+          <div class="row">
+            <div class="card reveal">
+              <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="info">
+                <h3>Adresse</h3>
+                <span>Paris, France</span>
+              </div>
+            </div>
+            <div class="card reveal">
+              <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="info">
+                <h3>Téléphone</h3>
+                <span>+33 7 49 02 97 20</span>
+              </div>
+            </div>
+            <div class="card reveal">
+              <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="info">
+                <h3>Email</h3>
+                <span>rhazim@gmx.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="social-icons">
+                <a href="https://github.com/HRazim" target="_blank" aria-label="GitHub Profile">
+                    <i class="fab fa-github"></i>
+                    <span class="sr-only">GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/hazim-rayan-marouan-8bb382338" target="_blank" aria-label="LinkedIn Profile">
+                    <i class="fab fa-linkedin"></i>
+                    <span class="sr-only">LinkedIn</span>
+                </a>
+            </div>
+        </div>
+            <p>&copy; 2025 MAROUAN Hazim-Rayan. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
