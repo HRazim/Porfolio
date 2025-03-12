@@ -431,6 +431,189 @@ nav ul li a:hover {
     background: #235bf6;
 }
 
+
+/* Centrer les images dans leur conteneur */
+.section-image, .fiche-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+/* Améliorations pour les images */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+
+}
+
+img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Améliorations pour la structure des sections */
+section {
+    padding: 80px 0;
+    position: relative;
+}
+
+section:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+section:nth-child(odd) {
+    background-color: #fff;
+}
+
+/* Style pour les articles des méthodes */
+article {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin: 30px 0;
+    transition: transform 0.3s ease;
+}
+
+article:hover {
+    transform: translateY(-5px);
+}
+
+article h2 {
+    color: #4285f4;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+article h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: #4285f4;
+}
+
+article img {
+    margin: 15px 0;
+    display: block;
+    max-width: 100%;
+    border: 1px solid #eee;
+}
+
+article p {
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Style pour les listes dans les sections */
+.about-content ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 20px 0;
+}
+
+.about-content ul li {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #4285f4;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Layout responsive pour les sections avec images */
+@media (min-width: 768px) {
+    .about .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .about img {
+        max-width: 70%;
+    }
+
+    article {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        align-items: center;
+    }
+
+    article h2 {
+        grid-column: 1 / -1;
+    }
+
+    article:nth-child(odd) img {
+        order: 1;
+    }
+
+    article:nth-child(even) img {
+        order: 0;
+    }
+}
+
+/* Amélioration pour le contenu de section */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Style pour la section des fiches */
+.fiche-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+/* Animation d'apparition progressive des sections */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+section {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+section:nth-child(2) { animation-delay: 0.1s; }
+section:nth-child(3) { animation-delay: 0.2s; }
+section:nth-child(4) { animation-delay: 0.3s; }
+
+/* Améliorations pour les actions utilisateur */
+button, .btn {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #3367d6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+}
+
+
+
+
 /* Footer */
 footer {
     background-color: #333;
