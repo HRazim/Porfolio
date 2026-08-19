@@ -177,6 +177,56 @@ export function getLanguages(): readonly LanguageSkill[] {
 }
 
 /**
+ * Lecture marquante.
+ *
+ * `takeaway` n’est pas un resume du livre : c’est ce que la lecture a change
+ * dans la facon de travailler. Un resume se trouve partout ailleurs.
+ */
+export interface Reading {
+  /** Identifiant stable, en kebab-case. */
+  readonly id: string;
+  readonly title: string;
+  readonly author: string;
+  readonly takeaway: string;
+}
+
+const READINGS: readonly Reading[] = [
+  {
+    id: 'lois-nature-humaine',
+    title: 'Les lois de la nature humaine',
+    author: 'Robert Greene',
+    takeaway:
+      'Écouter ce qui n’est pas dit. En entretien comme en négociation, l’information utile est rarement celle qu’on vous donne.',
+  },
+  {
+    id: 'psychologie-argent',
+    title: 'La psychologie de l’argent',
+    author: 'Morgan Housel',
+    takeaway:
+      'Les décisions financières sont d’abord des décisions humaines. Comprendre le comportement avant les chiffres.',
+  },
+  {
+    id: 'outlive',
+    title: 'Outlive',
+    author: 'Peter Attia',
+    takeaway:
+      'Raisonner en horizon long plutôt qu’en résultat immédiat, et l’appliquer ailleurs qu’à la santé.',
+  },
+  {
+    id: 'notre-derniere-invention',
+    title: 'Notre dernière invention',
+    author: 'James Barrat',
+    takeaway:
+      'S’intéresser à ce qu’une technologie rend possible avant de s’enthousiasmer pour ce qu’elle fait déjà.',
+  },
+];
+
+/** Les lectures marquantes, dans l’ordre de declaration. */
+export function getReadings(): readonly Reading[] {
+  return READINGS;
+}
+
+/**
  * Qualification affichee pour une langue : niveau, certification, ou les
  * deux. La composition vit ici et non dans le composant, celui-ci ne
  * redigeant rien.

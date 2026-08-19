@@ -37,6 +37,22 @@ const nextConfig: NextConfig = {
   // d'une ligne.
 
   typedRoutes: true,
+
+  /**
+   * PAS de bloc `images`, et c'est delibere.
+   *
+   * Un plafond `deviceSizes` / `imageSizes` a existe ici tant que le portrait
+   * de la page d'accueil passait par `next/image`. Le portrait est desormais
+   * rendu par un element `<picture>`, comme les visuels de realisation : plus
+   * aucune image du site n'emprunte l'optimiseur, et ces reglages ne
+   * gouvernaient donc plus rien.
+   *
+   * Consequence utile : toutes les images sont pre-encodees en AVIF et WebP,
+   * aux largeurs exactes de leur affichage, et servies telles quelles. Le
+   * passage a `output: 'export'` ne demande plus `images.unoptimized` — la
+   * bascule redevient l'ajout d'une seule ligne, comme l'exige la contrainte
+   * rappelee en tete de fichier.
+   */
 };
 
 export default nextConfig;

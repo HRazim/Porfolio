@@ -10,6 +10,7 @@ import {
   formatLanguageQualification,
   getCareerEntriesByKind,
   getLanguages,
+  getReadings,
 } from '@/content/career';
 import { CAREER, COMMON, MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
 
@@ -118,7 +119,47 @@ function LanguagesSection() {
 }
 
 /**
- * Parcours : formation, experiences et langues.
+ * Lectures marquantes.
+ *
+ * Alimentee par src/content/career.ts : aucun titre, aucun auteur et aucune
+ * phrase n’est ecrit dans ce composant.
+ */
+function ReadingsSection() {
+  const readings = getReadings();
+
+  return (
+    <section aria-labelledby="lectures">
+      <h2 id="lectures" className="text-display-sm text-ink">
+        {CAREER.readingsHeading}
+      </h2>
+      <Prose className="mt-md">
+        <p>{CAREER.readingsIntro}</p>
+      </Prose>
+
+      {readings.length === 0 ? (
+        <Prose className="mt-md">
+          <p>{CAREER.readingsEmpty}</p>
+        </Prose>
+      ) : (
+        <ul className="mt-lg grid list-none grid-cols-1 gap-md p-0 sm:grid-cols-2">
+          {readings.map((reading) => (
+            <li
+              key={reading.id}
+              className="flex flex-col gap-2xs rounded-md border border-border bg-paper px-md py-md"
+            >
+              <h3 className="text-body-xl text-ink">{reading.title}</h3>
+              <p className="font-mono text-body-sm text-ink-subtle">{reading.author}</p>
+              <p className="max-w-measure text-body-md text-ink-muted">{reading.takeaway}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Parcours : formation, experiences, langues et lectures.
  *
  * Les trois listes sont alimentees par src/content/career.ts. Aucune ville
  * n’est deduite d’un nom d’etablissement et aucun mois n’est ajoute a une
@@ -155,6 +196,7 @@ export default function CareerPage() {
               emptyMessage={CAREER.experienceEmpty}
             />
             <LanguagesSection />
+            <ReadingsSection />
           </div>
         </Container>
       </Section>

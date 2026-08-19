@@ -239,6 +239,12 @@
      en Instrument Sans. AUDIT.md section 7.6 mesure 95 caracteres sur le
      site precedent, soit 27 % au-dela de la limite haute de lisibilite. */
   --container-measure: 66ch;
+  /* Cote du portrait. Deux valeurs, non trois : au-dela d'un certain point
+     un portrait ne gagne rien a grandir, il vole la place du texte.
+     Ce sont ces largeurs que `sizes` annonce au navigateur, et c'est d'elles
+     que depend la resolution reellement telechargee. */
+  --container-portrait-sm: 12rem; /* 192px — pile mobile */
+  --container-portrait: 20rem; /* 320px — cote a cote */
 
   /* =========================================================================
      8. FOCUS

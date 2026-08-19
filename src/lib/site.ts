@@ -21,12 +21,15 @@ export const SITE_LANG = 'fr';
 /**
  * URL canonique.
  *
- * PROVISOIRE : le domaine definitif n’est pas encore arbitre. La valeur de
- * repli permet a `metadataBase`, au sitemap et aux balises canoniques de
- * fonctionner des maintenant ; elle est surchargeable sans toucher au code
- * via NEXT_PUBLIC_SITE_URL, inlinee au build (compatible export statique).
+ * Sous-domaine Vercel gratuit, arbitre pour la mise en ligne. La valeur reste
+ * surchargeable sans toucher au code via NEXT_PUBLIC_SITE_URL, inlinee au
+ * build (compatible export statique) : le jour ou un domaine propre est pris,
+ * seule la variable d’environnement change.
+ *
+ * `metadataBase`, le sitemap et toutes les balises canoniques lisent cette
+ * constante et elle seule.
  */
-const FALLBACK_SITE_URL = 'https://marouan-hazim-rayan.vercel.app';
+const FALLBACK_SITE_URL = 'https://hazim-rayan-marouan.vercel.app';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? FALLBACK_SITE_URL;
 
 /**
@@ -57,6 +60,30 @@ export const TITLE_TEMPLATE = `%s${TITLE_SEPARATOR}${SITE_NAME}`;
 export function pageTitle(segment: string): string {
   return `${segment}${TITLE_SEPARATOR}${SITE_NAME}`;
 }
+
+/**
+ * Actifs statiques servis depuis public/.
+ * Ecrits ici pour la meme raison que les liens : une seule source.
+ */
+export const CV_PATH = '/cv-marouan-hazim-rayan.pdf';
+
+/**
+ * Portrait : chemin de base, SANS suffixe de largeur ni extension — meme
+ * convention que les visuels de realisation. La page en derive un `srcset`
+ * par largeur et par encodage.
+ */
+export const PORTRAIT_PATH = '/images/portrait-marouan-hazim-rayan';
+/** Largeurs produites, croissantes. */
+export const PORTRAIT_WIDTHS: readonly number[] = [400, 800];
+/** Cote du plus grand fichier, en pixels. Le portrait est carre. */
+export const PORTRAIT_SIZE = 800;
+/**
+ * Largeur d’affichage annoncee au navigateur.
+ * Doit rester alignee sur --container-portrait-sm / --container-portrait et
+ * sur le point de rupture `md` (48rem), sans quoi le navigateur telecharge
+ * une variante qui ne correspond pas a la place reellement occupee.
+ */
+export const PORTRAIT_SIZES = '(min-width: 48rem) 20rem, 12rem';
 
 /** Type de lien social connu du systeme. */
 export type SocialNetwork = 'github' | 'linkedin';

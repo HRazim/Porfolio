@@ -88,7 +88,20 @@ export type Technology =
   | 'Material 3'
   | 'Android';
 
-export type ProjectLinkKind = 'source' | 'demo' | 'article' | 'documentation';
+/**
+ * Nature d’un lien sortant. Determine le pictogramme.
+ * Les reseaux sont nommes un par un : une valeur « social » fourre-tout
+ * obligerait a rebrancher sur une chaine dans le JSX pour choisir l’icone.
+ */
+export type ProjectLinkKind =
+  | 'source'
+  | 'demo'
+  | 'article'
+  | 'documentation'
+  | 'instagram'
+  | 'x'
+  | 'tiktok'
+  | 'reddit';
 
 export interface ProjectLink {
   readonly kind: ProjectLinkKind;
@@ -99,11 +112,25 @@ export interface ProjectLink {
 /**
  * Visuel de realisation.
  *
- * `src` pointe vers le chemin CIBLE sous public/. L’encodage et le placement
- * des images font l’objet d’un prompt dedie.
+ * `src` est un chemin de base sous public/, SANS suffixe de largeur ni
+ * extension. La galerie en derive un `srcset` par largeur, dans les deux
+ * encodages : `{src}-{largeur}.avif` et `{src}-{largeur}.webp`. Tout est
+ * produit a l’avance, aucun optimiseur n’intervient au service — ce qui
+ * preserve la compatibilite export statique.
+ *
+ * `widths` liste les largeurs REELLEMENT produites, croissantes. Une source
+ * plus petite que le palier n’est jamais agrandie : elle n’a alors qu’une
+ * seule entree.
+ *
+ * `width` et `height` sont les dimensions du plus grand fichier. Elles sont
+ * obligatoires : sans elles le navigateur ne peut pas reserver la place de
+ * l’image, et la page saute au chargement.
  */
 export interface ProjectVisual {
-  readonly src: `/images/projets/${string}`;
+  readonly src: `/images/${string}`;
+  readonly widths: readonly number[];
+  readonly width: number;
+  readonly height: number;
   readonly alt: string;
   readonly caption: string;
 }
@@ -280,8 +307,8 @@ const PROJECTS: readonly Project[] = [
         'Représenter ces filières lors du forum, devant des assemblées comme en entretien individuel.',
       actions:
         'Prise de parole publique et présentation des filières devant des groupes de lycéens et d’étudiants. Puis accompagnement individualisé : comprendre le profil et les ambitions de chaque personne pour l’orienter vers la filière qui lui correspond réellement.',
-      // Aucun chiffre disponible. Champ laisse a completer plutot qu’invente.
-      resultats: null,
+      resultats:
+        'Une quinzaine d’entretiens individuels menés dans la journée, de dix à quinze minutes chacun, en complément des présentations devant les assemblées.',
     },
     learnings: [
       'Convaincre une assemblée et convaincre une personne sont deux exercices différents. Le premier demande une structure et un rythme ; le second demande d’écouter avant de proposer.',
@@ -297,13 +324,14 @@ const PROJECTS: readonly Project[] = [
     tagline:
       'Application web déployée sur Raspberry Pi permettant d’effectuer divers types de calculs, avec gestion d’utilisateurs hiérarchisée et sécurité intégrée.',
     category: 'academique',
-    period: { kind: 'a-preciser' },
+    period: { kind: 'connue', start: '2024-11', end: '2025-03' },
     context:
       'L’application couvre la page d’accueil, la création de compte, la connexion et un module de calcul de probabilité fondé sur la loi inverse-gaussienne. Les paramètres de calcul — espérance, forme, valeur t et nombre de valeurs — sont bornés afin de garantir la validité des résultats.',
     // Intitule de contribution, non de perimetre : la repartition des taches
     // n’est pas documentee, rien ne permet donc de revendiquer le full-stack.
     role: 'Membre de l’équipe de développement',
-    roleDetail: 'Projet mené en équipe, dans un cadre universitaire.',
+    roleDetail:
+      'Projet mené en équipe, dans le cadre du BUT Informatique à l’IUT de Vélizy-Villacoublay.',
     outOfScope: null,
     technologies: ['PHP', 'MySQL', 'HTML', 'CSS', 'JavaScript', 'Raspberry Pi', 'SSH'],
     features: [
@@ -327,54 +355,84 @@ const PROJECTS: readonly Project[] = [
       resultats:
         'Nous avons livré une application web permettant aux utilisateurs (administrateurs système, administrateurs web, utilisateurs inscrits, visiteurs) de s’inscrire via un captcha, de se connecter, d’effectuer des calculs, de stocker leurs résultats et de gérer leurs comptes.',
     },
-    learnings: [],
+    learnings: [
+      'Concevoir quatre profils d’utilisateurs aux droits distincts oblige à définir qui peut faire quoi avant d’écrire la première ligne. Les autorisations ne s’ajoutent pas après coup : elles structurent l’application entière.',
+      'Déployer sur un Raspberry Pi impose des contraintes de ressources qu’un serveur classique fait oublier. Travailler sous contrainte matérielle force à distinguer ce qui est nécessaire de ce qui est confortable.',
+    ],
     // Le depot public appartient au compte GitHub d’un membre de l’equipe :
     // le presenter comme « le code source » de cette realisation serait
     // ambigu sur la propriete du travail. Aucun lien, donc.
     links: [],
     visuals: [
       {
-        src: '/images/projets/plateforme-web-calculs/accueil.webp',
+        src: '/images/projets/plateforme-web-calculs/accueil',
+        widths: [400, 800],
+        width: 800,
+        height: 394,
         alt: 'Page d’accueil de la plateforme, modules de calcul inaccessibles faute de compte',
         caption: 'Page d’accueil',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/profil-connexion-inscription.webp',
+        src: '/images/projets/plateforme-web-calculs/profil-connexion-inscription',
+        widths: [400, 800],
+        width: 800,
+        height: 392,
         alt: 'Menu Profil ouvert sur les entrées de connexion et d’inscription',
         caption: 'Accès au profil',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/creation-compte.webp',
+        src: '/images/projets/plateforme-web-calculs/creation-compte',
+        widths: [400, 800],
+        width: 800,
+        height: 390,
         alt: 'Formulaire d’inscription avec champ de vérification du mot de passe',
         caption: 'Création de compte',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/connexion.webp',
+        src: '/images/projets/plateforme-web-calculs/connexion',
+        widths: [400, 800],
+        width: 800,
+        height: 390,
         alt: 'Formulaire de connexion demandant identifiant et mot de passe',
         caption: 'Connexion',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/module-probabilite.webp',
+        src: '/images/projets/plateforme-web-calculs/module-probabilite',
+        widths: [400, 800],
+        width: 800,
+        height: 391,
         alt: 'Formulaire de saisie des paramètres du module de probabilité',
         caption: 'Module de probabilité',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/rectangles-gauche.webp',
+        src: '/images/projets/plateforme-web-calculs/rectangles-gauche',
+        widths: [364],
+        width: 364,
+        height: 354,
         alt: 'Aire sous la courbe approchée par des rectangles alignés sur le bord gauche de chaque intervalle',
         caption: 'Méthode des rectangles à gauche',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/rectangles-medians.webp',
+        src: '/images/projets/plateforme-web-calculs/rectangles-medians',
+        widths: [220],
+        width: 220,
+        height: 175,
         alt: 'Aire sous la courbe approchée par des rectangles centrés sur le point médian de chaque intervalle',
         caption: 'Méthode des rectangles médians',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/trapezes.webp',
+        src: '/images/projets/plateforme-web-calculs/trapezes',
+        widths: [220],
+        width: 220,
+        height: 175,
         alt: 'Aire sous la courbe approchée par des trapèzes reliant les extrémités de chaque intervalle',
         caption: 'Méthode des trapèzes',
       },
       {
-        src: '/images/projets/plateforme-web-calculs/historique-calculs.webp',
+        src: '/images/projets/plateforme-web-calculs/historique-calculs',
+        widths: [400, 800],
+        width: 800,
+        height: 422,
         alt: 'Fiche de calcul enregistrée, accompagnée de son bouton de suppression',
         caption: 'Historique des calculs',
       },
@@ -387,11 +445,14 @@ const PROJECTS: readonly Project[] = [
     tagline:
       'Application de gestion financière développée avec Flask et SQLAlchemy Core, offrant une interface web et une interface en ligne de commande (CLI) pour manipuler les données.',
     category: 'academique',
-    period: { kind: 'a-preciser' },
+    period: { kind: 'connue', start: '2025-01', end: '2025-03' },
     context:
       'Archilog est une application de gestion financière développée en Python, utilisant Flask pour l’interface web, SQLAlchemy Core pour la gestion de la base de données SQLite, et Jinja2 pour la génération de pages HTML dynamiques.',
     role: 'Développeur full-stack',
-    roleDetail: null,
+    // Rien n’etablit un travail collectif sur cette realisation : la mention
+    // se limite donc au cadre de formation.
+    roleDetail:
+      'Projet réalisé dans le cadre du BUT Informatique à l’IUT de Vélizy-Villacoublay.',
     outOfScope: null,
     technologies: ['Python', 'Flask', 'SQLAlchemy Core', 'SQLite', 'Jinja2'],
     features: [
@@ -412,7 +473,10 @@ const PROJECTS: readonly Project[] = [
       resultats:
         'L’application permet l’affichage, la création, la modification et la suppression d’entrées financières, avec support pour l’importation/exportation de données au format CSV et une gestion des erreurs via des messages flash.',
     },
-    learnings: [],
+    learnings: [
+      'Livrer une interface web et une interface en ligne de commande sur la même logique métier n’est possible que si la logique est séparée de la présentation. C’est l’architecture qui rend la double interface réalisable, pas l’inverse.',
+      'Une interface en ligne de commande ne sert pas les mêmes usages qu’une interface web : l’une automatise, l’autre explore. Concevoir les deux oblige à se demander comment l’outil sera réellement utilisé.',
+    ],
     links: [
       {
         kind: 'source',
@@ -422,12 +486,18 @@ const PROJECTS: readonly Project[] = [
     ],
     visuals: [
       {
-        src: '/images/projets/archilog/interface-web.webp',
+        src: '/images/projets/archilog/interface-web',
+        widths: [400, 800],
+        width: 800,
+        height: 174,
         alt: 'Interface web d’Archilog affichant la liste des entrées financières',
         caption: 'Liste des entrées financières',
       },
       {
-        src: '/images/projets/archilog/formulaire-entree.webp',
+        src: '/images/projets/archilog/formulaire-entree',
+        widths: [400, 800],
+        width: 800,
+        height: 253,
         alt: 'Formulaire de création et de modification d’une entrée financière',
         caption: 'Création d’une entrée',
       },
@@ -440,9 +510,9 @@ const PROJECTS: readonly Project[] = [
     tagline:
       'Une application Android entièrement locale qui conserve ce qui fait durer une relation, sans serveur, sans publicité et sans traceur.',
     category: 'personnel',
-    // Projet actif, date de debut non etablie : « en cours » porte cette
-    // information, la que « a-preciser » ne disait rien.
-    period: { kind: 'en-cours' },
+    // Debut date, fin non arretee : la borne « en-cours » dit exactement
+    // cela, la ou la variante `{ kind: 'en-cours' }` perdait la date connue.
+    period: { kind: 'connue', start: '2026-02', end: 'en-cours' },
     context: null,
     role: 'Concepteur et développeur unique',
     roleDetail:
@@ -481,8 +551,96 @@ const PROJECTS: readonly Project[] = [
         label: 'Code source',
         href: 'https://github.com/HRazim/JTR',
       },
+      {
+        kind: 'instagram',
+        label: 'JTR sur Instagram',
+        href: 'https://www.instagram.com/justtorememberapp/',
+      },
+      {
+        kind: 'x',
+        label: 'JTR sur X',
+        href: 'https://x.com/JusToRememberr',
+      },
+      {
+        kind: 'tiktok',
+        label: 'JTR sur TikTok',
+        href: 'https://www.tiktok.com/@justtoremember_app',
+      },
+      {
+        kind: 'reddit',
+        label: 'JTR sur Reddit',
+        href: 'https://www.reddit.com/user/JTR_app/',
+      },
     ],
-    visuals: [],
+    // Captures issues de la fiche Google Play. Le titre incruste dans chaque
+    // image est en anglais et n’est lu par aucune technologie d’assistance :
+    // le texte alternatif decrit donc l’ECRAN, jamais ce titre.
+    visuals: [
+      {
+        src: '/images/jtr/liste-contacts',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Liste de contacts sur téléphone : chaque ligne porte une photographie, un nom, une ville, une date de naissance et une étoile de mise en favori, deux contacts étant marqués.',
+        caption: 'Liste des contacts, avec favoris, ville et date de naissance',
+      },
+      {
+        src: '/images/jtr/fiche-contact',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Fiche d’un contact : photographie, catégorie, date d’anniversaire avec rappel, relation vers un autre contact, courriel, origine, ville et zone de notes libres.',
+        caption: 'Fiche détaillée d’un contact, avec relations, origine et notes',
+      },
+      {
+        src: '/images/jtr/carte-localisation',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Bas d’une fiche de contact : téléphone, courriel, employeur, origine et ville, suivis d’une carte affichant un repère sur la ville renseignée.',
+        caption: 'Localisation d’un contact sur une carte',
+      },
+      {
+        src: '/images/jtr/vue-grille',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Contacts présentés en grille de deux colonnes, chaque vignette montrant la photographie en pleine largeur avec le nom et la ville superposés.',
+        caption: 'Vue en grille des contacts',
+      },
+      {
+        src: '/images/jtr/categories-relations',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Écran des catégories : trois vignettes illustrées, Favoris, Amis et Travail, chacune indiquant le nombre de contacts qu’elle regroupe.',
+        caption: 'Organisation par catégories et par relations',
+      },
+      {
+        src: '/images/jtr/selecteur-langue',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Sélecteur de langue déroulé, l’option Langue du système étant cochée, suivie des langues proposées écrites dans leur propre alphabet.',
+        caption: 'Sélecteur de langue, treize langues disponibles',
+      },
+      {
+        src: '/images/jtr/theme-couleurs',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Réglages ouverts sur un panneau de palettes de couleurs, six choix présentés par des pastilles, la palette active étant cochée.',
+        caption: 'Choix du thème de couleurs',
+      },
+      {
+        src: '/images/jtr/sauvegarde-confidentialite',
+        widths: [400, 800],
+        width: 800,
+        height: 1422,
+        alt: 'Réglages ouverts sur une boîte de dialogue de sauvegarde : elle propose d’exporter toutes les données vers un fichier unique ou de restaurer une sauvegarde précédente, par-dessus les réglages de notification et l’entrée menant à la politique de confidentialité.',
+        caption: 'Sauvegarde locale et paramètres de confidentialité',
+      },
+    ],
     featuredRank: 2,
   },
 ];

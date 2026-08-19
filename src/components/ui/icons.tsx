@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import type { ProjectLinkKind } from '@/content/projects';
 import { cn } from '@/lib/cn';
 import type { ContactKind, SocialNetwork } from '@/lib/site';
 
@@ -168,6 +169,45 @@ export function CloseIcon(props: IconProps) {
   );
 }
 
+export function InstagramIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
+    </IconBase>
+  );
+}
+
+export function XIcon(props: IconProps) {
+  return (
+    <IconBase {...props} filled>
+      <path d="M17.53 3h3.02l-6.6 7.54L21.7 21h-6.07l-4.76-6.22L5.44 21H2.42l7.06-8.07L2.3 3h6.23l4.3 5.69L17.53 3Zm-1.06 16.2h1.67L7.6 4.71H5.81l10.66 14.49Z" />
+    </IconBase>
+  );
+}
+
+export function TikTokIcon(props: IconProps) {
+  return (
+    <IconBase {...props} filled>
+      <path d="M16.6 2h-3.02v13.4a2.62 2.62 0 1 1-2.62-2.62c.24 0 .47.03.69.09v-3.1a5.9 5.9 0 0 0-.69-.04 5.72 5.72 0 1 0 5.72 5.72V8.9a6.9 6.9 0 0 0 4.03 1.29V7.1a3.9 3.9 0 0 1-2.83-1.32A3.94 3.94 0 0 1 16.6 2Z" />
+    </IconBase>
+  );
+}
+
+export function RedditIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="13.4" r="8" />
+      <circle cx="9.1" cy="12.9" r="1.05" fill="currentColor" stroke="none" />
+      <circle cx="14.9" cy="12.9" r="1.05" fill="currentColor" stroke="none" />
+      <path d="M9 16.4c1.7 1.2 4.3 1.2 6 0" />
+      <path d="M13.4 5.4 12 13.4" />
+      <circle cx="13.9" cy="4.4" r="1.4" />
+    </IconBase>
+  );
+}
+
 /**
  * Correspondances nom -> composant.
  * Elles evitent tout branchement sur une chaine a l’interieur du JSX.
@@ -175,6 +215,21 @@ export function CloseIcon(props: IconProps) {
 export const SOCIAL_ICONS: Readonly<Record<SocialNetwork, IconComponent>> = {
   github: GitHubIcon,
   linkedin: LinkedInIcon,
+};
+
+/**
+ * Pictogramme de chaque nature de lien sortant d’une realisation.
+ * Table exhaustive : ajouter une nature sans son icone ne compile pas.
+ */
+export const PROJECT_LINK_ICONS: Readonly<Record<ProjectLinkKind, IconComponent>> = {
+  source: GitHubIcon,
+  demo: ExternalLinkIcon,
+  article: DocumentIcon,
+  documentation: DocumentIcon,
+  instagram: InstagramIcon,
+  x: XIcon,
+  tiktok: TikTokIcon,
+  reddit: RedditIcon,
 };
 
 export const CONTACT_ICONS: Readonly<Record<ContactKind, IconComponent>> = {

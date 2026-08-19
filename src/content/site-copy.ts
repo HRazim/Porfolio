@@ -91,8 +91,17 @@ export const HOME = {
     'Aucune réalisation n’est mise en avant pour le moment. Toutes restent consultables depuis l’index.',
   featuredLinkAll: 'Voir toutes les réalisations',
   contactHeading: 'Contact',
-  /** EN ATTENTE DE REDACTION — aucun texte fourni pour cette section. */
-  contactIntro: 'Le texte d’introduction au contact reste à écrire.',
+  contactIntro:
+    'Je suis en recherche d’une alternance à partir de septembre 2026, sur un rythme de quatre jours en entreprise et un jour en formation. Écrivez-moi.',
+  /** Texte alternatif du portrait. Decrit le sujet, sans le qualifier. */
+  portraitAlt: 'Portrait de MAROUAN Hazim-Rayan',
+  cvLabel: 'Télécharger mon CV',
+  /**
+   * Mention accessible : format et poids, annonces avant le declenchement.
+   * `{poids}` est remplace par la taille REELLE du fichier, lue au build.
+   * Meme convention que `{years}` dans FOOTER.copyright.
+   */
+  cvMeta: 'PDF, {poids}',
 } as const;
 
 export const PROJECTS_INDEX = {
@@ -121,8 +130,6 @@ export const PROJECT_DETAIL = {
   learningsEmpty: 'Les enseignements de ce projet restent à rédiger.',
   linksHeading: 'Liens',
   visualsHeading: 'Visuels',
-  visualsPending:
-    'Les visuels de cette réalisation ne sont pas encore intégrés. Leur encodage fait l’objet d’une étape dédiée.',
   navigationLabel: 'Navigation entre les réalisations',
   previousLabel: 'Réalisation précédente',
   nextLabel: 'Réalisation suivante',
@@ -139,6 +146,9 @@ export const CAREER = {
   experienceEmpty: 'Les expériences restent à renseigner.',
   languagesHeading: 'Langues',
   languagesEmpty: 'Les langues restent à renseigner.',
+  readingsHeading: 'Lectures',
+  readingsIntro: 'Quatre livres qui ont changé ma façon de travailler.',
+  readingsEmpty: 'Les lectures restent à renseigner.',
 } as const;
 
 export const NOT_FOUND = {

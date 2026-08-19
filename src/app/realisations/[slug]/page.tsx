@@ -5,9 +5,10 @@ import { notFound } from 'next/navigation';
 import { Container } from '@/components/layout/container';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
+import { ProjectGallery } from '@/components/project/project-gallery';
 import { ProjectStar } from '@/components/project/project-star';
 import { ExternalLink } from '@/components/ui/external-link';
-import { ArrowIcon } from '@/components/ui/icons';
+import { ArrowIcon, PROJECT_LINK_ICONS } from '@/components/ui/icons';
 import { formatPeriod, periodDateTime } from '@/content/period';
 import {
   CATEGORY_LABELS,
@@ -225,19 +226,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {hasVisuals ? (
             <>
               <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.visualsHeading}</h2>
-              {/* Les fichiers ne sont pas encore places sous public/ : seule
-                  la declaration existe. L’encodage fait l’objet d’une etape
-                  dediee. */}
-              <Prose className="mt-md">
-                <p>{PROJECT_DETAIL.visualsPending}</p>
-              </Prose>
-              <ul className="mt-md flex list-none flex-col gap-2xs p-0">
-                {project.visuals.map((visual) => (
-                  <li key={visual.src} className="font-mono text-body-sm text-ink-subtle">
-                    {visual.caption}
-                  </li>
-                ))}
-              </ul>
+              <ProjectGallery visuals={project.visuals} />
             </>
           ) : null}
 
@@ -245,11 +234,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <>
               <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.linksHeading}</h2>
               <ul className="mt-md flex list-none flex-col gap-2xs p-0">
-                {project.links.map((link) => (
-                  <li key={link.href}>
-                    <ExternalLink href={link.href}>{link.label}</ExternalLink>
-                  </li>
-                ))}
+                {project.links.map((link) => {
+                  // Le pictogramme est choisi par table, jamais par un
+                  // branchement sur une chaine a l’interieur du JSX.
+                  const LinkIcon = PROJECT_LINK_ICONS[link.kind];
+                  return (
+                    <li key={link.href} className="flex items-center gap-2xs">
+                      <LinkIcon size="sm" className="text-ink-subtle" />
+                      <ExternalLink href={link.href}>{link.label}</ExternalLink>
+                    </li>
+                  );
+                })}
               </ul>
             </>
           ) : null}

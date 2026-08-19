@@ -19,10 +19,23 @@ import {
   RADIUS_TOKENS,
 } from '@/lib/design-tokens';
 
-/** Outil de travail interne : exclu de l’indexation. */
+/**
+ * Outil de travail interne : exclu de l’indexation.
+ *
+ * Le canonique est reecrit vers cette page elle-meme. Sans cette ligne, la
+ * route heritait du `alternates.canonical: '/'` de la mise en page racine et
+ * declarait donc au robot que le styleguide EST la page d’accueil — une
+ * affirmation fausse, et bien plus dommageable que l’absence de balise.
+ *
+ * Reecrire plutot que supprimer : `noindex` et `canonical` ne repondent pas a
+ * la meme question, un robot reste libre d’ignorer le premier, et le jour ou
+ * l’exclusion sautera, un canonique auto-referent restera juste. Une balise
+ * qui ne ment jamais coute une ligne.
+ */
 export const metadata: Metadata = {
   title: PAGE_META.styleguide.title,
   description: PAGE_META.styleguide.description,
+  alternates: { canonical: '/styleguide' },
   robots: {
     index: false,
     follow: false,
