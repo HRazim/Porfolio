@@ -418,6 +418,52 @@
 }
 
 /* ===========================================================================
+   CHASSIS DU SITE
+   ---------------------------------------------------------------------------
+   Deux comportements pilotes en CSS, jamais en style en ligne.
+   =========================================================================== */
+@layer components {
+  /* Lien d'evitement : focalisable en permanence, visible au seul focus.
+     AUDIT.md section 5.4 : le site precedent n'en possedait aucun. */
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--spacing-sm);
+    inset-block-start: var(--spacing-sm);
+    z-index: 100;
+    transform: translateY(-250%);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    padding-block: var(--spacing-2xs);
+    padding-inline: var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-body-sm);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* Etat de defilement de l'en-tete.
+     L'attribut data-scrolled est pose sur <html> par un IntersectionObserver
+     (voir header-scroll-state.tsx). AUDIT.md section 3.4 : le mecanisme
+     precedent ecrivait un style en ligne, qui ecrasait definitivement la
+     media query mobile. Ici, tout se decide dans la feuille de style. */
+  [data-site-header] {
+    border-block-end: 1px solid transparent;
+    transition:
+      background-color var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  :root[data-scrolled='true'] [data-site-header] {
+    background-color: var(--color-surface);
+    border-block-end-color: var(--color-border);
+  }
+}
+
+/* ===========================================================================
    PREFERENCE DE MOUVEMENT REDUIT
    ---------------------------------------------------------------------------
    AUDIT.md section 5.4 : le site precedent ignore totalement cette

@@ -9,6 +9,7 @@ import { ScalarTokenList } from '@/components/styleguide/scalar-token-list';
 import { SpacingScale } from '@/components/styleguide/spacing-scale';
 import { ThemeToggle } from '@/components/styleguide/theme-toggle';
 import { TypeSpecimen } from '@/components/styleguide/type-specimen';
+import { MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
 import {
   DURATION_TOKENS,
   EASING_TOKENS,
@@ -20,8 +21,8 @@ import {
 
 /** Outil de travail interne : exclu de l’indexation. */
 export const metadata: Metadata = {
-  title: 'Design system',
-  description: 'Page de demonstration interne du design system.',
+  title: PAGE_META.styleguide.title,
+  description: PAGE_META.styleguide.description,
   robots: {
     index: false,
     follow: false,
@@ -54,7 +55,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export default function StyleguidePage() {
   return (
-    <main>
+    <main id={MAIN_CONTENT_ID}>
       {/* ------------------------------------------------------------------ */}
       <Section spacing="spacious" background="paper">
         <Container>

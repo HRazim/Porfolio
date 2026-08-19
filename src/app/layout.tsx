@@ -1,17 +1,10 @@
-import type { Metadata } from 'next';
-
+import { SiteFooter } from '@/components/layout/site-footer';
+import { SiteHeader } from '@/components/layout/site-header';
+import { SkipLink } from '@/components/layout/skip-link';
 import { fontVariables } from '@/lib/fonts';
+import { SITE_LANG } from '@/lib/site';
 
 import './globals.css';
-
-export const metadata: Metadata = {
-  title: {
-    default: 'Fondations',
-    template: '%s · Fondations',
-  },
-  description:
-    'Fondations techniques et visuelles du portfolio en cours de refonte : design system, echelle typographique et primitives de mise en page.',
-};
 
 export default function RootLayout({
   children,
@@ -21,9 +14,14 @@ export default function RootLayout({
   return (
     // `data-theme` est la source de verite unique du theme (voir globals.css).
     // `suppressHydrationWarning` : l'attribut est reecrit cote client par la
-    // bascule de theme, apres hydratation.
-    <html lang="fr" data-theme="light" suppressHydrationWarning>
-      <body className={fontVariables}>{children}</body>
+    // bascule de theme du styleguide, apres hydratation.
+    <html lang={SITE_LANG} data-theme="light" suppressHydrationWarning>
+      <body className={fontVariables}>
+        <SkipLink />
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

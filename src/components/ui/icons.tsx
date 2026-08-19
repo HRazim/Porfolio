@@ -1,0 +1,185 @@
+import type { ReactNode } from 'react';
+
+import { cn } from '@/lib/cn';
+import type { ContactKind, SocialNetwork } from '@/lib/site';
+
+/**
+ * ---------------------------------------------------------------------------
+ * ICONES — SVG EN LIGNE, AUCUNE DEPENDANCE
+ * ---------------------------------------------------------------------------
+ *
+ * AUDIT.md section 4.5 : le site precedent telechargeait 258 144 octets de
+ * polices Font Awesome pour 17 glyphes distincts, soit environ 15 Ko par
+ * pictogramme affiche, au prix d’une cascade de trois requetes vers un
+ * domaine tiers.
+ *
+ * Ces dix icones pesent ce que pese leur balisage, sont rendues cote
+ * serveur, et ne declenchent aucune requete.
+ *
+ * Regles :
+ *   - `currentColor` exclusivement : la couleur vient du contexte, jamais
+ *     d’une valeur ecrite ici ;
+ *   - taille puisee dans l’echelle d’espacement, jamais en pixels ;
+ *   - `aria-hidden` par defaut. Une icone n’est annoncee que si un `title`
+ *     lui est explicitement donne, auquel cas elle prend `role="img"`.
+ *
+ * Les coordonnees des traces sont necessairement numeriques : une geometrie
+ * vectorielle ne se tokenise pas.
+ * ---------------------------------------------------------------------------
+ */
+
+export type IconSize = 'sm' | 'md' | 'lg';
+
+export interface IconProps {
+  /** Defaut : `md`. Puise dans l’echelle d’espacement. */
+  readonly size?: IconSize;
+  readonly className?: string;
+  /**
+   * Titre accessible. Absent, l’icone est decorative et masquee aux
+   * technologies d’assistance.
+   */
+  readonly title?: string;
+}
+
+export type IconComponent = (props: IconProps) => ReactNode;
+
+const SIZE_CLASS: Record<IconSize, string> = {
+  sm: 'size-sm', // 16px
+  md: 'size-md', // 24px
+  lg: 'size-lg', // 32px
+};
+
+interface IconBaseProps extends IconProps {
+  readonly children: ReactNode;
+  /** Traces pleins (logos) plutot que traces au filet. */
+  readonly filled?: boolean;
+}
+
+function IconBase({ size = 'md', className, title, children, filled = false }: IconBaseProps) {
+  const decorative = title === undefined;
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'}
+      strokeWidth={filled ? undefined : 1.75}
+      strokeLinecap={filled ? undefined : 'round'}
+      strokeLinejoin={filled ? undefined : 'round'}
+      className={cn(SIZE_CLASS[size], 'shrink-0', className)}
+      aria-hidden={decorative ? true : undefined}
+      role={decorative ? undefined : 'img'}
+      focusable="false"
+    >
+      {decorative ? null : <title>{title}</title>}
+      {children}
+    </svg>
+  );
+}
+
+export function GitHubIcon(props: IconProps) {
+  return (
+    <IconBase {...props} filled>
+      <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.24-.02-2.25-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.28 0 .32.21.7.82.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z" />
+    </IconBase>
+  );
+}
+
+export function LinkedInIcon(props: IconProps) {
+  return (
+    <IconBase {...props} filled>
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" />
+    </IconBase>
+  );
+}
+
+export function MailIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 6.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+      <path d="m3.6 7 8.4 6 8.4-6" />
+    </IconBase>
+  );
+}
+
+export function PhoneIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M6.6 2.5a1.5 1.5 0 0 1 1.4.95l1.2 3a1.5 1.5 0 0 1-.35 1.65L7.6 9.35a12.5 12.5 0 0 0 5.05 5.05l1.25-1.25a1.5 1.5 0 0 1 1.65-.35l3 1.2a1.5 1.5 0 0 1 .95 1.4v2.4a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 2.6 4.7a2 2 0 0 1 2-2.2Z" />
+    </IconBase>
+  );
+}
+
+export function LocationIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" />
+      <circle cx="12" cy="10" r="2.75" />
+    </IconBase>
+  );
+}
+
+export function DocumentIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 3v5h5" />
+      <path d="M9 13.5h6" />
+      <path d="M9 17h4" />
+    </IconBase>
+  );
+}
+
+export function ArrowIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 12h16" />
+      <path d="m13 5 7 7-7 7" />
+    </IconBase>
+  );
+}
+
+export function ExternalLinkIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M14 4h6v6" />
+      <path d="M20 4 11 13" />
+      <path d="M18 14.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10" />
+    </IconBase>
+  );
+}
+
+export function MenuIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </IconBase>
+  );
+}
+
+export function CloseIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m6 6 12 12" />
+      <path d="m18 6-12 12" />
+    </IconBase>
+  );
+}
+
+/**
+ * Correspondances nom -> composant.
+ * Elles evitent tout branchement sur une chaine a l’interieur du JSX.
+ */
+export const SOCIAL_ICONS: Readonly<Record<SocialNetwork, IconComponent>> = {
+  github: GitHubIcon,
+  linkedin: LinkedInIcon,
+};
+
+export const CONTACT_ICONS: Readonly<Record<ContactKind, IconComponent>> = {
+  email: MailIcon,
+  phone: PhoneIcon,
+  location: LocationIcon,
+  document: DocumentIcon,
+};
