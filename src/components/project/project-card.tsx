@@ -1,10 +1,9 @@
 import Link from 'next/link';
 
 import { ArrowIcon } from '@/components/ui/icons';
-import { CATEGORY_LABELS, type Project } from '@/content/projects';
-import { PROJECTS_INDEX } from '@/content/site-copy';
 import { formatPeriod } from '@/content/period';
-import { COMMON } from '@/content/site-copy';
+import { CATEGORY_LABELS, type Project } from '@/content/projects';
+import { COMMON, PROJECTS_INDEX } from '@/content/site-copy';
 
 export interface ProjectCardProps {
   readonly project: Project;
@@ -18,6 +17,9 @@ export interface ProjectCardProps {
  * C’est un `<article>` : AUDIT.md section 5.5 releve que les deux fiches
  * projet du site precedent etaient des `<div>`, alors qu’il s’agit de
  * contenu autonome et distribuable.
+ *
+ * La liste de technologies n’est rendue que si elle contient quelque chose :
+ * une realisation non technique ne doit pas afficher de conteneur vide.
  *
  * Rendu cote serveur.
  */
@@ -43,18 +45,20 @@ export function ProjectCard({ project, headingLevel }: ProjectCardProps) {
 
       <p className="text-body-md text-ink-muted">{project.tagline}</p>
 
-      <ul className="mt-auto flex list-none flex-wrap gap-2xs p-0">
-        {project.technologies.map((technology) => (
-          <li
-            key={technology}
-            className="rounded-sm border border-border px-2xs py-3xs font-mono text-body-sm text-ink-subtle"
-          >
-            {technology}
-          </li>
-        ))}
-      </ul>
+      {project.technologies.length === 0 ? null : (
+        <ul className="flex list-none flex-wrap gap-2xs p-0">
+          {project.technologies.map((technology) => (
+            <li
+              key={technology}
+              className="rounded-sm border border-border px-2xs py-3xs font-mono text-body-sm text-ink-subtle"
+            >
+              {technology}
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <p className="flex items-center gap-2xs font-mono text-body-sm text-accent">
+      <p className="mt-auto flex items-center gap-2xs font-mono text-body-sm text-accent">
         <span aria-hidden="true">{PROJECTS_INDEX.readMore}</span>
         <ArrowIcon size="sm" />
       </p>

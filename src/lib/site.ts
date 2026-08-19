@@ -44,11 +44,11 @@ export const SITE_DESCRIPTION =
  * Composition des titres de page.
  *
  * AUDIT.md section 6.3 : aucune des trois pages precedentes ne contenait le
- * nom, alors que c'est l'unique requete a forte intention pour un portfolio
- * personnel. Le separateur et le gabarit ne sont ecrits qu'ici.
+ * nom, alors que c’est l’unique requete a forte intention pour un portfolio
+ * personnel. Le separateur et le gabarit ne sont ecrits qu’ici.
  *
- * Attention : le `template` d'une mise en page ne s'applique PAS au segment
- * ou il est defini. La page d'accueil doit donc composer son titre avec
+ * Attention : le `template` d’une mise en page ne s’applique PAS au segment
+ * ou il est defini. La page d’accueil doit donc composer son titre avec
  * `pageTitle`, sans quoi elle serait la seule page sans le nom.
  */
 export const TITLE_SEPARATOR = ' · ';
