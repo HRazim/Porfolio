@@ -32,7 +32,6 @@ export default function ProjectsIndexPage() {
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{PROJECTS_INDEX.eyebrow}</p>
           <h1 className="mt-sm text-display-lg text-ink">{PROJECTS_INDEX.heading}</h1>
-          {/* EN ATTENTE DE REDACTION — voir PROJECTS_INDEX.intro */}
           <Prose size="lead" className="mt-lg">
             <p>{PROJECTS_INDEX.intro}</p>
           </Prose>

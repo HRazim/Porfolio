@@ -4,7 +4,13 @@ import { Container } from '@/components/layout/container';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
 import { formatPeriod, periodDateTime } from '@/content/period';
-import { type CareerEntry, type CareerKind, getCareerEntriesByKind } from '@/content/career';
+import {
+  type CareerEntry,
+  type CareerKind,
+  formatLanguageQualification,
+  getCareerEntriesByKind,
+  getLanguages,
+} from '@/content/career';
 import { CAREER, COMMON, MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
 
 export const metadata: Metadata = {
@@ -31,7 +37,6 @@ function CareerSection({ kind, headingId, heading, emptyMessage }: CareerSection
       </h2>
 
       {entries.length === 0 ? (
-        /* EN ATTENTE DE RENSEIGNEMENT — voir l’entete de src/content/career.ts */
         <Prose className="mt-md">
           <p>{emptyMessage}</p>
         </Prose>
@@ -54,10 +59,12 @@ function CareerSection({ kind, headingId, heading, emptyMessage }: CareerSection
                   )}
                 </p>
                 <h3 className="text-body-xl text-ink">{entry.title}</h3>
-                <p className="font-mono text-body-sm text-ink-subtle">
-                  {entry.organisation ?? COMMON.toBeSpecified}
-                  {entry.location === null ? null : ` — ${entry.location}`}
-                </p>
+                {entry.organisation === null && entry.location === null ? null : (
+                  <p className="font-mono text-body-sm text-ink-subtle">
+                    {entry.organisation ?? COMMON.toBeSpecified}
+                    {entry.location === null ? null : ` — ${entry.location}`}
+                  </p>
+                )}
                 {entry.summary === null ? null : (
                   <p className="max-w-measure text-body-md text-ink-muted">{entry.summary}</p>
                 )}
@@ -77,13 +84,45 @@ function CareerSection({ kind, headingId, heading, emptyMessage }: CareerSection
   );
 }
 
+/** Langues, avec leur niveau et, le cas echeant, leur certification. */
+function LanguagesSection() {
+  const languages = getLanguages();
+
+  return (
+    <section aria-labelledby="langues">
+      <h2 id="langues" className="text-display-sm text-ink">
+        {CAREER.languagesHeading}
+      </h2>
+
+      {languages.length === 0 ? (
+        <Prose className="mt-md">
+          <p>{CAREER.languagesEmpty}</p>
+        </Prose>
+      ) : (
+        <ul className="mt-lg flex list-none flex-wrap gap-md p-0">
+          {languages.map((language) => (
+            <li
+              key={language.id}
+              className="flex flex-col gap-3xs rounded-md border border-border bg-paper px-md py-sm"
+            >
+              <span className="text-body-md text-ink">{language.name}</span>
+              <span className="font-mono text-body-sm text-ink-subtle">
+                {formatLanguageQualification(language)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 /**
- * Parcours : formation et experiences.
+ * Parcours : formation, experiences et langues.
  *
- * Les deux listes sont alimentees par src/content/career.ts. Le site
- * precedent ne documente le parcours que par la mention « Étudiant en BUT
- * informatique » (AUDIT.md section 9.1) : rien d’autre n’a ete ajoute, et
- * rien n’a ete invente.
+ * Les trois listes sont alimentees par src/content/career.ts. Aucune ville
+ * n’est deduite d’un nom d’etablissement et aucun mois n’est ajoute a une
+ * annee : la granularite affichee est celle de la donnee disponible.
  *
  * Rendu cote serveur, statiquement.
  */
@@ -94,7 +133,6 @@ export default function CareerPage() {
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{CAREER.eyebrow}</p>
           <h1 className="mt-sm text-display-lg text-ink">{CAREER.heading}</h1>
-          {/* EN ATTENTE DE REDACTION — voir CAREER.intro */}
           <Prose size="lead" className="mt-lg">
             <p>{CAREER.intro}</p>
           </Prose>
@@ -116,6 +154,7 @@ export default function CareerPage() {
               heading={CAREER.experienceHeading}
               emptyMessage={CAREER.experienceEmpty}
             />
+            <LanguagesSection />
           </div>
         </Container>
       </Section>

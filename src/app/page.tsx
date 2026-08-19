@@ -21,12 +21,10 @@ export const metadata: Metadata = {
 /**
  * Accueil.
  *
- * ATTENTION — CONTENU EN ATTENTE DE REDACTION.
- * `HOME.headline` et `HOME.intro` sont des espaces reserves declares dans
- * src/content/site-copy.ts. AUDIT.md section 8.2 conclut que l’accroche
- * precedente est une enumeration sans positionnement, et que la section
- * « À propos » compte 23 mises en gras pour 223 mots. Ces textes sont a
- * ecrire, pas a reprendre : ils feront l’objet du prompt editorial.
+ * Tous les textes viennent de src/content/site-copy.ts : ce fichier assemble
+ * des primitives, il ne redige pas. `HOME.intro` est un tableau, le
+ * decoupage en paragraphes etant une donnee editoriale et non une decision
+ * de mise en page.
  *
  * Rendu cote serveur, statiquement.
  */
@@ -40,7 +38,9 @@ export default function HomePage() {
           <p className="font-mono text-body-sm text-ink-subtle">{HOME.eyebrow}</p>
           <h1 className="mt-sm text-display-xl text-ink">{HOME.headline}</h1>
           <Prose size="lead" className="mt-lg">
-            <p>{HOME.intro}</p>
+            {HOME.intro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </Prose>
         </Container>
       </Section>
@@ -50,13 +50,16 @@ export default function HomePage() {
           <h2 id="realisations-mises-en-avant" className="text-display-md text-ink">
             {HOME.featuredHeading}
           </h2>
+          <Prose className="mt-md">
+            <p>{HOME.featuredIntro}</p>
+          </Prose>
 
           {featured.length === 0 ? (
             <Prose className="mt-md">
               <p>{HOME.featuredEmpty}</p>
             </Prose>
           ) : (
-            <Grid as="ul" columns={2} gap="lg" className="mt-xl">
+            <Grid as="ul" columns={3} gap="lg" className="mt-xl">
               {featured.map((project) => (
                 <li key={project.slug}>
                   <ProjectCard project={project} headingLevel={3} />

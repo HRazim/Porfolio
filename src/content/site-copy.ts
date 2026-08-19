@@ -68,35 +68,37 @@ export const FOOTER = {
 /**
  * Page d’accueil.
  *
- * EN ATTENTE DE REDACTION — l’accroche et le texte de presentation sont
- * volontairement des espaces reserves. Le positionnement vise est un profil
- * hybride technique et business, a parts egales ; AUDIT.md section 8.2
- * conclut que l’accroche precedente (« Développeur Web | Designer | Étudiant
- * en BUT informatique ») est une enumeration sans positionnement, et que la
- * section « À propos » compte 23 balises de mise en gras pour 223 mots.
- * Ces deux textes sont donc a ecrire, pas a reprendre.
+ * AUDIT.md section 8.2 conclut que l’accroche precedente (« Développeur Web |
+ * Designer | Étudiant en BUT informatique ») est une enumeration sans
+ * positionnement, et que la section « À propos » compte 23 balises de mise en
+ * gras pour 223 mots. Ces textes ont donc ete reecrits, pas repris.
+ *
+ * Le positionnement porte est un profil hybride technique et business, a
+ * parts egales.
  */
 export const HOME = {
   eyebrow: 'Portfolio',
-  /** EN ATTENTE DE REDACTION */
-  headline: 'Accroche à rédiger',
-  /** EN ATTENTE DE REDACTION */
-  intro:
-    'Le texte de présentation reste à écrire. Il portera le positionnement hybride entre technique et business.',
+  headline:
+    'Étudiant en Ingénierie d’Affaires, avec trois ans de formation en informatique derrière moi.',
+  /** Presentation en deux paragraphes. Le decoupage est une donnee, pas du JSX. */
+  intro: [
+    'Je viens du développement, et j’y ai appris ce qui se passe réellement derrière une promesse commerciale : les arbitrages, les délais qui glissent, la différence entre ce qui est demandé et ce dont on a besoin. C’est ce que je veux mettre au service d’un métier de conseil et de vente.',
+    'Je prépare un Master Ingénierie d’Affaires à Paris School of Business, en alternance sur un rythme de quatre jours en entreprise et un jour en formation. Les réalisations ci-dessous sont ce que j’ai construit jusqu’ici, avec ce que j’en ai retenu.',
+  ],
   featuredHeading: 'Réalisations mises en avant',
+  featuredIntro: 'Trois réalisations qui résument le mieux ma façon de travailler.',
   featuredEmpty:
     'Aucune réalisation n’est mise en avant pour le moment. Toutes restent consultables depuis l’index.',
   featuredLinkAll: 'Voir toutes les réalisations',
   contactHeading: 'Contact',
-  /** EN ATTENTE DE REDACTION */
+  /** EN ATTENTE DE REDACTION — aucun texte fourni pour cette section. */
   contactIntro: 'Le texte d’introduction au contact reste à écrire.',
 } as const;
 
 export const PROJECTS_INDEX = {
   eyebrow: 'Travaux',
   heading: 'Réalisations',
-  /** EN ATTENTE DE REDACTION */
-  intro: 'Le texte d’introduction de l’index reste à écrire.',
+  intro: 'Projets professionnels, académiques et personnels, groupés par nature.',
   empty: 'Aucune réalisation n’est publiée pour le moment.',
   /** `{count}` est remplace par le nombre de realisations de la categorie. */
   countOne: 'réalisation',
@@ -113,6 +115,8 @@ export const PROJECT_DETAIL = {
   technologiesHeading: 'Technologies',
   featuresHeading: 'Fonctionnalités',
   starHeading: 'Déroulé du projet',
+  /** Intitule neutre : ce que la livraison ne couvre pas. */
+  scopeHeading: 'Périmètre',
   learningsHeading: 'Enseignements',
   learningsEmpty: 'Les enseignements de ce projet restent à rédiger.',
   linksHeading: 'Liens',
@@ -128,12 +132,13 @@ export const PROJECT_DETAIL = {
 export const CAREER = {
   eyebrow: 'Trajectoire',
   heading: 'Parcours',
-  /** EN ATTENTE DE REDACTION */
-  intro: 'Le texte d’introduction du parcours reste à écrire.',
+  intro: 'Formation, expériences et langues.',
   formationHeading: 'Formation',
   formationEmpty: 'La formation reste à renseigner.',
   experienceHeading: 'Expériences',
   experienceEmpty: 'Les expériences restent à renseigner.',
+  languagesHeading: 'Langues',
+  languagesEmpty: 'Les langues restent à renseigner.',
 } as const;
 
 export const NOT_FOUND = {

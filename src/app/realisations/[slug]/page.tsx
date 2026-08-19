@@ -72,6 +72,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const period = formatPeriod(project.period);
   const dateTime = periodDateTime(project.period);
 
+  // Une section n’est rendue que si elle a quelque chose a montrer. Une
+  // realisation non technique n’affiche pas de titre « Technologies » suivi
+  // du vide, et une realisation sans cadre distinct n’affiche pas
+  // « Contexte » suivi de rien.
+  const hasContext = project.context !== null;
+  const hasTechnologies = project.technologies.length > 0;
+  const hasFeatures = project.features.length > 0;
+  const hasVisuals = project.visuals.length > 0;
+  const hasLinks = project.links.length > 0;
+  const hasPresentation = hasContext || hasTechnologies || hasFeatures;
+
   return (
     <main id={MAIN_CONTENT_ID}>
       <Section spacing="spacious" background="paper">
@@ -96,52 +107,81 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <dd className="text-body-md text-ink">
                 {period === null ? (
                   COMMON.toBeSpecified
+                ) : dateTime === null ? (
+                  // Periode non datee : un <time> sans date valide n'aurait
+                  // aucun sens, on rend du texte brut.
+                  period
                 ) : (
-                  <time dateTime={dateTime ?? undefined}>{period}</time>
+                  <time dateTime={dateTime}>{period}</time>
                 )}
               </dd>
             </div>
-            <div className="flex flex-col gap-3xs">
+            <div className="flex max-w-measure flex-col gap-3xs">
               <dt className="font-mono text-body-sm text-ink-subtle">
                 {PROJECT_DETAIL.roleHeading}
               </dt>
-              <dd className="text-body-md text-ink">{project.role}</dd>
+              <dd className="text-body-md text-ink">
+                {project.role}
+                {project.roleDetail === null ? null : (
+                  <span className="mt-3xs block text-body-sm text-ink-muted">
+                    {project.roleDetail}
+                  </span>
+                )}
+              </dd>
             </div>
           </dl>
         </Container>
       </Section>
 
-      <Section background="surface" labelledBy="contexte">
-        <Container>
-          <h2 id="contexte" className="text-display-sm text-ink">
-            {PROJECT_DETAIL.contextHeading}
-          </h2>
-          <Prose className="mt-md">
-            <p>{project.context}</p>
-          </Prose>
+      {hasPresentation ? (
+        <Section background="surface">
+          <Container>
+            {hasContext ? (
+              <>
+                <h2 id="contexte" className="text-display-sm text-ink">
+                  {PROJECT_DETAIL.contextHeading}
+                </h2>
+                <Prose className="mt-md">
+                  <p>{project.context}</p>
+                </Prose>
+              </>
+            ) : null}
 
-          <h2 className="mt-3xl text-display-sm text-ink">
-            {PROJECT_DETAIL.technologiesHeading}
-          </h2>
-          <ul className="mt-md flex list-none flex-wrap gap-2xs p-0">
-            {project.technologies.map((technology) => (
-              <li
-                key={technology}
-                className="rounded-sm border border-border bg-paper px-sm py-2xs font-mono text-body-sm text-ink-muted"
-              >
-                {technology}
-              </li>
-            ))}
-          </ul>
+            {hasTechnologies ? (
+              <>
+                <h2 className={`${hasContext ? 'mt-3xl' : ''} text-display-sm text-ink`}>
+                  {PROJECT_DETAIL.technologiesHeading}
+                </h2>
+                <ul className="mt-md flex list-none flex-wrap gap-2xs p-0">
+                  {project.technologies.map((technology) => (
+                    <li
+                      key={technology}
+                      className="rounded-sm border border-border bg-paper px-sm py-2xs font-mono text-body-sm text-ink-muted"
+                    >
+                      {technology}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
 
-          <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.featuresHeading}</h2>
-          <ul className="mt-md flex max-w-measure list-disc flex-col gap-2xs pl-md text-body-md text-ink-muted">
-            {project.features.map((feature) => (
-              <li key={feature}>{feature}</li>
-            ))}
-          </ul>
-        </Container>
-      </Section>
+            {hasFeatures ? (
+              <>
+                <h2
+                  className={`${hasContext || hasTechnologies ? 'mt-3xl' : ''} text-display-sm text-ink`}
+                >
+                  {PROJECT_DETAIL.featuresHeading}
+                </h2>
+                <ul className="mt-md flex max-w-measure list-disc flex-col gap-2xs pl-md text-body-md text-ink-muted">
+                  {project.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </Container>
+        </Section>
+      ) : null}
 
       <Section background="paper" labelledBy="deroule">
         <Container>
@@ -151,6 +191,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="mt-xl">
             <ProjectStar star={project.star} />
           </div>
+
+          {project.outOfScope === null ? null : (
+            <>
+              <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.scopeHeading}</h2>
+              <Prose className="mt-md">
+                <p>{project.outOfScope}</p>
+              </Prose>
+            </>
+          )}
         </Container>
       </Section>
 
@@ -160,34 +209,39 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {PROJECT_DETAIL.learningsHeading}
           </h2>
           {project.learnings.length === 0 ? (
-            /* EN ATTENTE DE REDACTION — aucun enseignement n’est consigne
-               dans le site precedent (AUDIT.md section 9). */
+            /* EN ATTENTE DE REDACTION pour les realisations academiques :
+               aucun enseignement n’est consigne dans le site precedent. */
             <Prose className="mt-md">
               <p>{PROJECT_DETAIL.learningsEmpty}</p>
             </Prose>
           ) : (
-            <ul className="mt-md flex max-w-measure list-disc flex-col gap-2xs pl-md text-body-md text-ink-muted">
+            <ul className="mt-md flex max-w-measure list-disc flex-col gap-md pl-md text-body-md text-ink-muted">
               {project.learnings.map((learning) => (
                 <li key={learning}>{learning}</li>
               ))}
             </ul>
           )}
 
-          <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.visualsHeading}</h2>
-          {/* Les fichiers ne sont pas encore places sous public/ : seule la
-              declaration existe. L’encodage fait l’objet d’un prompt dedie. */}
-          <Prose className="mt-md">
-            <p>{PROJECT_DETAIL.visualsPending}</p>
-          </Prose>
-          <ul className="mt-md flex list-none flex-col gap-2xs p-0">
-            {project.visuals.map((visual) => (
-              <li key={visual.src} className="font-mono text-body-sm text-ink-subtle">
-                {visual.caption}
-              </li>
-            ))}
-          </ul>
+          {hasVisuals ? (
+            <>
+              <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.visualsHeading}</h2>
+              {/* Les fichiers ne sont pas encore places sous public/ : seule
+                  la declaration existe. L’encodage fait l’objet d’une etape
+                  dediee. */}
+              <Prose className="mt-md">
+                <p>{PROJECT_DETAIL.visualsPending}</p>
+              </Prose>
+              <ul className="mt-md flex list-none flex-col gap-2xs p-0">
+                {project.visuals.map((visual) => (
+                  <li key={visual.src} className="font-mono text-body-sm text-ink-subtle">
+                    {visual.caption}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
 
-          {project.links.length === 0 ? null : (
+          {hasLinks ? (
             <>
               <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.linksHeading}</h2>
               <ul className="mt-md flex list-none flex-col gap-2xs p-0">
@@ -198,7 +252,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 ))}
               </ul>
             </>
-          )}
+          ) : null}
         </Container>
       </Section>
 
