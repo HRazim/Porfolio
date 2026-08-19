@@ -1,0 +1,443 @@
+/* ---------------------------------------------------------------------------
+   PERIMETRE D'ANALYSE DE TAILWIND : src/ UNIQUEMENT.
+   ---------------------------------------------------------------------------
+   `source(none)` desactive la detection automatique, qui balaie sinon toute
+   la racine du projet. Deux fichiers y produisaient des utilitaires
+   parasites :
+
+     - legacy/*.html et legacy/styles/style.css — les classes du site
+       precedent (`container`, `sr-only`, `flex-grow`...) etaient compilees
+       alors qu'elles n'appartiennent pas au systeme ;
+     - AUDIT.md — les memes mots, cites en prose dans le rapport d'audit,
+       etaient pris pour des classes.
+
+   C'est le pendant CSS de la regle ESLint `no-restricted-imports` : legacy/
+   n'est jamais servi, jamais deploye, jamais importe — et desormais jamais
+   analyse.
+   --------------------------------------------------------------------------- */
+@import 'tailwindcss' source(none);
+@source '../../src';
+
+/* ===========================================================================
+   JETONS DE DESIGN
+   ---------------------------------------------------------------------------
+   Tailwind CSS v4 — configuration CSS-first via `@theme`.
+   Aucun fichier tailwind.config.* n'existe et ne doit exister.
+
+   Le site precedent declarait 20 valeurs de couleur pour 8 roles reels,
+   6 paires de quasi-doublons et ZERO variable CSS (AUDIT.md section 7.2),
+   17 tailles de police sans echelle (7.3), une base d'espacement de 5px au
+   pas irregulier (7.4) et 5 rayons de bordure (7.4). On repart de zero.
+
+   REGLE ABSOLUE : ce bloc `@theme` est le SEUL endroit du projet ou une
+   valeur numerique ou colorimetrique litterale a le droit d'apparaitre.
+   Tout le reste du code consomme exclusivement ces jetons.
+   =========================================================================== */
+
+@theme {
+  /* -------------------------------------------------------------------------
+     REMISES A ZERO DES ESPACES DE NOMS PAR DEFAUT DE TAILWIND
+     -------------------------------------------------------------------------
+     Sans ces resets, `bg-blue-500`, `text-2xl`, `rounded-3xl` ou `font-sans`
+     resteraient disponibles et contourneraient le systeme. Les neutraliser
+     rend le design system OPPOSABLE : une classe hors jetons ne compile pas.
+     Consequence directe : `bg-blue-500` n'existe pas, donc le bleu Google
+     du site precedent (#4285f4, #3367d6, #3a6cf4, #235bf6) est
+     structurellement inatteignable.
+     ------------------------------------------------------------------------- */
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --ease-*: initial;
+
+  /* =========================================================================
+     1. FAMILLES TYPOGRAPHIQUES
+     -------------------------------------------------------------------------
+     Les variables `--font-*-face` sont posees sur <html> par next/font
+     (voir src/lib/fonts.ts). Les piles completes sont composees ici.
+     Utilitaires generes : font-display, font-body, font-mono.
+     ========================================================================= */
+  --font-display: var(--font-display-face), 'Iowan Old Style', Georgia,
+    'Times New Roman', serif;
+  --font-body: var(--font-body-face), system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, 'SFMono-Regular', Menlo,
+    'Cascadia Mono', monospace;
+
+  /* =========================================================================
+     2. ECHELLE TYPOGRAPHIQUE — MODULAIRE, RATIO CONSTANT 1.25
+     -------------------------------------------------------------------------
+     Ancrage      : body-md = 1rem (16px)
+     Raison       : 1.25 (tierce majeure), CONSTANTE sur les 8 niveaux
+     Progression  : 0.8 · 1 · 1.25 · 1.5625 · 1.9531 · 2.4414 · 3.0518 · 3.8147
+
+     REGLE DE FLUIDITE, unique et verifiable :
+       la borne HAUTE de chaque niveau est exactement la borne BASSE du
+       niveau superieur. Autrement dit, chaque niveau parcourt UN PAS
+       d'echelle entre 360px et 1440px de largeur de fenetre.
+       max(niveau n) === min(niveau n+1)
+
+     Interpolation lineaire entre 360px (22.5rem) et 1440px (90rem),
+     via clamp() uniquement — AUCUNE media query pour la typographie.
+
+     UNITE : rem exclusivement pour les tailles de police. L'unite `em` est
+     INTERDITE pour `font-size` (AUDIT.md section 7.3 releve 3 collisions
+     rem/em dans le CSS precedent). `em` reste employe pour
+     `letter-spacing`, ou la proportionnalite a la taille est le comportement
+     recherche.
+     ========================================================================= */
+
+  /* --- Niveaux display : Instrument Serif, graisse 400 unique ------------- */
+  /* Interlettrage negatif croissant avec la taille ; interlignage 1.0 -> 1.15 */
+
+  /* 61.04px -> 76.29px */
+  --text-display-xl: clamp(3.8147rem, 3.4968rem + 1.4129vw, 4.7684rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 400;
+
+  /* 48.83px -> 61.04px */
+  --text-display-lg: clamp(3.0518rem, 2.7975rem + 1.1302vw, 3.8147rem);
+  --text-display-lg--line-height: 1.05;
+  --text-display-lg--letter-spacing: -0.025em;
+  --text-display-lg--font-weight: 400;
+
+  /* 39.06px -> 48.83px */
+  --text-display-md: clamp(2.4414rem, 2.2379rem + 0.9043vw, 3.0518rem);
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.02em;
+  --text-display-md--font-weight: 400;
+
+  /* 31.25px -> 39.06px */
+  --text-display-sm: clamp(1.9531rem, 1.7903rem + 0.7234vw, 2.4414rem);
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.015em;
+  --text-display-sm--font-weight: 400;
+
+  /* --- Niveaux de corps : Instrument Sans --------------------------------- */
+  /* Interlignage 1.6 -> 1.7, decroissant quand la taille croit */
+
+  /* 25px -> 31.25px */
+  --text-body-xl: clamp(1.5625rem, 1.4323rem + 0.5787vw, 1.9531rem);
+  --text-body-xl--line-height: 1.6;
+  --text-body-xl--letter-spacing: -0.01em;
+  --text-body-xl--font-weight: 400;
+
+  /* 20px -> 25px */
+  --text-body-lg: clamp(1.25rem, 1.1458rem + 0.463vw, 1.5625rem);
+  --text-body-lg--line-height: 1.65;
+  --text-body-lg--letter-spacing: 0em;
+  --text-body-lg--font-weight: 400;
+
+  /* 16px -> 20px */
+  --text-body-md: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
+  --text-body-md--line-height: 1.7;
+  --text-body-md--letter-spacing: 0em;
+  --text-body-md--font-weight: 400;
+
+  /* 12.8px -> 16px */
+  --text-body-sm: clamp(0.8rem, 0.7333rem + 0.2963vw, 1rem);
+  --text-body-sm--line-height: 1.7;
+  --text-body-sm--letter-spacing: 0.01em;
+  --text-body-sm--font-weight: 400;
+
+  /* =========================================================================
+     3. COULEURS — JETONS SEMANTIQUES (THEME CLAIR PAR DEFAUT)
+     -------------------------------------------------------------------------
+     Aucun nom litteral : chaque jeton porte un nom d'INTENTION. Il n'existe
+     ni `blue-500`, ni `gray-700`, ni echelle numerique.
+
+     Palette editoriale chaude : papier legerement desature, encre noire
+     chaude, accent unique terre brulee. Aucune couleur froide.
+
+     Tous les ratios de contraste sont calcules en WCAG 2.1 et verifies :
+     voir le tableau complet sur /styleguide, calcule en direct depuis ces
+     memes variables (aucune valeur transcrite a la main).
+     ========================================================================= */
+
+  /* Fond papier — blanc casse chaud, jamais #ffffff */
+  --color-paper: #f7f4ed;
+  /* Fond de surface — tres subtil, pour cartes et encarts */
+  --color-surface: #efeae0;
+  /* Bordure — tres subtile, filet decoratif */
+  --color-border: #ddd6c7;
+  /* Encre principale — noir profond chaud, jamais #000000 */
+  --color-ink: #17140f;
+  /* Encre secondaire — texte de support */
+  --color-ink-muted: #4c463b;
+  /* Encre tertiaire — metadonnees, legendes */
+  --color-ink-subtle: #6d6557;
+  /* Accent unique, chaud — employe avec parcimonie */
+  --color-accent: #9c3d10;
+  /* Encre posee SUR l'accent */
+  --color-accent-contrast: #fdfbf6;
+
+  /* =========================================================================
+     4. ESPACEMENT — BASE 4 PIXELS
+     -------------------------------------------------------------------------
+     `--spacing` est l'unite de base de Tailwind v4 : toute utilitaire
+     numerique (p-4, gap-6, mt-12...) vaut N x 4px. La grille de 4px est donc
+     garantie PAR CONSTRUCTION, pas par discipline.
+
+     L'echelle nommee ci-dessous suit une regle unique et explicite :
+       multiplicateurs n = 1, 2, 3, 4, 6, 8, 12, 16, 24, 32
+       soit la suite de doublement 1-2-4-8-16-32
+       entrelacee de ses points milieux a 1.5x : 3-6-12-24
+
+     A comparer avec AUDIT.md section 7.4 : base 5px, pas non constant
+     (+5 puis +10 puis +20), et deux valeurs hors grille (8px et 18px).
+     ========================================================================= */
+  --spacing: 0.25rem; /* 4px — unite de base */
+
+  --spacing-3xs: 0.25rem; /*   4px = 1 x base  */
+  --spacing-2xs: 0.5rem; /*   8px = 2 x base  */
+  --spacing-xs: 0.75rem; /*  12px = 3 x base  */
+  --spacing-sm: 1rem; /*  16px = 4 x base  */
+  --spacing-md: 1.5rem; /*  24px = 6 x base  */
+  --spacing-lg: 2rem; /*  32px = 8 x base  */
+  --spacing-xl: 3rem; /*  48px = 12 x base */
+  --spacing-2xl: 4rem; /*  64px = 16 x base */
+  --spacing-3xl: 6rem; /*  96px = 24 x base */
+  --spacing-4xl: 8rem; /* 128px = 32 x base */
+
+  /* Marge laterale de page, responsive sans media query.
+     Interpole entre --spacing-sm et --spacing-2xl. Utilitaire : px-gutter. */
+  --spacing-gutter: clamp(1rem, 4vw, 4rem);
+
+  /* =========================================================================
+     5. RAYONS DE BORDURE — TROIS VALEURS, PAS UNE DE PLUS
+     -------------------------------------------------------------------------
+     AUDIT.md section 7.4 releve 5 rayons, dont 3 appliques a des composants
+     de meme nature (10px, 12px, 8px). Une direction editoriale demande des
+     angles nets : le rayon est ici l'exception, jamais la regle.
+     ========================================================================= */
+  --radius-sm: 0.125rem; /* 2px  — filets, puces, petits encarts */
+  --radius-md: 0.375rem; /* 6px  — cartes, surfaces */
+  --radius-full: 9999px; /*      — pastilles et jetons circulaires */
+
+  /* =========================================================================
+     6. MOUVEMENT — DUREES ET COURBES
+     -------------------------------------------------------------------------
+     Neutralisees en bloc sous `prefers-reduced-motion: reduce` (voir plus bas).
+     ========================================================================= */
+  --duration-none: 0.01ms; /* valeur conventionnelle « effectivement nulle » */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* =========================================================================
+     7. MISE EN PAGE — LARGEURS ET MESURE
+     ========================================================================= */
+  /* Largeur maximale du contenu paginé */
+  --container-page: 72rem; /* 1152px */
+  /* Largeur maximale d'une colonne de texte long.
+     66ch place la mesure entre 60 et 75 caracteres pour du francais compose
+     en Instrument Sans. AUDIT.md section 7.6 mesure 95 caracteres sur le
+     site precedent, soit 27 % au-dela de la limite haute de lisibilite. */
+  --container-measure: 66ch;
+
+  /* =========================================================================
+     8. FOCUS
+     ========================================================================= */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+}
+
+/* ===========================================================================
+   THEME SOMBRE
+   ---------------------------------------------------------------------------
+   Expose via l'attribut `data-theme="dark"` sur <html>, qui est la source de
+   verite unique du theme. Seuls les 8 jetons de couleur sont redefinis :
+   typographie, espacement, rayons et mouvement sont invariants.
+   =========================================================================== */
+:root[data-theme='dark'] {
+  --color-paper: #14120e;
+  --color-surface: #1e1b15;
+  --color-border: #332e25;
+  --color-ink: #f2eee5;
+  --color-ink-muted: #b3aa9a;
+  --color-ink-subtle: #91887a;
+  --color-accent: #e08a52;
+  --color-accent-contrast: #17140f;
+}
+
+/* ===========================================================================
+   STYLES DE BASE
+   =========================================================================== */
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    font-weight: var(--text-body-md--font-weight);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color var(--duration-base) var(--ease-out),
+      color var(--duration-base) var(--ease-out);
+  }
+
+  /* Titres : famille display par defaut, la taille restant explicite. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 400; /* Instrument Serif ne possede que cette graisse. */
+    text-wrap: balance;
+  }
+
+  /* Chiffres, notations, identifiants et symboles grecs. */
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Focus visible : absent du site precedent (AUDIT.md section 5.4,
+     zero occurrence de :focus dans 701 lignes de CSS). */
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Compense l'en-tete fixe pour les ancres, sans nombre magique cote JS.
+     AUDIT.md section 3.7 releve 3 valeurs contradictoires (60px, 70px, 70). */
+  :target {
+    scroll-margin-top: var(--spacing-3xl);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+/* ===========================================================================
+   COMPOSANTS DE BASE
+   ---------------------------------------------------------------------------
+   Un seul composant CSS : le rythme interne de la prose. Il est defini ici,
+   et non dans le TSX, parce qu'il stylise des elements produits par du
+   contenu (paragraphes, listes, liens) et non des noeuds React nommes.
+   Aucune bibliotheque de typographie tierce n'est employee : le systeme
+   doit tenir debout seul.
+   =========================================================================== */
+@layer components {
+  .prose > * + * {
+    margin-block-start: var(--spacing-md);
+  }
+
+  .prose h2,
+  .prose h3 {
+    margin-block-start: var(--spacing-xl);
+    margin-block-end: var(--spacing-sm);
+  }
+
+  .prose h2 {
+    font-size: var(--text-display-sm);
+    line-height: var(--text-display-sm--line-height);
+    letter-spacing: var(--text-display-sm--letter-spacing);
+  }
+
+  .prose h3 {
+    font-size: var(--text-body-xl);
+    line-height: var(--text-body-xl--line-height);
+    letter-spacing: var(--text-body-xl--letter-spacing);
+  }
+
+  .prose strong {
+    font-weight: 600;
+  }
+
+  .prose a {
+    color: var(--color-accent);
+    text-decoration-line: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: var(--focus-ring-offset);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .prose a:hover {
+    color: var(--color-ink);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-inline-start: var(--spacing-md);
+  }
+
+  .prose ul {
+    list-style-type: disc;
+  }
+
+  .prose ol {
+    list-style-type: decimal;
+  }
+
+  .prose li + li {
+    margin-block-start: var(--spacing-2xs);
+  }
+
+  .prose li::marker {
+    color: var(--color-ink-subtle);
+  }
+
+  /* Aucun `font-size` n'est pose sur le code en ligne : le monospace parait
+     deja optiquement plus petit, et l'unite `em` est proscrite pour les
+     tailles de police (AUDIT.md section 7.3). */
+  .prose code {
+    color: var(--color-ink-muted);
+  }
+}
+
+/* ===========================================================================
+   PREFERENCE DE MOUVEMENT REDUIT
+   ---------------------------------------------------------------------------
+   AUDIT.md section 5.4 : le site precedent ignore totalement cette
+   preference, sur une animation d'apparition appliquee a toutes les sections,
+   13 transitions, 6 translations, un zoom global sur les images et un
+   defilement doux pilote en JavaScript.
+   =========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: var(--duration-none) !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: var(--duration-none) !important;
+    transition-duration: var(--duration-none) !important;
+    transition-delay: var(--duration-none) !important;
+    scroll-behavior: auto !important;
+  }
+}
