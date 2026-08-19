@@ -124,8 +124,14 @@ export const SITE_ADDRESS = {
   countryCode: 'FR',
 } as const;
 
-/** Nature d’une coordonnee. Determine le schema d’URL et le pictogramme. */
-export type ContactKind = 'email' | 'phone' | 'location' | 'document';
+/**
+ * Nature d’une coordonnee. Determine le schema d’URL et le pictogramme.
+ *
+ * Pas de variante `document` : le CV est une piece a telecharger, pas un
+ * moyen de joindre quelqu’un, et `<address>` decrit des moyens de contact.
+ * Son lien vit dans la section de contact, avec son format et son poids.
+ */
+export type ContactKind = 'email' | 'phone' | 'location';
 
 export interface ContactPoint {
   readonly kind: ContactKind;
@@ -164,14 +170,6 @@ export const CONTACT_POINTS: readonly ContactPoint[] = [
     label: 'Localisation',
     display: `${SITE_ADDRESS.locality}, ${SITE_ADDRESS.country}`,
     href: null,
-  },
-  {
-    kind: 'document',
-    label: 'Curriculum vitae',
-    display: 'Télécharger le CV',
-    // Chemin cible. Le fichier sera place lors du prompt dedie aux actifs :
-    // rien n’est copie depuis legacy/ a ce stade.
-    href: '/documents/cv.pdf',
   },
 ];
 

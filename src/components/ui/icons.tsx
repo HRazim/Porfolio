@@ -236,5 +236,4 @@ export const CONTACT_ICONS: Readonly<Record<ContactKind, IconComponent>> = {
   email: MailIcon,
   phone: PhoneIcon,
   location: LocationIcon,
-  document: DocumentIcon,
 };
