@@ -1,0 +1,21 @@
+<!--
+  Favicon.
+
+  EXCEPTION DOCUMENTEE a la regle "aucune couleur en dur hors des jetons" :
+  un favicon est rendu par le navigateur HORS du document, dans un onglet,
+  un favori ou une barre d'historique. Les proprietes personnalisees CSS
+  n'y sont pas resolues, une valeur litterale est donc inevitable.
+
+  Les deux valeurs ci-dessous sont celles des jetons --color-accent et
+  --color-accent-contrast du theme clair (globals.css). Contraste mesure
+  entre elles : 6,57:1. Si la palette change, ce fichier doit suivre.
+
+  Marque provisoire : monogramme geometrique, en attente de la direction
+  artistique fine.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="M">
+  <rect width="180" height="180" rx="34" fill="#9c3d10"/>
+  <path d="M40 134V46l50 52 50-52v88"
+        fill="none" stroke="#fdfbf6" stroke-width="17"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
