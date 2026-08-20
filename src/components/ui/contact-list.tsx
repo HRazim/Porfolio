@@ -28,7 +28,7 @@ export function ContactList() {
                 ) : (
                   <a
                     href={point.href}
-                    className="text-body-md text-ink underline decoration-from-font underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+                    className="text-body-md text-ink link-underline transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
                   >
                     {point.display}
                   </a>

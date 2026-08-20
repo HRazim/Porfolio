@@ -28,7 +28,7 @@ export function ProjectCard({ project, headingLevel }: ProjectCardProps) {
   const period = formatPeriod(project.period);
 
   return (
-    <article className="flex h-full flex-col gap-sm rounded-md border border-border bg-surface p-md">
+    <article className="project-card flex h-full flex-col gap-sm p-md">
       <p className="flex flex-wrap items-center gap-x-sm gap-y-3xs font-mono text-body-sm text-ink-subtle">
         <span>{CATEGORY_LABELS[project.category]}</span>
         <span>{period ?? COMMON.toBeSpecified}</span>
@@ -37,7 +37,7 @@ export function ProjectCard({ project, headingLevel }: ProjectCardProps) {
       <Heading className="text-display-sm text-ink">
         <Link
           href={`/realisations/${project.slug}`}
-          className="transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+          className="link-sweep inline-block transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
         >
           {project.title}
         </Link>
@@ -50,7 +50,7 @@ export function ProjectCard({ project, headingLevel }: ProjectCardProps) {
           {project.technologies.map((technology) => (
             <li
               key={technology}
-              className="rounded-sm border border-border px-2xs py-3xs font-mono text-body-sm text-ink-subtle"
+              className="accent-chip px-2xs py-3xs font-mono text-body-sm"
             >
               {technology}
             </li>

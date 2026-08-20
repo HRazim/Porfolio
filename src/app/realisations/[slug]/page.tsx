@@ -89,7 +89,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{PROJECT_DETAIL.eyebrow}</p>
-          <h1 className="mt-sm text-display-lg text-ink">{project.title}</h1>
+          <h1 className="section-rule mt-sm text-display-lg text-ink">{project.title}</h1>
           <Prose size="lead" className="mt-lg">
             <p>{project.tagline}</p>
           </Prose>
@@ -139,7 +139,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <Container>
             {hasContext ? (
               <>
-                <h2 id="contexte" className="text-display-sm text-ink">
+                <h2 id="contexte" className="section-rule text-display-sm text-ink">
                   {PROJECT_DETAIL.contextHeading}
                 </h2>
                 <Prose className="mt-md">
@@ -150,14 +150,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
             {hasTechnologies ? (
               <>
-                <h2 className={`${hasContext ? 'mt-3xl' : ''} text-display-sm text-ink`}>
+                <h2 className={`${hasContext ? 'mt-2xl' : ''} section-rule text-display-sm text-ink`}>
                   {PROJECT_DETAIL.technologiesHeading}
                 </h2>
                 <ul className="mt-md flex list-none flex-wrap gap-2xs p-0">
                   {project.technologies.map((technology) => (
                     <li
                       key={technology}
-                      className="rounded-sm border border-border bg-paper px-sm py-2xs font-mono text-body-sm text-ink-muted"
+                      className="accent-chip px-sm py-2xs font-mono text-body-sm"
                     >
                       {technology}
                     </li>
@@ -169,7 +169,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {hasFeatures ? (
               <>
                 <h2
-                  className={`${hasContext || hasTechnologies ? 'mt-3xl' : ''} text-display-sm text-ink`}
+                  className={`${hasContext || hasTechnologies ? 'mt-2xl' : ''} section-rule text-display-sm text-ink`}
                 >
                   {PROJECT_DETAIL.featuresHeading}
                 </h2>
@@ -186,7 +186,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       <Section background="paper" labelledBy="deroule">
         <Container>
-          <h2 id="deroule" className="text-display-sm text-ink">
+          <h2 id="deroule" className="section-rule text-display-sm text-ink">
             {PROJECT_DETAIL.starHeading}
           </h2>
           <div className="mt-xl">
@@ -195,8 +195,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           {project.outOfScope === null ? null : (
             <>
-              <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.scopeHeading}</h2>
-              <Prose className="mt-md">
+              <h2 className="section-rule mt-2xl text-display-sm text-ink">{PROJECT_DETAIL.scopeHeading}</h2>
+              {/* Encadre de mise en valeur : aplat en accent doux, bord en
+                  accent vif. Le texte reste en encre secondaire, qui atteint
+                  5,03:1 sur cet aplat — l accent lisible n y est pas admis. */}
+              <Prose className="accent-panel mt-md p-md">
                 <p>{project.outOfScope}</p>
               </Prose>
             </>
@@ -206,7 +209,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       <Section background="surface" labelledBy="enseignements">
         <Container>
-          <h2 id="enseignements" className="text-display-sm text-ink">
+          <h2 id="enseignements" className="section-rule text-display-sm text-ink">
             {PROJECT_DETAIL.learningsHeading}
           </h2>
           {project.learnings.length === 0 ? (
@@ -225,14 +228,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           {hasVisuals ? (
             <>
-              <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.visualsHeading}</h2>
+              <h2 className="section-rule mt-2xl text-display-sm text-ink">{PROJECT_DETAIL.visualsHeading}</h2>
               <ProjectGallery visuals={project.visuals} />
             </>
           ) : null}
 
           {hasLinks ? (
             <>
-              <h2 className="mt-3xl text-display-sm text-ink">{PROJECT_DETAIL.linksHeading}</h2>
+              <h2 className="section-rule mt-2xl text-display-sm text-ink">{PROJECT_DETAIL.linksHeading}</h2>
               <ul className="mt-md flex list-none flex-col gap-2xs p-0">
                 {project.links.map((link) => {
                   // Le pictogramme est choisi par table, jamais par un
@@ -259,7 +262,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 {previous === null ? null : (
                   <Link
                     href={`/realisations/${previous.slug}`}
-                    className="flex flex-col gap-3xs text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+                    className="flex flex-col gap-3xs text-ink link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
                   >
                     <span className="font-mono text-body-sm text-ink-subtle">
                       {PROJECT_DETAIL.previousLabel}
@@ -271,7 +274,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <li>
                 <Link
                   href="/realisations"
-                  className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent underline decoration-from-font underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
+                  className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
                 >
                   {PROJECT_DETAIL.backToIndex}
                   <ArrowIcon size="sm" />
@@ -281,7 +284,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 {next === null ? null : (
                   <Link
                     href={`/realisations/${next.slug}`}
-                    className="flex flex-col gap-3xs text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent sm:text-right"
+                    className="flex flex-col gap-3xs text-ink link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent sm:text-right"
                   >
                     <span className="font-mono text-body-sm text-ink-subtle">
                       {PROJECT_DETAIL.nextLabel}

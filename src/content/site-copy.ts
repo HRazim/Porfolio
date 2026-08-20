@@ -47,6 +47,17 @@ export const COMMON = {
   backToTop: 'Revenir en haut',
 } as const;
 
+/**
+ * Bascule clair / sombre.
+ *
+ * Le libelle annonce l’ACTION a venir et non l’etat courant : un bouton dit
+ * ce qu’il fera, `aria-pressed` dit ou l’on en est.
+ */
+export const THEME_TOGGLE = {
+  toLight: 'Passer au mode clair',
+  toDark: 'Passer au mode sombre',
+} as const;
+
 export const HEADER = {
   /** Libelle accessible de la balise nav principale. */
   navLabel: 'Navigation principale',

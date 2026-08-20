@@ -27,7 +27,7 @@ interface TokenStore {
 
 /**
  * Cree un magasin qui lit les variables demandees sur <html> et se
- * reinvalide a chaque changement de `data-theme`.
+ * reinvalide a chaque changement de mode.
  *
  * L'instantane est mis en cache : `useSyncExternalStore` exige qu'un
  * instantane inchange soit referentiellement identique, faute de quoi React
@@ -53,7 +53,7 @@ function createTokenStore(cssVars: readonly string[]): TokenStore {
       });
       observer.observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['data-theme'],
+        attributeFilter: ['data-mode'],
       });
       return () => observer.disconnect();
     },
@@ -70,8 +70,8 @@ function createTokenStore(cssVars: readonly string[]): TokenStore {
 }
 
 /**
- * Valeurs calculees des variables CSS demandees, relues a chaque bascule de
- * theme.
+ * Valeurs calculees des variables CSS demandees, relues a chaque changement de
+ * mode.
  *
  * `cssVars` doit etre une constante de module (identite stable).
  */

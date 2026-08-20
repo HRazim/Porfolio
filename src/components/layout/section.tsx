@@ -41,11 +41,20 @@ export interface SectionProps {
   className?: string;
 }
 
-/** Toutes les valeurs proviennent de l'echelle d'espacement de base 4px. */
+/**
+ * Rythme vertical, fluide.
+ *
+ * Les trois jetons sont definis dans globals.css et interpolent entre deux
+ * valeurs de l'echelle nommee ; aucune valeur n'est ecrite ici.
+ *
+ *   compact   24px -> 48px   (etait 64px fixe)
+ *   default   32px -> 64px   (etait 96px fixe)
+ *   spacious  48px -> 96px   (etait 128px fixe)
+ */
 const SPACING_CLASS: Record<SectionSpacing, string> = {
-  compact: 'py-2xl', //  64px
-  default: 'py-3xl', //  96px
-  spacious: 'py-4xl', // 128px
+  compact: 'py-section-compact',
+  default: 'py-section-default',
+  spacious: 'py-section-spacious',
 };
 
 const BACKGROUND_CLASS: Record<SectionBackground, string> = {

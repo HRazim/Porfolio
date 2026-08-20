@@ -103,14 +103,6 @@ export function MailIcon(props: IconProps) {
   );
 }
 
-export function PhoneIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M6.6 2.5a1.5 1.5 0 0 1 1.4.95l1.2 3a1.5 1.5 0 0 1-.35 1.65L7.6 9.35a12.5 12.5 0 0 0 5.05 5.05l1.25-1.25a1.5 1.5 0 0 1 1.65-.35l3 1.2a1.5 1.5 0 0 1 .95 1.4v2.4a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 2.6 4.7a2 2 0 0 1 2-2.2Z" />
-    </IconBase>
-  );
-}
-
 export function LocationIcon(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -165,6 +157,24 @@ export function CloseIcon(props: IconProps) {
     <IconBase {...props}>
       <path d="m6 6 12 12" />
       <path d="m18 6-12 12" />
+    </IconBase>
+  );
+}
+
+export function SunIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2.4v2.2M12 19.4v2.2M4.2 12H2M22 12h-2.2" />
+      <path d="M6.5 6.5 4.9 4.9M19.1 19.1l-1.6-1.6M17.5 6.5l1.6-1.6M4.9 19.1l1.6-1.6" />
+    </IconBase>
+  );
+}
+
+export function MoonIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M20.2 14.4A8.4 8.4 0 0 1 9.6 3.8a8.4 8.4 0 1 0 10.6 10.6Z" />
     </IconBase>
   );
 }
@@ -234,6 +244,5 @@ export const PROJECT_LINK_ICONS: Readonly<Record<ProjectLinkKind, IconComponent>
 
 export const CONTACT_ICONS: Readonly<Record<ContactKind, IconComponent>> = {
   email: MailIcon,
-  phone: PhoneIcon,
   location: LocationIcon,
 };

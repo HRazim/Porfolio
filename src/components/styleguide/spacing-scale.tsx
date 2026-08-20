@@ -30,7 +30,7 @@ export function SpacingScale() {
             </span>
             <span
               aria-hidden="true"
-              className="h-xs shrink-0 rounded-sm bg-accent"
+              className="h-xs shrink-0 rounded-sm bg-accent-vivid"
               style={{ width: `var(${token.cssVar})` }}
             />
             <span className="font-mono text-body-sm text-ink-subtle">

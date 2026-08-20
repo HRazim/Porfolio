@@ -143,35 +143,74 @@
   --text-body-sm--font-weight: 400;
 
   /* =========================================================================
-     3. COULEURS — JETONS SEMANTIQUES (THEME CLAIR PAR DEFAUT)
+     3. COULEURS — JETONS SEMANTIQUES
      -------------------------------------------------------------------------
      Aucun nom litteral : chaque jeton porte un nom d'INTENTION. Il n'existe
      ni `blue-500`, ni `gray-700`, ni echelle numerique.
 
-     Palette editoriale chaude : papier legerement desature, encre noire
-     chaude, accent unique terre brulee. Aucune couleur froide.
+     UNE SEULE DIMENSION : le MODE, clair ou sombre, porte par un attribut
+     sur <html>.
 
-     Tous les ratios de contraste sont calcules en WCAG 2.1 et verifies :
-     voir le tableau complet sur /styleguide, calcule en direct depuis ces
-     memes variables (aucune valeur transcrite a la main).
+         <html data-mode="light">
+
+     Les valeurs declarees ici sont celles du MODE CLAIR. Le mode sombre est
+     defini plus bas. Les NOMS de jetons ne changent jamais : seules leurs
+     valeurs varient. Aucun composant n'a donc a savoir quel mode est actif.
+
+     Chaque mode redefinit les ONZE jetons, sans exception. Un jeton
+     absent d'une combinaison heriterait silencieusement d'une autre palette :
+     c'est precisement ce que la redefinition exhaustive interdit.
+
+     Tous les ratios de contraste sont calcules en WCAG 2.1 : voir le tableau
+     complet sur /styleguide, calcule en direct depuis ces memes variables
+     (aucune valeur transcrite a la main).
      ========================================================================= */
 
-  /* Fond papier — blanc casse chaud, jamais #ffffff */
-  --color-paper: #f7f4ed;
-  /* Fond de surface — tres subtil, pour cartes et encarts */
-  --color-surface: #efeae0;
-  /* Bordure — tres subtile, filet decoratif */
-  --color-border: #ddd6c7;
-  /* Encre principale — noir profond chaud, jamais #000000 */
-  --color-ink: #17140f;
+  /* Fond principal — bleu tres pale, jamais #ffffff ni #000000 */
+  --color-paper: #ecf5ff;
+  /* Fond de surface — perceptiblement distinct du fond principal */
+  --color-surface: #c6e0ff;
+  /* Bordure — filet perceptible */
+  --color-border: #92b8e3;
+  /* Encre principale */
+  --color-ink: #06192e;
   /* Encre secondaire — texte de support */
-  --color-ink-muted: #4c463b;
+  --color-ink-muted: #3a516c;
   /* Encre tertiaire — metadonnees, legendes */
-  --color-ink-subtle: #6d6557;
-  /* Accent unique, chaud — employe avec parcimonie */
-  --color-accent: #9c3d10;
-  /* Encre posee SUR l'accent */
-  --color-accent-contrast: #fdfbf6;
+  --color-ink-subtle: #49627f;
+  /* -------------------------------------------------------------------------
+     DEUX ACCENTS, DEUX ROLES — NE PAS LES CONFONDRE
+     -------------------------------------------------------------------------
+     `--color-accent` est l'accent LISIBLE. Il sert au TEXTE : liens, libelles,
+     survols. Il est donc soumis au seuil AA de 4.5:1 contre les deux fonds,
+     ce qui l'oblige a rester profond. C'est une contrainte, pas un gout.
+
+     `--color-accent-vivid` est l'accent VIF, couleur SIGNATURE du site. Il
+     habille des surfaces : filets de titre, bordures de carte, encadres,
+     puces, soulignements. Libere du seuil textuel, il est construit a la
+     chroma maximale que le gamut sRGB autorise, sous deux seules conditions :
+     un ecart d'au moins 12 unites de clarte CIE avec les deux fonds, et un
+     contraste non textuel d'au moins 3:1 (WCAG 1.4.11), ce qui le rend sur
+     pour une bordure porteuse d'etat.
+
+     REGLE D'EMPLOI : du texte -> `--color-accent`. Une surface -> le vif.
+     Du texte SUR le vif -> obligatoirement `--color-accent-vivid-contrast`,
+     qui respecte 4.5:1 contre lui dans les deux modes.
+
+     `--color-accent-soft` est l'aplat de mise en valeur. Il porte l'encre et
+     l'encre secondaire, JAMAIS l'accent lisible : sa chroma a ete poussee au
+     maximum que ces deux encres autorisent, et l'accent n'y atteindrait que
+     3.87:1. C'est un fond, pas une alternative aux deux fonds de page.
+     ------------------------------------------------------------------------- */
+  --color-accent: #0061b1;
+  /* Encre posee SUR l'accent lisible */
+  --color-accent-contrast: #f8fbff;
+  /* Accent vif — surfaces, filets, bordures ; texte seulement avec son encre */
+  --color-accent-vivid: #007deb;
+  /* Encre posee SUR l'accent vif */
+  --color-accent-vivid-contrast: #000a1d;
+  /* Accent secondaire — aplat de mise en valeur, bleu ciel franc */
+  --color-accent-soft: #a4cfff;
 
   /* =========================================================================
      4. ESPACEMENT — BASE 4 PIXELS
@@ -205,6 +244,31 @@
      Interpole entre --spacing-sm et --spacing-2xl. Utilitaire : px-gutter. */
   --spacing-gutter: clamp(1rem, 4vw, 4rem);
 
+  /* -------------------------------------------------------------------------
+     RYTHME VERTICAL DES SECTIONS — FLUIDE
+     -------------------------------------------------------------------------
+     Les trois amplitudes du composant Section. Elles etaient fixes et d'un
+     cran trop hautes : 64 / 96 / 128px quelle que soit la largeur de fenetre,
+     ce qui etirait la page et rendait le defilement interminable sur mobile.
+
+     Chaque amplitude descend d'un cran sur l'echelle ET devient fluide. Les
+     DEUX bornes sont des valeurs de l'echelle nommee, jamais un nombre
+     invente :
+
+       compact   md  24px -> xl  48px   (etait 2xl 64px  fixe)
+       default   lg  32px -> 2xl 64px   (etait 3xl 96px  fixe)
+       spacious  xl  48px -> 3xl 96px   (etait 4xl 128px fixe)
+
+     La progression entre amplitudes est conservee — memes rapports 1.33 puis
+     1.5 qu'auparavant, l'ensemble simplement decale d'un cran vers le bas.
+     Interpolation entre 360px (22.5rem) et 1440px (90rem) de fenetre, comme
+     l'echelle typographique : le resserrement est donc maximal sur petit
+     ecran, ou la place manque vraiment.
+     ------------------------------------------------------------------------- */
+  --spacing-section-compact: clamp(1.5rem, 1.0rem + 2.2222vw, 3rem);
+  --spacing-section-default: clamp(2rem, 1.3333rem + 2.963vw, 4rem);
+  --spacing-section-spacious: clamp(3rem, 2rem + 4.4444vw, 6rem);
+
   /* =========================================================================
      5. RAYONS DE BORDURE — TROIS VALEURS, PAS UNE DE PLUS
      -------------------------------------------------------------------------
@@ -226,8 +290,43 @@
   --duration-base: 200ms;
   --duration-slow: 320ms;
 
+  /* Pas de decalage d'une cascade. Quatre elements = 3 pas + 1 duree, soit
+     3 x 80 + 320 = 560 ms, sous la limite de 600 ms fixee pour l'entete. */
+  --duration-stagger: 80ms;
+
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* -------------------------------------------------------------------------
+     EPAISSEURS DE FILET
+     -------------------------------------------------------------------------
+     Deux valeurs, pas trois. Le filet fin souligne, le filet epais marque un
+     bord porteur d'etat. Elles sont distinctes de `--focus-ring-width`, qui
+     obeit a une contrainte d'accessibilite et non a un choix graphique.
+     ------------------------------------------------------------------------- */
+  --rule-width: 0.125rem; /* 2px — soulignement, bord de carte */
+  --rule-width-strong: 0.1875rem; /* 3px — bord d'encadre de mise en valeur */
+
+  /* -------------------------------------------------------------------------
+     AMPLITUDES DE MOUVEMENT
+     -------------------------------------------------------------------------
+     Elles reprennent l'echelle d'espacement, elles n'en inventent pas.
+     `reveal` est la translation d'entree de l'entete, `lift` l'elevation
+     au survol.
+     ------------------------------------------------------------------------- */
+  --shift-reveal: var(--spacing-sm); /* 16px */
+  --shift-lift: var(--spacing-3xs); /* 4px */
+
+  /* -------------------------------------------------------------------------
+     OMBRES PORTEES
+     -------------------------------------------------------------------------
+     Deux etats seulement : au repos et souleve. Leur teinte depend du mode —
+     une ombre noire sur un fond bleu nuit ne se voit pas — elles sont donc
+     redefinies dans chaque bloc de mode, exactement comme les couleurs. Les
+     valeurs ci-dessous sont celles du MODE CLAIR.
+     ------------------------------------------------------------------------- */
+  --shadow-card: 0 1px 2px rgb(6 25 46 / 0.06);
+  --shadow-lifted: 0 0.5rem 1.5rem rgb(6 25 46 / 0.16);
 
   /* =========================================================================
      7. MISE EN PAGE — LARGEURS ET MESURE
@@ -243,7 +342,10 @@
      un portrait ne gagne rien a grandir, il vole la place du texte.
      Ce sont ces largeurs que `sizes` annonce au navigateur, et c'est d'elles
      que depend la resolution reellement telechargee. */
-  --container-portrait-sm: 12rem; /* 192px — pile mobile */
+  /* 128px en pile mobile, et non 192 : le portrait precede l'accroche dans le
+     flux, chaque pixel qu'il prend repousse le titre hors du premier ecran.
+     Voir le calcul de hauteur cumulee dans le rapport de refonte. */
+  --container-portrait-sm: 8rem; /* 128px — pile mobile */
   --container-portrait: 20rem; /* 320px — cote a cote */
 
   /* =========================================================================
@@ -254,21 +356,93 @@
 }
 
 /* ===========================================================================
-   THEME SOMBRE
+   LES DEUX MODES — UNE SEULE IDENTITE COLOREE
    ---------------------------------------------------------------------------
-   Expose via l'attribut `data-theme="dark"` sur <html>, qui est la source de
-   verite unique du theme. Seuls les 8 jetons de couleur sont redefinis :
-   typographie, espacement, rayons et mouvement sont invariants.
+   `data-mode` sur <html> est la source de verite unique.
+
+   Le site a porte cinq palettes selectionnables. Elles ont ete retirees : le
+   choix d'une teinte n'apprend rien a un visiteur, et cinq identites possibles
+   n'en font aucune. Azur reste, et devient l'identite du site.
+
+   NE SUBSISTE DONC QU'UNE SEULE DIMENSION : clair ou sombre. Ce n'est pas un
+   gout, c'est une preference d'usage — confort de lecture, sensibilite a la
+   luminosite, reglage systeme — et c'est pourquoi elle survit au menage.
+
+   Les ONZE jetons sont redefinis integralement dans chaque mode : aucun
+   n'herite de l'autre, et l'oubli d'un jeton se verrait.
+
+   SATURATION — les valeurs ont ete reconstruites. Elles etaient si peu
+   chromatiques que le fond clair se lisait comme un blanc et le fond sombre
+   comme un gris. Chaque jeton a ete repousse vers le bord du gamut sRGB que
+   son role autorise : le fond clair gagne 71 % de chroma, le fond de surface
+   153 %, l'aplat de mise en valeur 88 %, et cote sombre le fond principal
+   302 %. Deux jetons en perdent, et c'est assume :
+     - l'accent LISIBLE en mode clair (-2 %), parce qu'un bleu tenu a 4.5:1
+       sur un fond clair ne peut pas etre plus chromatique — c'est la
+       geometrie du gamut, pas un choix ;
+     - l'accent VIF en mode sombre (-33 %), echange contre 105 unites de
+       clarte CIE : il devait se detacher perceptiblement de l'accent
+       lisible, dont il n'etait separe que de 2,1 unites OKLab.
+
+   POURQUOI CES SELECTEURS NE SONT PAS ANCRES A `:root` — un element quelconque
+   portant `data-mode` redefinit les jetons POUR SON SOUS-ARBRE. La page
+   /styleguide s'en sert pour montrer les deux modes cote a cote sans recopier
+   une seule valeur.
+
+   METHODE DE CONSTRUCTION — les valeurs ne sont pas choisies puis verifiees,
+   elles sont RESOLUES. La clarte OKLCH de l'encre, de ses deux declinaisons et
+   de l'accent lisible est calculee par recherche binaire jusqu'a atteindre le
+   ratio vise CONTRE LE FOND DE SURFACE, le plus exigeant des deux fonds dans
+   les deux modes. L'accent vif, lui, prend la chroma maximale que le gamut
+   sRGB autorise, sous contrainte d'ecart de clarte et de contraste non
+   textuel. Conformite AA par construction, non par correction.
    =========================================================================== */
-:root[data-theme='dark'] {
-  --color-paper: #14120e;
-  --color-surface: #1e1b15;
-  --color-border: #332e25;
-  --color-ink: #f2eee5;
-  --color-ink-muted: #b3aa9a;
-  --color-ink-subtle: #91887a;
-  --color-accent: #e08a52;
-  --color-accent-contrast: #17140f;
+
+/* `color-scheme` reste ancre a la racine : pose sur un sous-arbre, il
+   modifierait l'apparence native des controles de formulaire qu'il contient. */
+:root[data-mode='light'] {
+  color-scheme: light;
+}
+:root[data-mode='dark'] {
+  color-scheme: dark;
+}
+
+/* --- Mode clair ---------------------------------------------------------- */
+[data-mode='light'] {
+  --color-paper: #ecf5ff;
+  --color-surface: #c6e0ff;
+  --color-border: #92b8e3;
+  --color-ink: #06192e;
+  --color-ink-muted: #3a516c;
+  --color-ink-subtle: #49627f;
+  --color-accent: #0061b1;
+  --color-accent-contrast: #f8fbff;
+  --color-accent-soft: #a4cfff;
+  --color-accent-vivid: #007deb;
+  --color-accent-vivid-contrast: #000a1d;
+
+  --shadow-card: 0 1px 2px rgb(6 25 46 / 0.06);
+  --shadow-lifted: 0 0.5rem 1.5rem rgb(6 25 46 / 0.16);
+}
+
+/* --- Mode sombre --------------------------------------------------------- */
+[data-mode='dark'] {
+  --color-paper: #00142c;
+  --color-surface: #002950;
+  --color-border: #2b5079;
+  --color-ink: #d9ebff;
+  --color-ink-muted: #92a8c3;
+  --color-ink-subtle: #7b93af;
+  --color-accent: #1893ff;
+  --color-accent-contrast: #000b1e;
+  --color-accent-soft: #003666;
+  --color-accent-vivid: #71b2ff;
+  --color-accent-vivid-contrast: #000a1d;
+
+  /* Sur un fond bleu nuit, une ombre ne se lit que si elle est franchement
+     plus sombre que lui — d'ou une opacite superieure a celle du mode clair. */
+  --shadow-card: 0 1px 2px rgb(0 4 10 / 0.4);
+  --shadow-lifted: 0 0.5rem 1.5rem rgb(0 4 10 / 0.55);
 }
 
 /* ===========================================================================
@@ -276,14 +450,11 @@
    =========================================================================== */
 @layer base {
   html {
+    /* Repli : les dix blocs de combinaison posent la valeur reelle. */
     color-scheme: light;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-  }
-
-  :root[data-theme='dark'] {
-    color-scheme: dark;
   }
 
   body {
@@ -344,6 +515,17 @@
     border: 0;
     border-top: 1px solid var(--color-border);
   }
+
+  /* Puces en accent vif. Prises une a une elles ne pesent rien ; mises bout a
+     bout, elles colorent chaque enumeration du site — et le site en compte
+     beaucoup. C'est exactement la surface qui manquait a l'accent.
+
+     Les marqueurs de liste ORDONNEE en sont exclus : un numero porte de
+     l'information, une puce non. Le seuil de contraste textuel s'applique a
+     l'un et pas a l'autre, et le vif ne l'atteint pas. */
+  ul li::marker {
+    color: var(--color-accent-vivid);
+  }
 }
 
 /* ===========================================================================
@@ -360,9 +542,13 @@
     margin-block-start: var(--spacing-md);
   }
 
+  /* Marge de titre reduite d'un cran, en meme temps que le rythme des
+     sections : 48px -> 32px. Les deux etaient dimensionnes ensemble, ils
+     doivent le rester, sans quoi les titres flottent dans une section
+     desormais plus serree. */
   .prose h2,
   .prose h3 {
-    margin-block-start: var(--spacing-xl);
+    margin-block-start: var(--spacing-lg);
     margin-block-end: var(--spacing-sm);
   }
 
@@ -382,16 +568,28 @@
     font-weight: 600;
   }
 
+  /* Les liens DANS la prose ne recoivent pas le soulignement balaye : un lien
+     de texte courant peut se couper en fin de ligne, et un pseudo-element
+     positionne en absolu ne suit pas la coupure. On anime donc la decoration
+     native, qui, elle, epouse le retour a la ligne. Le soulignement est
+     present AU REPOS, comme l'exige WCAG 1.4.1 : la couleur n'est jamais le
+     seul indice qu'il s'agit d'un lien. */
   .prose a {
     color: var(--color-accent);
     text-decoration-line: underline;
     text-decoration-thickness: from-font;
     text-underline-offset: var(--focus-ring-offset);
-    transition: color var(--duration-fast) var(--ease-out);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      text-decoration-color var(--duration-base) var(--ease-out),
+      text-decoration-thickness var(--duration-base) var(--ease-out);
   }
 
-  .prose a:hover {
+  .prose a:hover,
+  .prose a:focus-visible {
     color: var(--color-ink);
+    text-decoration-color: var(--color-accent-vivid);
+    text-decoration-thickness: var(--rule-width);
   }
 
   .prose ul,
@@ -411,7 +609,9 @@
     margin-block-start: var(--spacing-2xs);
   }
 
-  .prose li::marker {
+  /* Seuls les numeros sont ramenes a l'encre tertiaire ; les puces gardent
+     l'accent vif pose dans la couche de base. */
+  .prose ol li::marker {
     color: var(--color-ink-subtle);
   }
 
@@ -465,8 +665,302 @@
 
   :root[data-scrolled='true'] [data-site-header] {
     background-color: var(--color-surface);
-    border-block-end-color: var(--color-border);
+    border-block-end-color: var(--color-accent-vivid);
   }
+}
+
+/* ===========================================================================
+   L'ACCENT, RENDU VISIBLE
+   ---------------------------------------------------------------------------
+   Une couleur ne parait vive que si elle occupe de la surface. L'accent vif
+   existait depuis la refonte du systeme colore, mais il n'apparaissait que
+   sur six elements, dont AUCUN sur la page d'accueil. Il etait juste, et
+   invisible.
+
+   Les classes ci-dessous lui donnent des surfaces. Elles sont ecrites ici et
+   non dans le TSX parce qu'elles reposent sur des pseudo-elements et des
+   etats — ::after, :hover, :active, :focus-visible, :focus-within — que les
+   utilitaires ne composent pas proprement.
+
+   REGLE TENUE PARTOUT : aucune de ces classes ne pose de TEXTE sur l'accent
+   vif. Il sert de filet, de bordure, de puce et de soulignement ; les seuls
+   aplats portant du texte emploient `--color-accent` avec son encre de
+   contraste, ou `--color-accent-soft` avec l'encre secondaire.
+   =========================================================================== */
+@layer components {
+  /* --- Filet sous un titre de section ------------------------------------
+     Quatre pixels de haut, quarante-huit de large. C'est peu, et c'est ce
+     qu'il faut : le filet ponctue la page sans concurrencer le titre. */
+  .section-rule::after {
+    content: '';
+    display: block;
+    inline-size: var(--spacing-xl);
+    block-size: var(--spacing-3xs);
+    margin-block-start: var(--spacing-sm);
+    border-radius: var(--radius-full);
+    background-color: var(--color-accent-vivid);
+  }
+
+  /* --- Encadre de mise en valeur -----------------------------------------
+     Aplat en accent doux, bord en accent vif, epaissi du cote du texte. */
+  .accent-panel {
+    border: 1px solid var(--color-accent-vivid);
+    border-inline-start-width: var(--rule-width-strong);
+    border-radius: var(--radius-md);
+    background-color: var(--color-accent-soft);
+  }
+
+  /* --- Pastille de technologie -------------------------------------------
+     Le meme aplat, en petit. Chaque fiche en aligne plusieurs : c'est la
+     plus grande surface d'accent de la page d'accueil. */
+  .accent-chip {
+    border: 1px solid var(--color-accent-vivid);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink-muted);
+  }
+
+  /* --- Lien souligne au repos ---------------------------------------------
+     Pour les liens poses DANS du texte ou dans une liste de coordonnees. Le
+     soulignement existe au repos — WCAG 1.4.1 : la couleur n'est jamais le
+     seul indice — et passe a l'accent vif, epaissi, au survol et au focus.
+     La decoration native est employee a dessein : elle epouse la coupure de
+     ligne, ce qu'un pseudo-element positionne en absolu ne sait pas faire.
+     Elle remplace aussi `underline-offset-2`, qui ecrivait deux pixels en
+     dur : le decalage vient desormais du jeton de focus. */
+  .link-underline {
+    text-decoration-line: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: var(--focus-ring-offset);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      text-decoration-color var(--duration-base) var(--ease-out),
+      text-decoration-thickness var(--duration-base) var(--ease-out);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    text-decoration-color: var(--color-accent-vivid);
+    text-decoration-thickness: var(--rule-width);
+  }
+
+  /* --- Soulignement balaye ------------------------------------------------
+     Pour les liens qui ne sont PAS dans du texte courant — navigation,
+     titres, liens de fiche : ils se deploient de la gauche vers la droite au
+     survol ET au focus clavier. Le focus n'est pas un second citoyen : la
+     meme information visuelle est rendue a la souris et au clavier. */
+  .link-sweep {
+    position: relative;
+  }
+
+  .link-sweep::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: var(--rule-width);
+    border-radius: var(--radius-full);
+    background-color: var(--color-accent-vivid);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .link-sweep:hover::after,
+  .link-sweep:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Etat actif : le filet s'epaissit. La COULEUR DU TEXTE ne bascule jamais
+     sur le vif — elle n'y atteindrait pas 4.5:1. */
+  .link-sweep:active::after {
+    block-size: var(--rule-width-strong);
+    transform: scaleX(1);
+  }
+
+  /* --- Carte de realisation ----------------------------------------------
+     Le bord superieur porte l'accent vif en permanence ; au survol, tout le
+     pourtour le prend et la carte s'eleve de quatre pixels. `focus-within`
+     donne au clavier le meme retour qu'a la souris. */
+  .project-card {
+    border: 1px solid var(--color-border);
+    border-block-start: var(--rule-width-strong) solid var(--color-accent-vivid);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .project-card:hover,
+  .project-card:focus-within {
+    transform: translateY(calc(-1 * var(--shift-lift)));
+    border-color: var(--color-accent-vivid);
+    box-shadow: var(--shadow-lifted);
+  }
+
+  /* --- Lien etendu a toute la carte ---------------------------------------
+     UN SEUL lien dans l'ordre de tabulation : celui du titre. Son
+     pseudo-element recouvre la carte entiere, ce qui rend cliquable la
+     vignette complete SANS imbriquer un lien dans un lien et SANS ajouter de
+     cible au clavier. C'est la difference entre « toute la carte est
+     cliquable » et « la carte contient quatre liens » : la premiere se
+     parcourt d'une tabulation, la seconde en coute quatre.
+
+     Le pseudo-element se resout contre la CARTE, qui porte `relative`, et non
+     contre le lien : `.card-stretch` ne doit donc surtout jamais recevoir
+     `position: relative` — c'est aussi pourquoi il n'emploie pas
+     `.link-sweep`, dont le soulignement balaye repose sur ce positionnement.
+
+     `z-index` le place au-dessus du contenu non positionne de la carte, qui
+     serait sinon peint par-dessus lui et absorberait les clics.
+     ------------------------------------------------------------------------- */
+  .card-stretch::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: var(--radius-md);
+  }
+
+  /* --- Action principale --------------------------------------------------
+     Fond en accent lisible, texte en encre de contraste : 6,05:1 en clair,
+     6,24:1 en sombre. Au survol, un anneau en accent vif et une elevation ;
+     a l'activation, le bouton se repose — l'anneau reste, l'elevation part.
+     C'est le retour visuel d'un appui. */
+  .button-primary {
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+
+  .button-primary:hover,
+  .button-primary:focus-visible {
+    transform: translateY(calc(-1 * var(--shift-lift)));
+    box-shadow:
+      0 0 0 var(--rule-width) var(--color-accent-vivid),
+      var(--shadow-lifted);
+  }
+
+  .button-primary:active {
+    transform: translateY(0);
+    box-shadow:
+      0 0 0 var(--rule-width) var(--color-accent-vivid),
+      var(--shadow-card);
+  }
+}
+
+/* ===========================================================================
+   SYSTEME DE MOUVEMENT
+   ---------------------------------------------------------------------------
+   TROIS REGLES, dans cet ordre de priorite :
+
+   1. AUCUNE ANIMATION NE RETARDE LA LECTURE. Le nom, l'accroche et le
+      portrait sont dans le HTML servi, rendus statiquement, et lisibles au
+      premier rendu. Rien n'est injecte par JavaScript, rien n'attend un
+      evenement pour exister. Aucun effet de frappe caractere par caractere :
+      c'est un cliche, et il retarde precisement l'information la plus utile.
+
+   2. TOUT EST DECORATIF. Si le mouvement ne s'execute pas — JavaScript
+      coupe, moteur ancien, preference de mouvement reduit — le site reste
+      integralement lisible et navigable. Aucune fonction n'en depend.
+
+   3. RIEN N'EST MASQUE AU REPOS. C'est la regle qui a manque, et elle a coute
+      une regression bloquante : une apparition au defilement posait
+      `opacity: 0` en etat de repos et confiait la revelation a du JavaScript.
+      Vingt-neuf sections pouvaient rester invisibles pour toujours.
+
+      Desormais, la SEULE opacite nulle du projet est le premier keyframe de
+      `enter-rise`, employe par une animation A DUREE FINIE : elle se termine
+      d'elle-meme, sans evenement, sans hydratation, sans observateur. Un
+      element anime est visible au plus tard 560 ms apres le premier rendu ;
+      un element non anime l'est immediatement.
+
+      Corollaire : `data-motion` ne peut plus rien cacher durablement. Qu'il
+      soit pose ou non, l'etat final est le meme — opacite 1. Il ne decide
+      plus que du fait qu'une entree soit JOUEE ou non.
+   =========================================================================== */
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift-reveal));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Entree en cascade de l'entete, au chargement -------------------------
+   Le rang est DECLARE dans le balisage (`data-enter="1"`... "4"), jamais
+   deduit d'un `nth-child`. Quatre rangs, trois pas de 80 ms, une duree de
+   320 ms : 560 ms au total, sous la limite de 600 ms. */
+[data-enter='1'] {
+  --enter-delay: 0ms;
+}
+[data-enter='2'] {
+  --enter-delay: var(--duration-stagger);
+}
+[data-enter='3'] {
+  --enter-delay: calc(var(--duration-stagger) * 2);
+}
+[data-enter='4'] {
+  --enter-delay: calc(var(--duration-stagger) * 3);
+}
+
+:root[data-motion='on'] [data-enter] {
+  animation: enter-rise var(--duration-slow) var(--ease-out) var(--enter-delay, 0ms) both;
+}
+
+/* --- APPARITION DES SECTIONS AU DEFILEMENT : SUPPRIMEE --------------------
+   Elle masquait chaque section (`opacity: 0`) et confiait sa revelation a un
+   IntersectionObserver. Trois conditions d'execution devaient donc reussir
+   pour qu'un texte s'affiche : le script d'amorcage, l'hydratation, puis un
+   evenement d'entree dans le champ, PAR SECTION.
+
+   Le filet de securite etait desarme par `:not([data-reveal-ready])`,
+   c'est-a-dire par l'hydratation — l'etape qui reussit. Il ne protegeait donc
+   que du scenario ou le controleur ne demarre pas, jamais de celui ou il
+   demarre et n'emet pas l'evenement. Une section privee de son evenement
+   restait a opacite nulle DEFINITIVEMENT : vingt-neuf sections du site, sur
+   sept pages, etaient dans ce cas.
+
+   Aucun remplacement n'est propose. Il en existait deux :
+     - refaire l'observateur avec un filet arme en permanence — mais le
+       masquage resterait conditionne a du JavaScript ;
+     - passer a `animation-timeline: view()`, en CSS pur, sans risque
+       d'echec — mais je ne dispose d'aucun navigateur pour le verifier.
+   Une animation d'apparition ne vaut pas le risque de faire disparaitre du
+   texte. Elle est retiree ; les cinq autres animations restent.
+
+   REGLE QUI EN DECOULE, ET QUI TIENT MAINTENANT PAR CONSTRUCTION : aucune
+   regle du projet ne pose `opacity: 0` en etat de REPOS. La seule opacite
+   nulle qui subsiste est le premier keyframe de `enter-rise`, dans une
+   animation A DUREE FINIE qui se termine toujours, sans dependre d'aucun
+   evenement.
+   ------------------------------------------------------------------------- */
+
+/* --- Bascule clair / sombre ----------------------------------------------
+   `data-mode-changing` n'est pose que le temps du basculement, par la
+   bascule elle-meme, qui lit la duree dans le jeton `--duration-base`. Hors
+   de cet instant, aucune transition globale n'est armee : les couleurs ne
+   trainent pas derriere un survol. */
+:root[data-mode-changing] *,
+:root[data-mode-changing] *::before,
+:root[data-mode-changing] *::after {
+  transition:
+    background-color var(--duration-base) var(--ease-in-out),
+    border-color var(--duration-base) var(--ease-in-out),
+    color var(--duration-base) var(--ease-in-out),
+    fill var(--duration-base) var(--ease-in-out),
+    box-shadow var(--duration-base) var(--ease-in-out) !important;
 }
 
 /* ===========================================================================
@@ -476,6 +970,14 @@
    preference, sur une animation d'apparition appliquee a toutes les sections,
    13 transitions, 6 translations, un zoom global sur les images et un
    defilement doux pilote en JavaScript.
+
+   Ici, DEUX BARRIERES successives :
+     - le script d'amorcage ne pose pas `data-motion`, donc l'entree de
+       l'entete n'est meme pas armee ;
+     - les regles ci-dessous neutralisent tout de meme chaque animation
+       nommement, au cas ou l'attribut serait pose autrement.
+   Dans les deux cas le contenu reste PLEINEMENT VISIBLE : `opacity: 1`,
+   aucune translation, aucun element en attente d'un evenement.
    =========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -491,5 +993,35 @@
     transition-duration: var(--duration-none) !important;
     transition-delay: var(--duration-none) !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Entree de l'entete : jamais masquee, jamais deplacee, jamais animee. */
+  [data-enter] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Elevation des cartes et du bouton d'action : le retour visuel passe par
+     la bordure et l'ombre, qui restent ; seule la translation disparait. */
+  .project-card:hover,
+  .project-card:focus-within,
+  .button-primary:hover,
+  .button-primary:focus-visible,
+  .button-primary:active {
+    transform: none !important;
+  }
+
+  /* Soulignement balaye : il apparait, il ne se deploie plus. */
+  .link-sweep::after {
+    transition: none !important;
+  }
+
+  /* Bascule de mode : meme specificite que la regle qu'elle annule, et
+     posee apres elle — c'est ce qui la fait gagner malgre le !important. */
+  :root[data-mode-changing] *,
+  :root[data-mode-changing] *::before,
+  :root[data-mode-changing] *::after {
+    transition: none !important;
   }
 }
