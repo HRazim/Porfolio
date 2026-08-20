@@ -20,7 +20,7 @@ export default function NotFoundPage() {
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{NOT_FOUND.eyebrow}</p>
-          <h1 className="mt-sm text-display-lg text-ink">{NOT_FOUND.heading}</h1>
+          <h1 className="section-rule mt-sm text-display-lg text-ink">{NOT_FOUND.heading}</h1>
           <Prose size="lead" className="mt-lg">
             <p>{NOT_FOUND.message}</p>
           </Prose>
@@ -29,7 +29,7 @@ export default function NotFoundPage() {
             <li>
               <Link
                 href="/"
-                className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent underline decoration-from-font underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
+                className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
               >
                 {NOT_FOUND.homeLink}
                 <ArrowIcon size="sm" />
@@ -38,7 +38,7 @@ export default function NotFoundPage() {
             <li>
               <Link
                 href="/realisations"
-                className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent underline decoration-from-font underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
+                className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
               >
                 {NOT_FOUND.projectsLink}
                 <ArrowIcon size="sm" />

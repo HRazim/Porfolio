@@ -1,0 +1,80 @@
+LICENCE — DEUX RÉGIMES DISTINCTS
+================================
+
+Ce dépôt contient deux choses de nature différente, et une licence unique ne
+peut pas les couvrir toutes les deux honnêtement.
+
+Le CODE est publié pour être lu, critiqué et réutilisé : c'est ce qu'un dépôt
+public de portfolio est censé permettre. Il est sous licence MIT.
+
+Le CONTENU ÉDITORIAL ET LES MÉDIAS décrivent le parcours d'une personne réelle.
+Les republier reviendrait à s'approprier une biographie. Tous droits réservés.
+
+
+1. CODE SOURCE — LICENCE MIT
+----------------------------
+
+S'applique à tout fichier de code de ce dépôt : `src/**/*.ts`, `src/**/*.tsx`,
+`src/app/globals.css`, ainsi qu'aux fichiers de configuration à la racine
+(`next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `tsconfig.json`,
+`package.json`).
+
+Le texte canonique de la licence MIT est reproduit en anglais ci-dessous : une
+traduction n'aurait aucune valeur, la licence n'étant reconnue que sous sa
+forme d'origine.
+
+MIT License
+
+Copyright (c) 2025-2026 MAROUAN Hazim-Rayan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+2. CONTENU ÉDITORIAL ET MÉDIAS — TOUS DROITS RÉSERVÉS
+-----------------------------------------------------
+
+S'applique à :
+
+  - les textes des fichiers de contenu : `src/content/career.ts`,
+    `src/content/projects.ts`, `src/content/site-copy.ts` ;
+  - `AUDIT.md` ;
+  - tout le contenu de `public/` : portrait, captures d'écran, curriculum
+    vitæ ;
+  - tout le contenu de `legacy/`, archive du site précédent.
+
+Copyright (c) 2025-2026 MAROUAN Hazim-Rayan. Tous droits réservés.
+
+Aucune reproduction, adaptation, traduction ni republication de ces éléments
+n'est autorisée sans accord écrit préalable, y compris pour un usage non
+commercial. Les citer dans le cadre d'une critique ou d'une revue reste
+naturellement possible, dans les limites du droit de courte citation.
+
+
+3. ÉLÉMENTS TIERS
+-----------------
+
+Les polices de `src/assets/fonts/` ne relèvent d'aucun des deux régimes
+ci-dessus. Elles sont redistribuées sous SIL Open Font License 1.1, qui
+l'autorise explicitement :
+
+  - Instrument Serif — Copyright (c) The Instrument Serif Project Authors
+  - JetBrains Mono   — Copyright (c) The JetBrains Mono Project Authors
+
+Le texte de la SIL Open Font License 1.1 est disponible à l'adresse
+<https://openfontlicense.org>.

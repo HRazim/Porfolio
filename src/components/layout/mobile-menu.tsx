@@ -89,7 +89,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
               <Link
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="inline-block py-2xs text-body-md text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+                className="link-sweep inline-block py-2xs text-body-md text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
               >
                 {item.label}
               </Link>

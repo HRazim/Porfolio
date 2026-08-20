@@ -7,6 +7,7 @@ import { Container } from './container';
 import { HeaderScrollState } from './header-scroll-state';
 import { MobileMenu } from './mobile-menu';
 import { SiteNav } from './site-nav';
+import { ModeToggle } from './mode-toggle';
 
 /**
  * En-tete unique du site.
@@ -35,13 +36,16 @@ export function SiteHeader() {
           <Link
             href="/"
             aria-label={HEADER.homeLinkLabel}
-            className="font-mono text-body-sm font-medium tracking-wide text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+            className="link-sweep inline-block font-mono text-body-sm font-medium tracking-wide text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
           >
             {SITE_NAME}
           </Link>
 
-          <SiteNav className="hidden md:block" />
-          <MobileMenu className="md:hidden" />
+          <div className="flex items-center gap-md">
+            <SiteNav className="hidden md:block" />
+            <ModeToggle />
+            <MobileMenu className="md:hidden" />
+          </div>
         </Container>
       </header>
     </>

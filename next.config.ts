@@ -26,15 +26,29 @@ import type { NextConfig } from 'next';
  * Toute page doit donc etre rendue statiquement au build
  * (Server Component sans donnee dynamique, ou `generateStaticParams`).
  *
- * Pour basculer en export statique : ajouter `output: 'export'` ci-dessous
- * et `images: { unoptimized: true }`. Aucune autre modification ne doit
- * etre necessaire — c'est le critere de conformite de cette contrainte.
+ * CETTE CONTRAINTE EST DESORMAIS VERIFIABLE, ET VERIFIEE.
+ *
+ *     npm run verify:export
+ *
+ * Le script construit le projet avec `STATIC_EXPORT=1` et echoue si la
+ * construction echoue. Il n'ecrit rien dans ce fichier : la bascule passe par
+ * une variable d'environnement, de sorte que le controle soit reproductible et
+ * ne puisse pas laisser le depot dans un etat intermediaire.
+ *
+ * La regle avait ete ecrite ici des l'origine et jamais executee. Elle etait en
+ * defaut : `robots.ts` n'exportait pas `dynamic = 'force-static'`. Une regle
+ * qu'aucune commande ne verifie n'est pas une regle, c'est une intention.
  * ---------------------------------------------------------------------------
  */
 const nextConfig: NextConfig = {
-  // `output: 'export'` non active : Vercel sert le rendu serveur.
-  // La contrainte ci-dessus garantit que l'activer reste un changement
-  // d'une ligne.
+  /**
+   * Export statique a la demande, pilote par l'environnement.
+   *
+   * Hors verification, la valeur est `undefined` : Vercel sert le rendu
+   * serveur, exactement comme avant. Sous `STATIC_EXPORT=1`, Next.js produit
+   * `out/` — et refuse de construire si une seule route n'est pas statique.
+   */
+  output: process.env.STATIC_EXPORT === '1' ? 'export' : undefined,
 
   typedRoutes: true,
 

@@ -19,31 +19,39 @@ export interface ColorToken {
   /** Intention, en francais. */
   readonly role: string;
   readonly kind: ColorTokenKind;
+  /**
+   * Fond contre lequel ce jeton doit etre mesure.
+   *
+   * Absent, c'est le fond principal. Une encre destinee a se poser sur un
+   * accent n'a aucun sens mesuree contre le papier : elle ne s'y pose jamais.
+   * Ce champ evite d'afficher un ratio vrai mais hors sujet.
+   */
+  readonly against?: string;
 }
 
 export const COLOR_TOKENS: readonly ColorToken[] = [
   {
     name: 'paper',
     cssVar: '--color-paper',
-    role: 'Fond papier — blanc casse chaud, jamais #ffffff',
+    role: 'Fond principal — legerement teinte, jamais un blanc pur',
     kind: 'background',
   },
   {
     name: 'surface',
     cssVar: '--color-surface',
-    role: 'Fond de surface — tres subtil, cartes et encarts',
+    role: 'Fond de surface — perceptiblement distinct du fond principal',
     kind: 'background',
   },
   {
     name: 'border',
     cssVar: '--color-border',
-    role: 'Bordure — filet decoratif, tres subtil',
+    role: 'Bordure — filet perceptible, decoratif',
     kind: 'line',
   },
   {
     name: 'ink',
     cssVar: '--color-ink',
-    role: 'Encre principale — noir profond chaud, jamais #000000',
+    role: 'Encre principale — legerement teintee, jamais un noir pur',
     kind: 'text',
   },
   {
@@ -61,7 +69,7 @@ export const COLOR_TOKENS: readonly ColorToken[] = [
   {
     name: 'accent',
     cssVar: '--color-accent',
-    role: 'Accent unique et chaud — a employer avec parcimonie',
+    role: 'Accent lisible — texte et liens, soumis au seuil AA',
     kind: 'text',
   },
   {
@@ -69,6 +77,28 @@ export const COLOR_TOKENS: readonly ColorToken[] = [
     cssVar: '--color-accent-contrast',
     role: 'Encre posee sur le fond accent',
     kind: 'text',
+    against: '--color-accent',
+  },
+  {
+    name: 'accent-vivid',
+    cssVar: '--color-accent-vivid',
+    role: 'Accent vif — surfaces decoratives seules, jamais de texte dessus',
+    // `background` et non `text` : ce jeton n'est PAS soumis au seuil de
+    // 4.5:1, et l'annoter autrement ferait apparaitre un faux echec.
+    kind: 'background',
+  },
+  {
+    name: 'accent-vivid-contrast',
+    cssVar: '--color-accent-vivid-contrast',
+    role: 'Encre posee sur l accent vif, si le cas se presente',
+    kind: 'text',
+    against: '--color-accent-vivid',
+  },
+  {
+    name: 'accent-soft',
+    cssVar: '--color-accent-soft',
+    role: 'Accent secondaire — fond de mise en valeur legere',
+    kind: 'background',
   },
 ] as const;
 
@@ -174,8 +204,21 @@ export interface MotionToken {
 export const DURATION_TOKENS: readonly MotionToken[] = [
   { name: 'none', cssVar: '--duration-none', usage: 'Mouvement reduit — effectivement nul' },
   { name: 'fast', cssVar: '--duration-fast', usage: 'Survol, changement de couleur' },
-  { name: 'base', cssVar: '--duration-base', usage: 'Bascule de theme, apparition' },
-  { name: 'slow', cssVar: '--duration-slow', usage: 'Deplacement de bloc' },
+  { name: 'base', cssVar: '--duration-base', usage: 'Bascule de mode, soulignement, elevation' },
+  { name: 'slow', cssVar: '--duration-slow', usage: 'Entree en cascade, apparition au defilement' },
+  { name: 'stagger', cssVar: '--duration-stagger', usage: 'Pas de decalage d une cascade' },
+] as const;
+
+/** Epaisseurs de filet. Deux valeurs, distinctes de l anneau de focus. */
+export const RULE_TOKENS: readonly MotionToken[] = [
+  { name: 'rule-width', cssVar: '--rule-width', usage: 'Soulignement, bord superieur de carte' },
+  { name: 'rule-width-strong', cssVar: '--rule-width-strong', usage: 'Bord d encadre de mise en valeur' },
+] as const;
+
+/** Amplitudes de mouvement. Elles reprennent l echelle d espacement. */
+export const SHIFT_TOKENS: readonly MotionToken[] = [
+  { name: 'shift-reveal', cssVar: '--shift-reveal', usage: 'Translation d entree de l entete — spacing-sm' },
+  { name: 'shift-lift', cssVar: '--shift-lift', usage: 'Elevation au survol — spacing-3xs' },
 ] as const;
 
 export const EASING_TOKENS: readonly MotionToken[] = [
@@ -247,6 +290,11 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   { foreground: '--color-accent', background: '--color-paper', label: 'accent sur paper', kind: 'text' },
   { foreground: '--color-accent', background: '--color-surface', label: 'accent sur surface', kind: 'text' },
   { foreground: '--color-accent-contrast', background: '--color-accent', label: 'accent-contrast sur accent', kind: 'text' },
+  { foreground: '--color-ink', background: '--color-accent-soft', label: 'ink sur accent-soft', kind: 'text' },
+  { foreground: '--color-ink-muted', background: '--color-accent-soft', label: 'ink-muted sur accent-soft', kind: 'text' },
+  { foreground: '--color-accent-vivid-contrast', background: '--color-accent-vivid', label: 'accent-vivid-contrast sur accent-vivid', kind: 'text' },
+  { foreground: '--color-accent-vivid', background: '--color-paper', label: 'accent-vivid sur paper (non textuel)', kind: 'line' },
+  { foreground: '--color-accent-vivid', background: '--color-surface', label: 'accent-vivid sur surface (non textuel)', kind: 'line' },
   { foreground: '--color-border', background: '--color-paper', label: 'border sur paper', kind: 'line' },
 ] as const;
 

@@ -48,7 +48,13 @@ Contraintes acquises, à ne pas régresser (AUDIT.md §7.2, §7.3, §7.4) :
 - espacement en base 4 px ;
 - trois rayons de bordure, pas un de plus ;
 - WCAG AA sur toute combinaison texte/fond, thème clair et thème sombre ;
-- `prefers-reduced-motion: reduce` neutralise transitions et animations.
+- `prefers-reduced-motion: reduce` neutralise transitions et animations ;
+- **aucune règle ne pose `opacity: 0` en état de repos.** Une apparition au
+  défilement l'a fait, et vingt-neuf sections du site pouvaient rester
+  invisibles pour toujours : le masquage dépendait d'un événement JavaScript,
+  et le filet de sécurité était désarmé par l'hydratation. La seule opacité
+  nulle autorisée est un premier keyframe, dans une animation à durée finie
+  qui se termine sans dépendre de quoi que ce soit.
 
 ### 3. `legacy/` ne s'importe pas
 
@@ -68,7 +74,7 @@ compris.
 
 ### 5. Nommage en kebab-case minuscule
 
-Tous les fichiers et dossiers, sans exception : `theme-toggle.tsx`,
+Tous les fichiers et dossiers, sans exception : `mode-toggle.tsx`,
 `design-tokens.ts`, `use-token-values.ts`.
 
 Motif : la configuration Git locale est insensible à la casse
@@ -81,14 +87,51 @@ local et casserait le déploiement (AUDIT.md §4.6).
 Le projet doit rester exportable en statique (`output: 'export'`) sans
 réécriture, même si Vercel n'y oblige pas. Sont donc **interdits** :
 
-- route API (`app/api/**`, Route Handlers) ;
+- route API (`app/api/**`) et tout Route Handler écrit à la main ;
 - server action (`'use server'`) ;
 - middleware (`middleware.ts`) ;
 - régénération incrémentale (ISR, `revalidate`).
 
 Toute page doit être rendue statiquement au build.
 
-### 7. TypeScript
+**Exception : les routes de métadonnées.** `robots.ts`, `sitemap.ts` et les
+`opengraph-image.tsx` sont compilés en Route Handlers par Next.js, et ils sont
+nécessaires. Ils sont autorisés à deux conditions, apprises en le vérifiant :
+
+1. chacune **doit** exporter `dynamic = 'force-static'`, faute de quoi l'export
+   échoue sur « dynamic = force-static not configured » ;
+2. une route d'image sous segment dynamique **doit** déclarer son propre
+   `generateStaticParams`, et ne peut pas employer `generateImageMetadata` —
+   celle-ci ajoute un segment `[__metadata_id__]` que l'export exige
+   d'énumérer et que `generateStaticParams` ne parvient pas à renseigner.
+
+**La règle se vérifie par une commande, et cette commande fait partie des
+contrôles avant publication :**
+
+```bash
+npm run build          # compile et contrôle les types
+npm run lint           # doit être muet
+npm run verify:export  # doit afficher « SUCCÈS »
+```
+
+`verify:export` construit avec `STATIC_EXPORT=1`, que `next.config.ts` traduit
+en `output: 'export'`. Il ne modifie aucun fichier et nettoie le `out/` produit.
+
+Elle a été prise en défaut une fois : `robots.ts` la violait depuis sa
+création, sans que personne l'ait constaté — parce que rien ne la vérifiait.
+
+### 7. Polices versionnées
+
+`src/assets/fonts/` contient deux fichiers TTF — Instrument Serif et JetBrains
+Mono. Ils ne sont **pas** servis au navigateur : `next/font/google` s'en
+charge, en WOFF2. Ils existent parce que Satori, qui peint les vignettes de
+partage, n'accepte ni WOFF2 ni variable CSS. Sans eux, les vignettes seraient
+composées dans une police de repli, ou dépendraient d'un appel réseau pendant
+la construction.
+
+Les deux sont sous SIL Open Font License, qui autorise la redistribution.
+
+### 8. TypeScript
 
 `strict: true`. Le type `any` est interdit — la règle
 `@typescript-eslint/no-explicit-any` est en erreur.

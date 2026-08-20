@@ -15,6 +15,7 @@ import {
   STRUCTURED_CONTACT,
   TITLE_TEMPLATE,
 } from '@/lib/site';
+import { DEFAULT_MODE, THEME_BOOT_SCRIPT } from '@/lib/theme';
 
 import './globals.css';
 
@@ -69,7 +70,6 @@ const personJsonLd = {
   name: SITE_NAME,
   url: SITE_URL,
   email: STRUCTURED_CONTACT.email,
-  telephone: STRUCTURED_CONTACT.phone,
   address: {
     '@type': 'PostalAddress',
     addressLocality: SITE_ADDRESS.locality,
@@ -84,10 +84,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // `data-theme` est la source de verite unique du theme (voir globals.css).
-    // `suppressHydrationWarning` : l’attribut est reecrit cote client par la
-    // bascule de theme du styleguide, apres hydratation.
-    <html lang={SITE_LANG} data-theme="light" suppressHydrationWarning>
+    // `data-mode` est la source de verite unique du theme (voir globals.css).
+    // Le serveur rend le mode par defaut ; le script d’amorcage ci-dessous le
+    // corrige AVANT la premiere peinture si l’utilisateur a deja choisi, ou si
+    // le systeme demande le mode sombre. `suppressHydrationWarning` : cet
+    // attribut est donc reecrit hors de React, et c’est voulu.
+    <html
+      lang={SITE_LANG}
+      data-mode={DEFAULT_MODE}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Synchrone et place avant tout contenu : le navigateur suspend la
+            construction du document pour l’executer. Les attributs sont donc
+            poses avant qu’une seule regle de couleur ne soit peinte, ce qui
+            supprime le scintillement qu’un effet React ne peut pas eviter. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body className={fontVariables}>
         <script
           type="application/ld+json"

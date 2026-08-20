@@ -7,11 +7,30 @@ import { Section } from '@/components/layout/section';
 import { ProjectCard } from '@/components/project/project-card';
 import { CATEGORY_LABELS, getProjectsByCategory } from '@/content/projects';
 import { MAIN_CONTENT_ID, PAGE_META, PROJECTS_INDEX } from '@/content/site-copy';
+import { OG_SHARE_PATH } from '@/lib/og';
+import { pageTitle } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: PAGE_META.projects.title,
   description: PAGE_META.projects.description,
   alternates: { canonical: '/realisations' },
+  openGraph: {
+    type: 'website',
+    title: pageTitle(PAGE_META.projects.title),
+    description: PAGE_META.projects.description,
+    url: '/realisations',
+  // Declarer un bloc `openGraph` REMPLACE celui herite de la mise en page
+  // racine — images comprises. Sans `images`, la page perdrait sa vignette
+  // de partage et un lien s’afficherait sans apercu. Le defaut a deja ete
+  // rencontre sur /a-propos ; il est ici evite explicitement.
+    images: [OG_SHARE_PATH],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle(PAGE_META.projects.title),
+    description: PAGE_META.projects.description,
+    images: [OG_SHARE_PATH],
+  },
 };
 
 /**
@@ -31,7 +50,7 @@ export default function ProjectsIndexPage() {
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{PROJECTS_INDEX.eyebrow}</p>
-          <h1 className="mt-sm text-display-lg text-ink">{PROJECTS_INDEX.heading}</h1>
+          <h1 className="section-rule mt-sm text-display-lg text-ink">{PROJECTS_INDEX.heading}</h1>
           <Prose size="lead" className="mt-lg">
             <p>{PROJECTS_INDEX.intro}</p>
           </Prose>
@@ -55,7 +74,7 @@ export default function ProjectsIndexPage() {
                 return (
                   <section key={group.category} aria-labelledby={headingId}>
                     <div className="flex flex-wrap items-baseline gap-sm">
-                      <h2 id={headingId} className="text-display-sm text-ink">
+                      <h2 id={headingId} className="section-rule text-display-sm text-ink">
                         {CATEGORY_LABELS[group.category]}
                       </h2>
                       <p className="font-mono text-body-sm text-ink-subtle">

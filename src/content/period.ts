@@ -97,6 +97,28 @@ export function formatPeriod(period: Period): string | null {
 }
 
 /**
+ * Libelle ANNUEL d’une periode, pour les surfaces contraintes.
+ *
+ * La vignette compacte de l’accueil dispose d’environ trente-quatre caracteres
+ * monospace par ligne. « 14 avril 2025 — 20 juin 2025 » en occupe vingt-huit a
+ * lui seul et repousse la categorie sur une seconde ligne. On retombe donc a
+ * l’annee : « 2025 ». Ce n’est pas une troncature arbitraire, c’est la
+ * granularite qu’une vignette peut porter — la date exacte reste sur la fiche
+ * et dans l’index, ou la place ne manque pas.
+ *
+ * Meme contrat de retour que `formatPeriod` : `null` quand rien n’est etabli.
+ */
+export function formatPeriodYears(period: Period): string | null {
+  if (period.kind === 'a-preciser') return null;
+  if (period.kind === 'en-cours') return ONGOING_CAPITALISED;
+
+  const startYear = period.start.split('-')[0];
+  const endYear = period.end === 'en-cours' ? ONGOING : period.end.split('-')[0];
+  if (startYear === endYear) return String(startYear);
+  return `${startYear} — ${endYear}`;
+}
+
+/**
  * Valeur `dateTime` pour un element `<time>`.
  * `null` lorsque la periode n’est pas datee : l’appelant doit alors rendre du
  * texte brut, un `<time>` sans date valide n’ayant aucun sens.

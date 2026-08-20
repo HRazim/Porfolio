@@ -31,7 +31,7 @@ export function SocialLinks({ label, className }: SocialLinksProps) {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2xs rounded-sm p-2xs text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+              className="link-sweep inline-flex items-center gap-2xs rounded-sm p-2xs text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
             >
               <Icon size="sm" />
               <span className="sr-only">{`${link.label} (${COMMON.newWindow})`}</span>

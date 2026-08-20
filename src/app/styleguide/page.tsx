@@ -4,10 +4,15 @@ import { Container } from '@/components/layout/container';
 import { Grid } from '@/components/layout/grid';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
-import { ColorTokenGrid, ContrastTable } from '@/components/styleguide/color-tokens';
+import {
+  AccentComparison,
+  ColorTokenGrid,
+  ContrastTable,
+  ModeMatrix,
+} from '@/components/styleguide/color-tokens';
 import { ScalarTokenList } from '@/components/styleguide/scalar-token-list';
 import { SpacingScale } from '@/components/styleguide/spacing-scale';
-import { ThemeToggle } from '@/components/styleguide/theme-toggle';
+import { ModeToggle } from '@/components/layout/mode-toggle';
 import { TypeSpecimen } from '@/components/styleguide/type-specimen';
 import { MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
 import {
@@ -17,6 +22,8 @@ import {
   GLYPH_TEST_LINE,
   PANGRAMS,
   RADIUS_TOKENS,
+  RULE_TOKENS,
+  SHIFT_TOKENS,
 } from '@/lib/design-tokens';
 
 /**
@@ -47,6 +54,40 @@ export const metadata: Metadata = {
 const RADIUS_VARS = RADIUS_TOKENS.map((token) => token.cssVar);
 const DURATION_VARS = DURATION_TOKENS.map((token) => token.cssVar);
 const EASING_VARS = EASING_TOKENS.map((token) => token.cssVar);
+const RULE_VARS = RULE_TOKENS.map((token) => token.cssVar);
+const SHIFT_VARS = SHIFT_TOKENS.map((token) => token.cssVar);
+
+/**
+ * Densite verticale des sections, avant et apres.
+ *
+ * Les deux etats sont rendus par de VRAIES classes, jamais par une valeur
+ * ecrite ici : l'ancienne emploie les utilitaires d'echelle d'origine, la
+ * nouvelle les jetons fluides. Comparer deux blocs cote a cote dit plus qu'un
+ * tableau de nombres.
+ */
+const SECTION_DENSITY = [
+  {
+    name: 'compact',
+    before: 'avant — 64 px fixes',
+    after: 'après — 24 → 48 px fluides',
+    beforeClass: 'py-2xl',
+    afterClass: 'py-section-compact',
+  },
+  {
+    name: 'default',
+    before: 'avant — 96 px fixes',
+    after: 'après — 32 → 64 px fluides',
+    beforeClass: 'py-3xl',
+    afterClass: 'py-section-default',
+  },
+  {
+    name: 'spacious',
+    before: 'avant — 128 px fixes',
+    after: 'après — 48 → 96 px fluides',
+    beforeClass: 'py-4xl',
+    afterClass: 'py-section-spacious',
+  },
+] as const;
 
 const FAMILY_CLASS: Record<string, string> = {
   display: 'font-display',
@@ -56,7 +97,7 @@ const FAMILY_CLASS: Record<string, string> = {
 
 function SectionHeading({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <h2 id={id} className="text-display-md text-ink">
+    <h2 id={id} className="section-rule text-display-md text-ink">
       {children}
     </h2>
   );
@@ -73,7 +114,7 @@ export default function StyleguidePage() {
       <Section spacing="spacious" background="paper">
         <Container>
           <Eyebrow>Outil interne · non indexé</Eyebrow>
-          <h1 className="mt-sm text-display-xl text-ink">Design system</h1>
+          <h1 className="section-rule mt-sm text-display-xl text-ink">Design system</h1>
           <Prose size="lead" className="mt-lg">
             <p>
               Cette page rend visibles les jetons du système. Toutes les valeurs
@@ -83,7 +124,7 @@ export default function StyleguidePage() {
             </p>
           </Prose>
           <div className="mt-xl">
-            <ThemeToggle />
+            <ModeToggle />
           </div>
         </Container>
       </Section>
@@ -158,10 +199,13 @@ export default function StyleguidePage() {
           <SectionHeading id="couleurs">Couleurs</SectionHeading>
           <Prose className="mt-md">
             <p>
-              Huit jetons sémantiques, aucun nom littéral. L’espace de noms de
+              Onze jetons sémantiques, aucun nom littéral. L’espace de noms de
               couleurs de Tailwind est remis à zéro : <code>bg-blue-500</code>{' '}
               n’existe pas, et le bleu du site précédent est structurellement
-              inatteignable.
+              inatteignable. Les valeurs ont été résolues, non choisies : pour
+              chaque jeton soumis à un seuil, la clarté est cherchée par
+              dichotomie jusqu’au ratio visé, puis la chroma est poussée au bord
+              du gamut sRGB à clarté constante.
             </p>
           </Prose>
 
@@ -172,6 +216,36 @@ export default function StyleguidePage() {
           <h3 className="mt-2xl text-display-sm text-ink">Conformité WCAG</h3>
           <div className="mt-md">
             <ContrastTable />
+          </div>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Les deux accents</h3>
+          <Prose className="mt-2xs">
+            <p>
+              L’accent lisible porte le texte et reste soumis au seuil de
+              4,5:1, ce qui l’oblige à rester profond. L’accent vif porte les
+              surfaces — filets de titre, bords de carte, encadrés, puces,
+              soulignements — et n’est donc tenu qu’à se détacher du fond. Les
+              deux sont posés côte à côte, sur le fond réel de leur mode. Leur
+              écart perceptuel dépasse désormais dix unités OKLab dans les deux
+              modes ; il n’était que de 2,1 en mode sombre, soit le seuil même
+              de la perception.
+            </p>
+          </Prose>
+          <div className="mt-xl">
+            <AccentComparison />
+          </div>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Les deux modes</h3>
+          <Prose className="mt-2xs">
+            <p>
+              Les onze jetons, dans les deux modes. Chaque pastille montre le
+              jeton tel que le navigateur l’applique, sa valeur et son ratio sur
+              le fond qui le concerne. Toute case sous 4,5:1 est cerclée
+              d’accent vif et porte la mention <code>ÉCHEC AA</code>.
+            </p>
+          </Prose>
+          <div className="mt-xl">
+            <ModeMatrix />
           </div>
         </Container>
       </Section>
@@ -193,6 +267,34 @@ export default function StyleguidePage() {
             <SpacingScale />
           </div>
 
+          <h3 className="mt-2xl text-display-sm text-ink">
+            Densité verticale des sections
+          </h3>
+          <Prose className="mt-2xs">
+            <p>
+              Les trois amplitudes du composant <code>Section</code>, avant et
+              après. L’ancienne colonne emploie les utilitaires d’origine, la
+              nouvelle les jetons fluides : les deux sont rendues côte à côte,
+              donc la comparaison porte sur le rendu réel et non sur des
+              chiffres.
+            </p>
+          </Prose>
+          <ul className="mt-xl grid list-none grid-cols-1 gap-lg p-0 sm:grid-cols-3">
+            {SECTION_DENSITY.map((variant) => (
+              <li key={variant.name} className="flex flex-col gap-2xs">
+                <p className="font-mono text-body-sm font-medium text-ink">{variant.name}</p>
+                <p className="font-mono text-body-sm text-ink-subtle">{variant.before}</p>
+                <div className={`${variant.beforeClass} rounded-md border border-border bg-surface`}>
+                  <p className="text-center font-mono text-body-sm text-ink-muted">avant</p>
+                </div>
+                <p className="mt-2xs font-mono text-body-sm text-ink-subtle">{variant.after}</p>
+                <div className={`${variant.afterClass} rounded-md border border-accent-vivid bg-accent-soft`}>
+                  <p className="text-center font-mono text-body-sm text-ink">après</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
           <h3 className="mt-2xl text-display-sm text-ink">Rayons — trois valeurs</h3>
           <div className="mt-md">
             <ScalarTokenList tokens={RADIUS_TOKENS} cssVars={RADIUS_VARS} showRadiusPreview />
@@ -208,12 +310,116 @@ export default function StyleguidePage() {
             <ScalarTokenList tokens={EASING_TOKENS} cssVars={EASING_VARS} />
           </div>
 
-          <Prose className="mt-2xl">
+          <h3 className="mt-2xl text-display-sm text-ink">Épaisseurs de filet</h3>
+          <div className="mt-md">
+            <ScalarTokenList tokens={RULE_TOKENS} cssVars={RULE_VARS} />
+          </div>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Amplitudes de mouvement</h3>
+          <div className="mt-md">
+            <ScalarTokenList tokens={SHIFT_TOKENS} cssVars={SHIFT_VARS} />
+          </div>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Les cinq animations</h3>
+          <Prose className="mt-2xs">
             <p>
-              L’ensemble des transitions, animations et du défilement doux est
-              neutralisé sous <code>prefers-reduced-motion: reduce</code>.
+              Aucune ne retarde la lecture : le contenu est rendu statiquement
+              et présent dans le HTML servi. Aucune ne conditionne une
+              fonction. Toutes puisent leurs durées et leurs courbes dans les
+              jetons ci-dessus. Surtout, <strong>aucune ne pose une opacité
+              nulle en état de repos</strong> : la seule opacité nulle du
+              projet est le premier keyframe de <code>enter-rise</code>, dans
+              une animation à durée finie qui se termine d’elle-même.
+            </p>
+            <ul>
+              <li>
+                Entrée en cascade de l’en-tête, au chargement — quatre rangs
+                déclarés par <code>data-enter</code>, trois pas de{' '}
+                <code>--duration-stagger</code>, durée{' '}
+                <code>--duration-slow</code> : 560 ms au total. Une sixième
+                animation a existé, une apparition des sections au défilement ;
+                elle masquait le contenu et confiait sa révélation à un
+                observateur. Elle a été retirée.
+              </li>
+              <li>
+                Soulignement balayé des liens de navigation et de fiche —{' '}
+                <code>--duration-base</code>, au survol et au focus.
+              </li>
+              <li>
+                Élévation des cartes de réalisation —{' '}
+                <code>--duration-base</code>, translation{' '}
+                <code>--shift-lift</code>, bordure en accent vif.
+              </li>
+              <li>
+                Retour visuel du bouton d’action — anneau en accent vif au
+                survol, retour au repos à l’activation.
+              </li>
+              <li>
+                Fondu des couleurs à la bascule de mode —{' '}
+                <code>--duration-base</code>, armé le temps du basculement
+                seulement.
+              </li>
+            </ul>
+            <p>
+              Les cinq sont neutralisées par{' '}
+              <code>prefers-reduced-motion: reduce</code>, avec le défilement
+              doux. Sous cette préférence le script d’amorçage ne pose même pas{' '}
+              <code>data-motion</code>.
             </p>
           </Prose>
+
+          <h3 className="mt-2xl text-display-sm text-ink">L’accent en situation</h3>
+          <Prose className="mt-2xs">
+            <p>
+              Les cinq surfaces qui portent l’accent vif. Survolez-les, et
+              parcourez-les au clavier : le focus reçoit le même retour visuel
+              que la souris.
+            </p>
+          </Prose>
+          <div className="mt-xl flex flex-col gap-lg">
+            <div className="accent-panel p-md">
+              <p className="text-body-md text-ink-muted">
+                Encadré de mise en valeur : aplat en accent doux, bord en accent
+                vif, épaissi du côté du texte.
+              </p>
+            </div>
+
+            <ul className="flex list-none flex-wrap gap-2xs p-0">
+              {['accent-chip', 'accent-soft', 'accent-vivid'].map((label) => (
+                <li key={label} className="accent-chip px-sm py-2xs font-mono text-body-sm">
+                  {label}
+                </li>
+              ))}
+            </ul>
+
+            <div className="project-card p-md">
+              <p className="text-body-md text-ink-muted">
+                Carte : bord supérieur en accent vif au repos, pourtour entier au
+                survol, élévation de <code>--shift-lift</code>.
+              </p>
+            </div>
+
+            <p>
+              <button type="button" className="button-primary inline-flex items-center gap-2xs px-md py-sm font-mono text-body-sm">
+                Action principale
+              </button>
+            </p>
+
+            <p>
+              <a
+                href="#espacement"
+                className="link-sweep inline-block font-mono text-body-sm text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+              >
+                Soulignement balayé
+              </a>
+              <a
+                href="#espacement"
+                className="link-underline ml-md font-mono text-body-sm text-accent transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
+              >
+                Soulignement natif, décoration en accent vif
+              </a>
+            </p>
+          </div>
         </Container>
       </Section>
 

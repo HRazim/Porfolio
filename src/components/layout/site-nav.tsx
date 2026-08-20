@@ -31,7 +31,7 @@ export function SiteNav({ className, orientation = 'horizontal' }: SiteNavProps)
           <li key={item.href}>
             <Link
               href={item.href}
-              className="inline-block py-2xs text-body-sm text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+              className="link-sweep inline-block py-2xs text-body-sm text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
             >
               {item.label}
             </Link>

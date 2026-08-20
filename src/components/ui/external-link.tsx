@@ -30,7 +30,7 @@ export function ExternalLink({ href, children, className, showIcon = true }: Ext
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'inline-flex items-center gap-2xs text-accent underline decoration-from-font underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink',
+        'inline-flex items-center gap-2xs text-accent link-underline transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink',
         className,
       )}
     >
