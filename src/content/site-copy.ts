@@ -169,6 +169,21 @@ export const ABOUT = {
   readingsEmpty: 'Les lectures restent à renseigner.',
 } as const;
 
+/**
+ * Textes alternatifs des vignettes de partage.
+ *
+ * Une vignette Open Graph est une IMAGE : sans texte alternatif, un lecteur
+ * d’ecran n’annonce rien du tout la ou un visiteur voit un titre. Ces libelles
+ * decrivent ce que la vignette montre, pas ce qu’elle promeut.
+ */
+export const SHARE_IMAGE = {
+  siteAlt:
+    'Vignette de partage : le nom MAROUAN Hazim-Rayan et l’accroche du site, en lettres claires sur un fond bleu nuit.',
+  /** Unique : voir l’en-tete de l’image de partage des fiches. */
+  projectAlt:
+    'Vignette de partage d’une réalisation, au nom de MAROUAN Hazim-Rayan, en lettres claires sur un fond bleu nuit.',
+} as const;
+
 export const PROJECTS_INDEX = {
   eyebrow: 'Travaux',
   heading: 'Réalisations',
