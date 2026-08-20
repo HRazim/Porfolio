@@ -16,7 +16,7 @@
  */
 
 /** Routes de navigation. Union fermee : un lien mort ne compile pas. */
-export type NavHref = '/' | '/realisations' | '/parcours' | '/#contact';
+export type NavHref = '/' | '/a-propos' | '/realisations' | '/parcours' | '/#contact';
 
 export interface NavItem {
   readonly href: NavHref;
@@ -30,6 +30,7 @@ export interface NavItem {
  */
 export const NAVIGATION: readonly NavItem[] = [
   { href: '/', label: 'Accueil' },
+  { href: '/a-propos', label: 'À propos' },
   { href: '/realisations', label: 'Réalisations' },
   { href: '/parcours', label: 'Parcours' },
   { href: '/#contact', label: 'Contact' },
@@ -77,33 +78,53 @@ export const FOOTER = {
 } as const;
 
 /**
- * Page d’accueil.
+ * ---------------------------------------------------------------------------
+ * ACCROCHE — TROIS FORMULATIONS, UNE SEULE RENDUE
+ * ---------------------------------------------------------------------------
  *
- * AUDIT.md section 8.2 conclut que l’accroche precedente (« Développeur Web |
- * Designer | Étudiant en BUT informatique ») est une enumeration sans
- * positionnement, et que la section « À propos » compte 23 balises de mise en
- * gras pour 223 mots. Ces textes ont donc ete reecrits, pas repris.
+ * LE PROPRIETAIRE TRANCHERA. Les trois sont conservees ici pour etre
+ * comparees ; changer d’option consiste a faire pointer `HOME.headline` vers
+ * une autre entree, sans toucher a une seule ligne de JSX.
  *
- * Le positionnement porte est un profil hybride technique et business, a
- * parts egales.
+ * Chacune tient sous soixante caracteres, sans superlatif, sans mot creux et
+ * sans promesse invérifiable. Chacune explore une direction differente.
+ * ---------------------------------------------------------------------------
  */
+const HEADLINE_OPTIONS = {
+  /** Identite franche : nomme les deux competences, sans revendiquer de titre. */
+  identite: 'Développeur formé, ingénieur d’affaires en devenir.',
+  /** Tension : situe la personne entre deux mondes plutot que de l’etiqueter. */
+  tension: 'Entre ceux qui construisent et ceux qui vendent.',
+  /** Apport : ce que l’interlocuteur y gagne, pose comme une methode. */
+  apport: 'Comprendre le besoin avant d’écrire la solution.',
+} as const;
+
 export const HOME = {
-  eyebrow: 'Portfolio',
-  headline:
-    'Étudiant en Ingénierie d’Affaires, avec trois ans de formation en informatique derrière moi.',
-  /** Presentation en deux paragraphes. Le decoupage est une donnee, pas du JSX. */
-  intro: [
-    'Je viens du développement, et j’y ai appris ce qui se passe réellement derrière une promesse commerciale : les arbitrages, les délais qui glissent, la différence entre ce qui est demandé et ce dont on a besoin. C’est ce que je veux mettre au service d’un métier de conseil et de vente.',
-    'Je prépare un Master Ingénierie d’Affaires à Paris School of Business, en alternance sur un rythme de quatre jours en entreprise et un jour en formation. Les réalisations ci-dessous sont ce que j’ai construit jusqu’ici, avec ce que j’en ai retenu.',
-  ],
-  featuredHeading: 'Réalisations mises en avant',
-  featuredIntro: 'Trois réalisations qui résument le mieux ma façon de travailler.',
+  headlineOptions: HEADLINE_OPTIONS,
+  /** Formulation rendue. Les deux autres attendent dans HEADLINE_OPTIONS. */
+  headline: HEADLINE_OPTIONS.identite,
+  /**
+   * UNE phrase de contexte, pas davantage. Le developpement appartient
+   * desormais a la page « À propos », vers laquelle pointe le renvoi
+   * ci-dessous. L’accueil presente, il ne raconte pas.
+   */
+  lede: 'Trois ans d’informatique, une année d’études au Québec, un stage en développement, et un Master Ingénierie d’Affaires à Paris School of Business.',
+  /** Renvoi vers la page « À propos », sous la phrase de contexte. */
+  aboutLinkLabel: 'À propos de moi',
+  /* --- Vignette compacte de realisation ---------------------------------
+     Elle ne dit pas tout : elle donne envie d’ouvrir. */
+  featuredCardCta: 'Ouvrir la fiche',
+  /** Separateur entre la categorie et la periode. Purement visuel. */
+  featuredCardSeparator: '·',
+  /** `{count}` est remplace par le nombre de technologies non affichees. */
+  featuredCardMore: '+{count}',
+  /** Meme information, en toutes lettres, pour les lecteurs d’ecran. */
+  featuredCardMoreLabel: '{count} technologies supplémentaires',
+  featuredHeading: 'Réalisations',
   featuredEmpty:
     'Aucune réalisation n’est mise en avant pour le moment. Toutes restent consultables depuis l’index.',
   featuredLinkAll: 'Voir toutes les réalisations',
   contactHeading: 'Contact',
-  contactIntro:
-    'Je suis en recherche d’une alternance à partir de septembre 2026, sur un rythme de quatre jours en entreprise et un jour en formation. Écrivez-moi.',
   /** Texte alternatif du portrait. Decrit le sujet, sans le qualifier. */
   portraitAlt: 'Portrait de MAROUAN Hazim-Rayan',
   cvLabel: 'Télécharger mon CV',
@@ -113,6 +134,39 @@ export const HOME = {
    * Meme convention que `{years}` dans FOOTER.copyright.
    */
   cvMeta: 'PDF, {poids}',
+} as const;
+
+/**
+ * ---------------------------------------------------------------------------
+ * PAGE « À PROPOS »
+ * ---------------------------------------------------------------------------
+ *
+ * Quatre paragraphes courts, a la premiere personne, chacun sous quatre-vingt-dix
+ * mots. Le premier est repris MOT POUR MOT de l’ancienne section de l’accueil :
+ * il avait ete ecrit, relu et valide, le reecrire n’aurait servi qu’a le degrader.
+ *
+ * AUCUNE mise en gras a l’interieur : AUDIT.md section 8.2 releve 23 balises de
+ * mise en gras pour 223 mots sur le site precedent, ce qui ne hierarchisait plus
+ * rien. Aucun superlatif non plus, et aucun des mots creux dont ces pages sont
+ * habituellement faites.
+ *
+ * Les lectures viennent de la page Parcours, ou elles detonnaient entre les
+ * langues et les diplomes. Elles disent ce qui a change une facon de travailler :
+ * leur place est ici.
+ * ---------------------------------------------------------------------------
+ */
+export const ABOUT = {
+  eyebrow: 'Qui je suis',
+  heading: 'À propos',
+  paragraphs: [
+    'J’ai passé trois ans en informatique, dont une année à l’Université du Québec à Chicoutimi, vécue seul et loin de chez moi. C’est un stage en entreprise qui a tranché : ce qui me retient n’est pas d’écrire le code, c’est de comprendre le besoin qui le déclenche. J’ai donc choisi l’ingénierie d’affaires.',
+    'J’ai nagé sept ans en compétition, de sept à quatorze ans. J’en ai gardé la rigueur, la discipline et la persévérance : l’habitude d’un effort qui ne produit ses effets qu’à long terme, et qu’il faut fournir sans rien voir venir. Je pratique aujourd’hui la calisthénie.',
+    'Ce que le sport m’a surtout appris, c’est de repartir d’en bas. Entrer dans une discipline nouvelle, c’est revenir au rang de débutant et reprendre la progression à zéro. Cela ne m’effraie pas : je l’ai déjà fait, et je sais ce que cela demande. C’est ce qui rend le passage de la technique au commerce naturel plutôt que risqué.',
+    'J’apprends en continu et je lis beaucoup. J’aime construire par moi-même : j’ai conçu, développé et publié seul JTR, une application Android de gestion de contacts. À terme, je veux entreprendre, dans un domaine où la technique et le commerce se rencontrent. C’est la raison de ce double parcours : savoir ce qu’un produit demande à construire, et savoir à qui il s’adresse.',
+  ],
+  readingsHeading: 'Lectures',
+  readingsIntro: 'Quatre livres qui ont changé ma façon de travailler.',
+  readingsEmpty: 'Les lectures restent à renseigner.',
 } as const;
 
 export const PROJECTS_INDEX = {
@@ -157,9 +211,6 @@ export const CAREER = {
   experienceEmpty: 'Les expériences restent à renseigner.',
   languagesHeading: 'Langues',
   languagesEmpty: 'Les langues restent à renseigner.',
-  readingsHeading: 'Lectures',
-  readingsIntro: 'Quatre livres qui ont changé ma façon de travailler.',
-  readingsEmpty: 'Les lectures restent à renseigner.',
 } as const;
 
 export const NOT_FOUND = {
@@ -184,6 +235,11 @@ export const PAGE_META = {
     title: 'Portfolio',
     description:
       'Portfolio de MAROUAN Hazim-Rayan : réalisations, parcours et coordonnées.',
+  },
+  about: {
+    title: 'À propos',
+    description:
+      'MAROUAN Hazim-Rayan : de l’informatique à l’ingénierie d’affaires, ce que sept ans de natation en compétition ont construit, et ce qui l’anime au quotidien.',
   },
   projects: {
     title: 'Réalisations',

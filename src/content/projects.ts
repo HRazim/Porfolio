@@ -649,11 +649,6 @@ const PROJECTS: readonly Project[] = [
    ACCES
    ------------------------------------------------------------------------- */
 
-/** Toutes les realisations, dans l’ordre de declaration. */
-export function getAllProjects(): readonly Project[] {
-  return PROJECTS;
-}
-
 /** Une realisation par son identifiant d’URL. `undefined` si inconnue. */
 export function getProjectBySlug(slug: string): Project | undefined {
   return PROJECTS.find((project) => project.slug === slug);
@@ -667,6 +662,50 @@ export function getFeaturedProjects(): readonly Project[] {
   return PROJECTS.filter(
     (project): project is Project & { featuredRank: number } => project.featuredRank !== null,
   ).sort((a, b) => a.featuredRank - b.featuredRank);
+}
+
+/**
+ * Technologies retenues pour une VIGNETTE COMPACTE, et le reste en compteur.
+ *
+ * Deux bornes, et une seule raison : la vignette de l’accueil dispose d’une
+ * rangee de pastilles, pas de quatre.
+ *
+ *   - QUATRE au maximum. C’est un teaser, pas un inventaire ; la liste
+ *     complete est sur la fiche.
+ *   - VINGT-HUIT CARACTERES de budget cumule. La colonne de l’accueil porte
+ *     environ trente-quatre caracteres monospace ; six sont reserves au
+ *     compteur. Une pastille « Symfony 6.4 LTS » consomme a elle seule la
+ *     moitie du budget, et c’est normal : mieux vaut deux technologies sur
+ *     une ligne que quatre sur deux lignes.
+ *
+ * Ces deux nombres sont des bornes de MISE EN PAGE, pas des jetons de design :
+ * ils ne decrivent ni une couleur, ni une taille, ni un espacement. Ils vivent
+ * ici, avec la donnee qu’ils decoupent, plutot que dans le composant.
+ */
+const CARD_TECHNOLOGIES_MAX = 4;
+const CARD_TECHNOLOGIES_BUDGET = 28;
+
+export interface CardTechnologies {
+  /** Les pastilles effectivement affichees, dans l’ordre de declaration. */
+  readonly shown: readonly string[];
+  /** Nombre de technologies non affichees. `0` quand tout tient. */
+  readonly extra: number;
+}
+
+export function pickCardTechnologies(project: Project): CardTechnologies {
+  const shown: string[] = [];
+  let budget = CARD_TECHNOLOGIES_BUDGET;
+
+  for (const technology of project.technologies) {
+    if (shown.length === CARD_TECHNOLOGIES_MAX) break;
+    // + 3 : les deux caracteres d’encadrement de la pastille et la gouttiere.
+    const cost = technology.length + 3;
+    if (cost > budget) break;
+    budget -= cost;
+    shown.push(technology);
+  }
+
+  return { shown, extra: project.technologies.length - shown.length };
 }
 
 /** Tous les identifiants d’URL, pour generateStaticParams. */

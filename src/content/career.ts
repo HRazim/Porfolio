@@ -156,19 +156,9 @@ const LANGUAGES: readonly LanguageSkill[] = [
   },
 ];
 
-/** Toutes les entrees, formation et experiences confondues. */
-export function getCareerEntries(): readonly CareerEntry[] {
-  return CAREER_ENTRIES;
-}
-
 /** Les entrees d’une nature donnee, les plus recentes d’abord. */
 export function getCareerEntriesByKind(kind: CareerKind): readonly CareerEntry[] {
   return CAREER_ENTRIES.filter((entry) => entry.kind === kind);
-}
-
-/** Vrai si aucune entree n’est encore renseignee pour cette nature. */
-export function isCareerSectionEmpty(kind: CareerKind): boolean {
-  return getCareerEntriesByKind(kind).length === 0;
 }
 
 /** Les langues maitrisees, dans l’ordre de declaration. */
