@@ -170,6 +170,31 @@ export const ABOUT = {
 } as const;
 
 /**
+ * ---------------------------------------------------------------------------
+ * REPLI D’ERREUR GLOBAL
+ * ---------------------------------------------------------------------------
+ *
+ * Affiche lorsque la MISE EN PAGE RACINE elle-meme a echoue. C’est le dernier
+ * ecran avant la page blanche : il doit donc dire ce qui se passe, et proposer
+ * les deux seules actions qui aient un sens — reessayer, ou revenir a
+ * l’accueil.
+ *
+ * Le texte ne promet pas que le probleme vient du visiteur, parce que ce n’est
+ * pas le cas : une erreur de mise en page racine est une defaillance du site.
+ * ---------------------------------------------------------------------------
+ */
+export const GLOBAL_ERROR = {
+  eyebrow: 'Erreur',
+  heading: 'Le site n’a pas pu s’afficher',
+  message:
+    'Une erreur a interrompu le chargement de la page. Elle ne vient pas de l’adresse demandée : réessayer suffit parfois, et sinon l’accueil reste accessible.',
+  retryLabel: 'Réessayer',
+  homeLink: 'Retour à l’accueil',
+  /** Langue du document, ce repli rendant son propre <html>. */
+  lang: 'fr',
+} as const;
+
+/**
  * Textes alternatifs des vignettes de partage.
  *
  * Une vignette Open Graph est une IMAGE : sans texte alternatif, un lecteur

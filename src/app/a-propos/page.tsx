@@ -5,6 +5,7 @@ import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
 import { getReadings } from '@/content/career';
 import { ABOUT, MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
+import { OG_SHARE_PATH } from '@/lib/og';
 import { pageTitle } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -16,6 +17,17 @@ export const metadata: Metadata = {
     title: pageTitle(PAGE_META.about.title),
     description: PAGE_META.about.description,
     url: '/a-propos',
+    // Declarer `openGraph` sur une page REMPLACE le bloc herite de la mise en
+    // page racine, images comprises : sans cette ligne, /a-propos serait la
+    // seule page du site partagee SANS apercu. La convention de fichier ne
+    // rattache sa vignette qu'au segment ou elle vit.
+    images: [OG_SHARE_PATH],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle(PAGE_META.about.title),
+    description: PAGE_META.about.description,
+    images: [OG_SHARE_PATH],
   },
 };
 

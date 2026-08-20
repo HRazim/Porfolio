@@ -12,11 +12,30 @@ import {
   getLanguages,
 } from '@/content/career';
 import { CAREER, COMMON, MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
+import { OG_SHARE_PATH } from '@/lib/og';
+import { pageTitle } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: PAGE_META.career.title,
   description: PAGE_META.career.description,
   alternates: { canonical: '/parcours' },
+  openGraph: {
+    type: 'profile',
+    title: pageTitle(PAGE_META.career.title),
+    description: PAGE_META.career.description,
+    url: '/parcours',
+  // Declarer un bloc `openGraph` REMPLACE celui herite de la mise en page
+  // racine — images comprises. Sans `images`, la page perdrait sa vignette
+  // de partage et un lien s’afficherait sans apercu. Le defaut a deja ete
+  // rencontre sur /a-propos ; il est ici evite explicitement.
+    images: [OG_SHARE_PATH],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: pageTitle(PAGE_META.career.title),
+    description: PAGE_META.career.description,
+    images: [OG_SHARE_PATH],
+  },
 };
 
 interface CareerSectionProps {
