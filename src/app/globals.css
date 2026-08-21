@@ -823,6 +823,66 @@
     box-shadow: var(--shadow-lifted);
   }
 
+  /* --- Vignette d'accueil ---------------------------------------------------
+     Elle ne partage AUCUNE regle avec `.project-card` : l'index sert a
+     comparer, l'accueil sert a inviter. Trois differences, et chacune repond
+     a un defaut constate dans un navigateur.
+
+     LE FOND CHANGE DE JETON. `.project-card` porte `--color-surface`, qui est
+     aussi la couleur de la section ou vivent les trois vignettes : la carte
+     ne se detachait donc que par son contour, ce qui la faisait lire comme un
+     champ de formulaire. Ici le fond est `--color-paper` — 7,9 points d'ecart
+     de clarte CIE L* en theme clair, 10,2 en theme sombre. La carte redevient
+     une surface au lieu d'un cadre.
+
+     LE CONTOUR MAIGRIT. Un filet de 3 px en accent vif barrait le haut de la
+     carte au repos. Il ne signalait rien, puisque la carte ne fait rien tant
+     qu'on ne la survole pas, et il pesait plus lourd que le titre. Il ne
+     reste qu'un filet d'un pixel, en `--color-border`.
+
+     L'ACCENT NE SERT PLUS QU'A L'INTERACTION. Il apparait au survol et au
+     focus, sur le contour et sur l'invitation du pied. C'est la seule chose
+     qu'il ait a dire ici : ceci s'ouvre.
+     ------------------------------------------------------------------------- */
+  .project-card-compact {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-paper);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .project-card-compact:hover,
+  .project-card-compact:focus-within {
+    transform: translateY(calc(-1 * var(--shift-lift)));
+    border-color: var(--color-accent-vivid);
+    box-shadow: var(--shadow-lifted);
+  }
+
+  /* --- Pastille de technologie, sur la vignette d'accueil --------------------
+     `.accent-chip` pose un aplat `--color-accent-soft` cerne d'accent vif. Sur
+     `.project-card`, dont le fond est `--color-surface`, l'ecart de clarte
+     entre la pastille et la carte valait 6,5 points en theme clair et 6,0 en
+     sombre : deux bleus voisins, que seul le cerne separait.
+
+     Le fond de la carte ayant change, le meme aplat gagne 14,4 points d'ecart
+     en clair et 16,2 en sombre. La pastille se detache d'elle-meme, et le
+     cerne en accent vif part avec le probleme qu'il compensait : il dessinait
+     une boite autour d'un element qui ne fait rien, alors que l'accent est
+     reserve a ce qui s'ouvre.
+
+     L'encre reste `--color-ink-muted` : 5,03:1 sur l'aplat en theme clair,
+     5,01:1 en sombre. WCAG AA des deux cotes.
+     ------------------------------------------------------------------------- */
+  .card-chip {
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink-muted);
+  }
+
   /* --- Lien etendu a toute la carte ---------------------------------------
      UN SEUL lien dans l'ordre de tabulation : celui du titre. Son
      pseudo-element recouvre la carte entiere, ce qui rend cliquable la
@@ -1028,6 +1088,8 @@
      la bordure et l'ombre, qui restent ; seule la translation disparait. */
   .project-card:hover,
   .project-card:focus-within,
+  .project-card-compact:hover,
+  .project-card-compact:focus-within,
   .button-primary:hover,
   .button-primary:focus-visible,
   .button-primary:active {

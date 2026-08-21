@@ -273,6 +273,13 @@ export const HOME = {
   },
   /* --- Vignette compacte de realisation ---------------------------------
      Elle ne dit pas tout : elle donne envie d’ouvrir. */
+  /**
+   * Invitation a ouvrir, au bas de la vignette d’accueil.
+   *
+   * Elle etait reservee aux lecteurs d’ecran, accolee au titre pour
+   * expliquer une fleche. Elle est desormais ECRITE : une carte qui invite
+   * doit le dire, et le dire au meme endroit pour tout le monde.
+   */
   featuredCardCta: {
     fr: 'Ouvrir la fiche',
     en: 'Open the project',
@@ -281,15 +288,6 @@ export const HOME = {
   },
   /** Separateur entre la categorie et la periode. Purement visuel. */
   featuredCardSeparator: { fr: '·', en: '·', es: '·', ar: '·' },
-  /** `{count}` est remplace par le nombre de technologies non affichees. */
-  featuredCardMore: { fr: '+{count}', en: '+{count}', es: '+{count}', ar: '+{count}' },
-  /** Meme information, en toutes lettres, pour les lecteurs d’ecran. */
-  featuredCardMoreLabel: {
-    fr: '{count} technologies supplémentaires',
-    en: '{count} more technologies',
-    es: '{count} tecnologías más',
-    ar: '{count} تقنيات إضافية',
-  },
   featuredHeading: {
     fr: 'Réalisations',
     en: 'Projects',
