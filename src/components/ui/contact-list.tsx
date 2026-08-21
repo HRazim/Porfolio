@@ -52,10 +52,17 @@ export function ContactList({ locale }: { readonly locale: Locale }) {
                     {point.display[locale]}
                   </span>
                 ) : (
+                  /* LE FILET CONTRE LE DEBORDEMENT VIT ICI, ET SEULEMENT ICI.
+                      Une adresse electronique n’a aucune coupure possible : ni
+                      espace, ni syllabe qu’une cesure saurait trouver. Si elle
+                      depasse la colonne, elle sort de l’ecran. `break-words`
+                      la coupe alors n’importe ou — ce qui est laid, et c’est
+                      exactement ce qu’on veut pour un identifiant, plutot que
+                      pour un titre. */
                   <a
                     dir={dir}
                     href={point.href}
-                    className="text-body-md text-ink link-underline transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+                    className="text-body-md text-ink link-underline break-words transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
                   >
                     {point.display[locale]}
                   </a>
