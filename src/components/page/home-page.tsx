@@ -153,15 +153,21 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
                   trois. Les deux jetons existent deja ; seule change celui qui
                   est applique.
 
-                  `break-words` n’agit jamais aux largeurs servies : il ne se
-                  declenche que si un mot — ici un groupe lie par une espace
-                  insecable — ne tient pas seul sur une ligne. Cela n’arrive
-                  qu’en dessous de 352 px de large, sous la plus petite largeur
-                  de reference du projet. C’est un filet : mieux vaut une coupe
-                  laide qu’un debordement hors de l’ecran. */}
+                  CESURE, ET NON COUPURE FORCEE. `break-words` occupait cette
+                  place et il s’est declenche : a 320 px de large, le groupe
+                  « ingenieur d’affaires » que l’insecable soude mesure 300 px
+                  contre une colonne de 288, et il etait coupe en plein milieu
+                  d’un mot, SANS trait d’union.
+
+                  `hyphens: auto` coupe aux syllabes et pose le trait d’union.
+                  Le navigateur a besoin de la langue pour appliquer les bonnes
+                  regles : elle est declaree sur `<html>` par la mise en page
+                  racine, et heritee ici. En arabe, la cesure ne s’applique pas
+                  — l’ecriture ne coupe pas les mots ainsi — et la declaration
+                  y est simplement sans effet. */}
               <h1
                 data-enter="2"
-                className="section-rule break-words text-display-lg text-ink md:text-display-xl"
+                className="section-rule hyphens-auto text-display-lg text-ink md:text-display-xl"
               >
                 {HOME.headline[locale]}
               </h1>

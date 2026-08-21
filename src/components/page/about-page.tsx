@@ -36,20 +36,30 @@ export function AboutPage({ locale }: { readonly locale: Locale }) {
   const readings = getReadings();
 
   return (
-    <main id={MAIN_CONTENT_ID}>
+    /* CASCADE D'ARRIVEE. Elle est le mecanisme de transition des navigations
+       INTERNES a une langue : le routeur remplace le `<main>`, l'animation
+       repart. `cascade-tight` la cadence a `--duration-base`, un pas de
+       `--duration-stagger` : rang 1 a 200 ms, rang 2 a 280 ms.
+
+       LE SURTITRE ET LE TITRE N'ONT AUCUN RANG. Ils sont peints avec la page,
+       a l'instant zero : le contenu est lisible avant que la cascade ne
+       commence, et elle ne retarde donc jamais la lecture. */
+    <main id={MAIN_CONTENT_ID} className="cascade-tight">
       <Section spacing="spacious" background="paper">
         <Container width="measure">
           <p className="font-mono text-body-sm text-ink-subtle">{ABOUT.eyebrow[locale]}</p>
           <h1 className="section-rule mt-sm text-display-lg text-ink">{ABOUT.heading[locale]}</h1>
           <Prose className="mt-xl">
             {ABOUT_PARAGRAPHS[locale].map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+              <p key={paragraph} data-enter="1">
+                {paragraph}
+              </p>
             ))}
           </Prose>
         </Container>
       </Section>
 
-      <Section background="surface" labelledBy="lectures">
+      <Section background="surface" labelledBy="lectures" enter={2}>
         <Container>
           <h2 id="lectures" className="section-rule text-display-md text-ink">
             {ABOUT.readingsHeading[locale]}

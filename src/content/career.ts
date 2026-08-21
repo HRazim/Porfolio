@@ -35,6 +35,24 @@ export interface CareerEntry {
   readonly summary: Translated | null;
   /** Points saillants. Tableau vide plutot que champ optionnel. */
   readonly highlights: TranslatedList;
+  /**
+   * Description longue, depliable sous l'entree.
+   *
+   * ELLE N'EST PAS UN SECOND `summary`. Le resume tient en une ou deux
+   * phrases et s'affiche toujours ; la description developpe, et ne s'ouvre
+   * que si on la demande. Une page de parcours qui deroule tout n'est plus
+   * une liste, c'est un texte.
+   *
+   * UNE LISTE DE PARAGRAPHES, et non une chaine unique. Un texte de cette
+   * longueur en compte plusieurs, et une chaine unique aurait exige un
+   * separateur convenu dans la donnee — que le composant aurait ensuite du
+   * connaitre. `TranslatedList` porte la structure la ou elle appartient.
+   *
+   * TABLEAU VIDE plutot que `null`, comme `highlights` juste au-dessus : une
+   * entree sans description a une description vide, pas une description
+   * absente. Le composant ne rend alors rien du tout.
+   */
+  readonly description: TranslatedList;
 }
 
 /**
@@ -61,6 +79,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
       es: ['En alternancia: cuatro días en la empresa, un día de formación'],
       ar: ['بالتناوب: أربعة أيام في الشركة، ويوم في التكوين'],
     },
+    description: { fr: [], en: [], es: [], ar: [] },
   },
   {
     id: 'but-informatique',
@@ -83,6 +102,24 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
       es: ['Año en la Université du Québec à Chicoutimi en 2025-2026, dentro de la doble titulación'],
       ar: ['سنة في Université du Québec à Chicoutimi في 2025-2026، ضمن الشهادة المزدوجة'],
     },
+    description: {
+      fr: [
+        'Une année d’études à l’Université du Québec à Chicoutimi, seul, à cinq mille kilomètres. Informatique mobile, cloud, systèmes d’exploitation, gestion de projet, et deux projets menés jusqu’au bout.',
+        'Ce que j’en retiens tient moins aux cours qu’au reste : gérer un logement, un budget et des démarches administratives dans un pays qu’on ne connaît pas, et reconstruire un cercle à partir de rien. J’y suis arrivé sans connaître personne ; entre le basketball hebdomadaire et le club de plein air, j’en suis reparti avec des amis. Loin de tous ses repères, on n’a plus qu’une direction possible : devant.',
+      ],
+      en: [
+        'A year of study at the Université du Québec à Chicoutimi, alone, five thousand kilometres away. Mobile computing, cloud, operating systems, project management, and two projects carried through to the end.',
+        'What I take from it has less to do with the courses than with the rest: managing a place to live, a budget and administrative procedures in a country you do not know, and rebuilding a circle from nothing. I arrived knowing no one; between weekly basketball and the outdoors club, I left with friends. Far from all your bearings, you are left with only one possible direction: forward.',
+      ],
+      es: [
+        'Un año de estudios en la Université du Québec à Chicoutimi, solo, a cinco mil kilómetros. Informática móvil, cloud, sistemas operativos, gestión de proyectos y dos proyectos llevados hasta el final.',
+        'Lo que me queda tiene menos que ver con los cursos que con el resto: gestionar un alojamiento, un presupuesto y trámites administrativos en un país que no se conoce, y reconstruir un círculo desde cero. Llegué sin conocer a nadie; entre el baloncesto semanal y el club de actividades al aire libre, me fui con amigos. Lejos de todos sus puntos de referencia, uno ya no tiene más que una dirección posible: adelante.',
+      ],
+      ar: [
+        'سنة دراسية في Université du Québec à Chicoutimi، وحدي، على بُعد خمسة آلاف كيلومتر. حوسبة محمولة، وسحابة، وأنظمة تشغيل، وإدارة مشاريع، ومشروعان أُنجزا حتى النهاية.',
+        'ما أحتفظ به يرتبط بالباقي أكثر ممّا يرتبط بالدروس: تدبير سكن وميزانية وإجراءات إدارية في بلد لا تعرفه، وإعادة بناء دائرة من الصفر. وصلت دون أن أعرف أحدًا؛ وبين كرة السلة الأسبوعية ونادي الأنشطة في الهواء الطلق، غادرت ولي أصدقاء. لم يعد أمام المرء، بعيدًا عن كل معالمه، سوى اتجاه واحد ممكن: إلى الأمام.',
+      ],
+    },
   },
   {
     id: 'baccalaureat-sti2d',
@@ -103,6 +140,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
       es: ['Mention Bien (calificación francesa, de 14 a 16 sobre 20)'],
       ar: ['Mention Bien (التقدير الفرنسي، من 14 إلى 16 من 20)'],
     },
+    description: { fr: [], en: [], es: [], ar: [] },
   },
   {
     id: 'egis-developpeur',
@@ -118,6 +156,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     period: { kind: 'connue', start: '2025-04-14', end: '2025-06-20' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },
+    description: { fr: [], en: [], es: [], ar: [] },
   },
   {
     id: 'forum-orientation-trappes',
@@ -133,6 +172,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     period: { kind: 'connue', start: '2025-02', end: '2025-02' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },
+    description: { fr: [], en: [], es: [], ar: [] },
   },
 ];
 

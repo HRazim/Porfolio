@@ -82,11 +82,12 @@ export function ProjectCardCompact({ locale, project, headingLevel }: ProjectCar
           atténuée. La famille display lui est déjà posée par la couche de
           base, avec `text-wrap: balance`.
 
-          `break-words` ne se déclenche jamais aux largeurs servies : c’est le
-          filet du groupe lié par `bindTail`, au cas où un futur titre finirait
-          par deux mots plus larges que la carte. Mieux vaut une coupe laide
-          qu’un débordement. */}
-      <Heading className="break-words text-body-lg text-ink">
+          `hyphens-auto` remplace la coupure forcée qui occupait cette place.
+          Elle coupait un mot n’importe où et sans trait d’union ; la césure
+          coupe aux syllabes et le pose. Elle ne se déclenche de toute façon
+          qu’à l’étroit : le groupe lié le plus large mesure 164 px contre une
+          carte qui en offre 228 au minimum. */}
+      <Heading className="hyphens-auto text-body-lg text-ink">
         <Link
           href={pathFor('project', locale, project.slug)}
           className="card-stretch transition-colors duration-[var(--duration-fast)] ease-out group-hover:text-accent"

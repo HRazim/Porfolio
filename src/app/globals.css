@@ -352,7 +352,28 @@
      66ch place la mesure entre 60 et 75 caracteres pour du francais compose
      en Instrument Sans. AUDIT.md section 7.6 mesure 95 caracteres sur le
      site precedent, soit 27 % au-dela de la limite haute de lisibilite. */
-  --container-measure: 66ch;
+  /* 48ch, ET NON 66ch. La valeur n'a jamais delivre ce qu'elle annoncait :
+     `ch` est la largeur du chiffre ZERO, et le zero d'Instrument Sans vaut
+     0,666 em quand le caractere moyen de la prose de ce site en vaut 0,445 —
+     un rapport de 1,50. `66ch` bornait donc a une centaine de caracteres,
+     mesure sur les blocs reels : 85 sur la page « A propos », 97 sur une
+     description de parcours, 92 sur une accroche de fiche. L'audit du site
+     precedent reprochait 95 caracteres.
+
+     LE CALCUL. La largeur moyenne d'un caractere est mesuree sur la prose du
+     site elle-meme, a 20 px de corps : 8,90 px en francais, 9,05 en anglais,
+     8,95 en espagnol, 10,04 en arabe. Pour tenir entre 60 et 75 caracteres,
+     la ligne doit donc mesurer :
+
+       fr [534, 668]   en [543, 679]   es [537, 671]   ar [602, 753]
+
+     Leur intersection vaut [602, 668] px. 48ch = 639 px s'y place, presque au
+     milieu, et donne 71,8 caracteres en francais, 70,7 en anglais, 71,4 en
+     espagnol, 63,7 en arabe.
+
+     `ch` est conserve, et non converti en `rem` : la borne doit suivre le
+     corps du texte. Une mesure se compte en caracteres, pas en pixels. */
+  --container-measure: 48ch;
   /* Cote du portrait. Deux valeurs, non trois : au-dela d'un certain point
      un portrait ne gagne rien a grandir, il vole la place du texte.
      Ce sont ces largeurs que `sizes` annonce au navigateur, et c'est d'elles
@@ -756,6 +777,24 @@
     border-radius: var(--radius-sm);
     background-color: var(--color-accent-soft);
     color: var(--color-ink-muted);
+  }
+
+  /* --- Conteneur borne a une mesure de ligne --------------------------------
+     LE JETON BORNE LA LIGNE, PAS LA BOITE. `Prose` porte `max-width` sans
+     marges laterales : sa ligne fait exactement la borne. `Container
+     width="measure"` porte les memes marges que tous les conteneurs du site,
+     et `box-sizing: border-box` les compte DANS la largeur : la meme borne y
+     donnait une ligne amputee de deux gouttieres, soit 128 px de moins sur un
+     grand ecran.
+
+     Le meme jeton donnait donc deux mesures. Ici, la borne du conteneur
+     inclut ses marges, de sorte que ce qu'il reste au texte soit exactement
+     la mesure annoncee.
+
+     `max-inline-size` et non `max-width` : la propriete logique, comme
+     partout ailleurs dans ce fichier. */
+  .container-measure {
+    max-inline-size: calc(var(--container-measure) + 2 * var(--spacing-gutter));
   }
 
   /* --- Lien souligne au repos ---------------------------------------------

@@ -181,7 +181,7 @@ export const LANGUAGE_PICKER = {
    * Name » l’exige, et c’est pourquoi ce n’est pas un `aria-label`.
    */
   trigger: {
-    fr: 'Langue : {langue}',
+    fr: 'Langue : {langue}',
     en: 'Language: {langue}',
     es: 'Idioma: {langue}',
     ar: 'اللغة: {langue}',
@@ -580,6 +580,19 @@ export const PROJECT_DETAIL = {
 
 export const CAREER = {
   eyebrow: { fr: 'Trajectoire', en: 'Path', es: 'Trayectoria', ar: 'المسار' },
+  /**
+   * Declencheur de la description d’une entree de parcours.
+   *
+   * Il dit ce qu’il OUVRE, et non ce qu’il fait : « En savoir plus » nommerait
+   * l’action et laisserait deviner sur quoi elle porte. Pose sous le titre
+   * d’une entree, « Le détail » ne peut designer que cette entree-la.
+   */
+  entryDetails: {
+    fr: 'Le détail',
+    en: 'The detail',
+    es: 'El detalle',
+    ar: 'التفاصيل',
+  },
   heading: { fr: 'Parcours', en: 'Career', es: 'Trayectoria', ar: 'المسار' },
   intro: {
     fr: 'Formation, expériences et langues.',

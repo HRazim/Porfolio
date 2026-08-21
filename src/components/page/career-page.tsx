@@ -4,6 +4,8 @@
  * l'appellent — un par langue — sont les seuls a la declarer.
  */
 import { Container } from '@/components/layout/container';
+import { ChevronDownIcon } from '@/components/ui/icons';
+import { bindTail } from '@/lib/no-break';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
 import { formatPeriod, periodDateTime } from '@/content/period';
@@ -74,6 +76,46 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                     ))}
                   </ul>
                 )}
+
+                {/* LA DESCRIPTION EST FACULTATIVE, ET SON ABSENCE NE LAISSE
+                    RIEN : ni declencheur orphelin, ni bloc vide. Le
+                    `<details>` entier n’est pas rendu.
+
+                    `<details>` PLUTOT QU’UN ETAT REACT : il se deplie sans
+                    script, et son contenu figure dans le document servi meme
+                    replie — un moteur d’indexation le lit sans executer une
+                    ligne. Meme mecanique que le selecteur de langue, et pour
+                    la meme raison.
+
+                    Aucun composant client n’est ajoute : ni Echap ni le clic
+                    exterieur n’ont de sens pour un bloc de texte pose dans le
+                    flux, qui ne recouvre rien et n’attrape pas le focus. */}
+                {entry.description[locale].length === 0 ? null : (
+                  <details className="mt-2xs">
+                    <summary className="disclosure-trigger inline-flex items-center gap-2xs rounded-sm font-mono text-body-sm text-accent transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink">
+                      {CAREER.entryDetails[locale]}
+                      <ChevronDownIcon size="sm" className="disclosure-mark" />
+                    </summary>
+                    {/* Un paragraphe par entree de la liste, et l'ecart entre
+                        eux vient du conteneur : le composant n'ecrit ni
+                        separateur ni marge sur le texte lui-meme.
+
+                        `bindTail` lie les deux derniers mots de chaque
+                        paragraphe : sans lui, la derniere ligne se reduit a un
+                        seul mot a plusieurs largeurs — neuf cas mesures sur
+                        quatre langues et huit largeurs, dont l'espagnol a
+                        toutes. C'est une decision de PRESENTATION, prise ou
+                        elle s'applique : la donnee, elle, ne porte aucune
+                        insecable. */}
+                    <div className="panel-enter mt-2xs flex max-w-measure flex-col gap-sm">
+                      {entry.description[locale].map((paragraph) => (
+                        <p key={paragraph} className="text-body-md text-ink-muted">
+                          {bindTail(paragraph)}
+                        </p>
+                      ))}
+                    </div>
+                  </details>
+                )}
               </li>
             );
           })}
@@ -131,18 +173,26 @@ function LanguagesSection({ locale }: { readonly locale: Locale }) {
  */
 export function CareerPage({ locale }: { readonly locale: Locale }) {
   return (
-    <main id={MAIN_CONTENT_ID}>
+    /* CASCADE D'ARRIVEE. Elle est le mecanisme de transition des navigations
+       INTERNES a une langue : le routeur remplace le `<main>`, l'animation
+       repart. `cascade-tight` la cadence a `--duration-base`, un pas de
+       `--duration-stagger` : rang 1 a 200 ms, rang 2 a 280 ms.
+
+       LE SURTITRE ET LE TITRE N'ONT AUCUN RANG. Ils sont peints avec la page,
+       a l'instant zero : le contenu est lisible avant que la cascade ne
+       commence, et elle ne retarde donc jamais la lecture. */
+    <main id={MAIN_CONTENT_ID} className="cascade-tight">
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{CAREER.eyebrow[locale]}</p>
           <h1 className="section-rule mt-sm text-display-lg text-ink">{CAREER.heading[locale]}</h1>
           <Prose size="lead" className="mt-lg">
-            <p>{CAREER.intro[locale]}</p>
+            <p data-enter="1">{CAREER.intro[locale]}</p>
           </Prose>
         </Container>
       </Section>
 
-      <Section background="surface">
+      <Section background="surface" enter={2}>
         <Container>
           <div className="flex flex-col gap-3xl">
             <CareerSection

@@ -25,7 +25,9 @@ export interface ContainerProps {
 
 const WIDTH_CLASS: Record<ContainerWidth, string> = {
   page: 'max-w-page',
-  measure: 'max-w-measure',
+  // Voir `.container-measure` dans globals.css : la borne inclut les marges,
+  // pour que la LIGNE fasse la mesure et non la boite.
+  measure: 'container-measure',
   full: '',
 };
 
