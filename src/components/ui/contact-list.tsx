@@ -33,7 +33,12 @@ const LATIN_VALUE: Readonly<Record<ContactKind, boolean>> = {
 export function ContactList({ locale }: { readonly locale: Locale }) {
   return (
     <address className="not-italic">
-      <ul className="flex list-none flex-col gap-sm p-0">
+      {/* EN COLONNE SOUS `sm`, EN LIGNE AU-DESSUS. Deux coordonnees empilees
+          occupaient deux etages pour dire deux choses courtes, et poussaient le
+          bouton du CV a flotter seul en face. En ligne, elles forment un groupe
+          avec lui. `flex-wrap` les laisse repasser a la ligne si la place
+          manque — en arabe, ou les libelles sont plus longs, cela arrive. */}
+      <ul className="flex list-none flex-col gap-sm p-0 sm:flex-row sm:flex-wrap sm:items-start sm:gap-lg">
         {CONTACT_POINTS.map((point) => {
           const Icon = CONTACT_ICONS[point.kind];
           const dir = LATIN_VALUE[point.kind] ? 'ltr' : undefined;

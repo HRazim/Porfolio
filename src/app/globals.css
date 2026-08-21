@@ -361,14 +361,30 @@
      flux, chaque pixel qu'il prend repousse le titre hors du premier ecran.
      Voir le calcul de hauteur cumulee dans le rapport de refonte. */
   --container-portrait-sm: 8rem; /* 128px — pile mobile */
-  /* 12rem et non 20rem. La valeur n'est pas un gout, c'est un reste :
-     l'accroche a besoin de 735px pour se couper apres la virgule au plus
-     grand corps, la largeur de contenu vaut 1024px une fois les marges
-     laterales a leur maximum, il reste donc 289px a partager entre le
-     portrait et l'ecart. 12rem + 3rem = 240px : la colonne garde 784px,
-     soit 49px de marge sur le besoin. Un portrait de 20rem ne laissait que
-     608px et imposait trois lignes. */
-  --container-portrait: 12rem; /* 192px — cote a cote */
+  /* DEUX PALIERS, ET AUCUN DES DEUX N'EST UN GOUT : la taille du portrait est
+     un RESTE, celui que l'accroche laisse une fois servie.
+
+     L'accroche doit se couper apres la virgule, au plus grand corps. Le plus
+     large de ses deux morceaux est donc le plancher de la colonne de texte ;
+     mesure dans la fonte reellement servie, il vaut 678px a 1024px de large
+     (le corps y est encore de 70,4px) et 735px des 1440px, ou le corps atteint
+     son maximum de 76,3px. Le chapeau ajoute sa propre borne : sous 693px de
+     colonne, sa mesure de ligne tombe sous soixante caracteres.
+
+       colonne >= max(plancher de l'accroche, 693px)
+       portrait + ecart = contenu - colonne
+
+     A 1024px de fenetre, la largeur de contenu ne vaut que 942px — la gouttiere
+     y est encore proportionnelle. Il reste 249px, d'ou 13rem + 2rem = 240px.
+     Des 1280px, le contenu se stabilise a 1024px et le plancher a 735px : il
+     reste 289px, d'ou 15rem + 2rem = 272px, soit 17px de marge sur le besoin.
+
+     CE QUI NE PEUT PAS ETRE REPRIS. Au-dela de 1280px, la fenetre s'elargit
+     mais le contenu, lui, reste borne par `--container-page` : le vide a droite
+     appartient a la marge de page, que TOUTES les sections partagent. Le
+     reprendre ici desalignerait l'en-tete du reste de la page. */
+  --container-portrait: 13rem; /* 208px — cote a cote, a partir de lg */
+  --container-portrait-lg: 15rem; /* 240px — a partir de xl */
 
   /* =========================================================================
      8. FOCUS

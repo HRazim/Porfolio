@@ -102,12 +102,18 @@ export const PORTRAIT_WIDTHS: readonly number[] = [400, 800];
 export const PORTRAIT_SIZE = 800;
 /**
  * Largeur d’affichage annoncee au navigateur.
- * Doit rester alignee sur --container-portrait-sm / --container-portrait et
- * sur le point de rupture ou l’en-tete passe en colonnes — `lg` (64rem) —
- * sans quoi le navigateur telecharge une variante qui ne correspond pas a la
- * place reellement occupee.
+ *
+ * TROIS PALIERS, exactement ceux du portrait : `--container-portrait-sm` en
+ * pile, `--container-portrait` des que l’en-tete passe en colonnes (`lg`,
+ * 64rem), `--container-portrait-lg` au-dela de `xl` (80rem). Une divergence
+ * ici ferait telecharger une variante qui ne correspond pas a la place
+ * reellement occupee — trop petite, elle se verrait ; trop grande, elle se
+ * paierait.
+ *
+ * Les conditions sont ecrites de la plus large a la plus etroite : le
+ * navigateur retient la PREMIERE qui correspond.
  */
-export const PORTRAIT_SIZES = '(min-width: 64rem) 12rem, 8rem';
+export const PORTRAIT_SIZES = '(min-width: 80rem) 15rem, (min-width: 64rem) 13rem, 8rem';
 
 /** Type de lien social connu du systeme. */
 export type SocialNetwork = 'github' | 'linkedin';

@@ -97,9 +97,11 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
               par le haut ancre le portrait sur l’accroche, et l’ancrage ne
               bouge plus quelle que soit la langue.
 
-              L’ecart passe de 6 rem a 3 rem : chaque pixel repris ici va a la
-              colonne de texte, seule variable qui decide du nombre de lignes. */}
-          <div className="flex flex-col gap-lg lg:flex-row lg:items-start lg:gap-xl">
+              L’ecart vaut 2 rem : chaque pixel repris ici va au portrait, qui
+              paraissait sous-dimensionne face a une accroche de 76px. Trois
+              rem le laissaient a 12 rem ; deux rem lui en donnent quinze sans
+              entamer le plancher de la colonne. */}
+          <div className="flex flex-col gap-lg lg:flex-row lg:items-start lg:gap-lg">
             {/* Element le plus grand de la page : charge en priorite, jamais
                 en differe. Les deux encodages sont produits a l’avance et
                 servis tels quels, aucun optimiseur n’intervient. Le repli
@@ -134,7 +136,7 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
                 fetchPriority="high"
                 decoding="async"
                 data-enter="1"
-                className="w-portrait-sm shrink-0 rounded-md border border-border lg:w-portrait"
+                className="w-portrait-sm shrink-0 rounded-md border border-border lg:w-portrait xl:w-portrait-lg"
               />
             </picture>
 
@@ -218,13 +220,28 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
         </Container>
       </Section>
 
-      {/* 3 — CONTACT ------------------------------------------------------ */}
-      <Section id="contact" background="paper" labelledBy="contact-titre">
+      {/* 3 — CONTACT ------------------------------------------------------
+          UN SEUL GROUPE, ET NON DEUX BLOCS AUX DEUX BOUTS. La rangee employait
+          `justify-between`, qui ne rapproche rien : il ecarte autant que la
+          largeur le permet. Les coordonnees partaient a gauche, le CV a
+          droite, et six cents pixels de vide separaient deux elements qui
+          disent la meme chose — comment me joindre.
+
+          Les trois elements se suivent maintenant a la file, separes par un
+          ecart FIXE. `flex-wrap` les laisse passer a la ligne quand la place
+          manque, plutot que de les comprimer.
+
+          LA HAUTEUR SUIT. Trois lignes de contenu occupaient 352px : rythme
+          `default` (64px en haut et en bas), trente-deux pixels sous le titre,
+          et une liste de coordonnees empilee sur deux etages. Le rythme passe
+          a `compact`, l’ecart sous le titre a 24px, et les coordonnees
+          s’alignent en ligne des `sm`. */}
+      <Section id="contact" background="paper" spacing="compact" labelledBy="contact-titre">
         <Container>
           <h2 id="contact-titre" className="section-rule text-display-md text-ink">
             {HOME.contactHeading[locale]}
           </h2>
-          <div className="mt-lg flex flex-col items-start gap-lg sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-md flex flex-col items-start gap-md sm:flex-row sm:flex-wrap sm:items-center sm:gap-xl">
             <ContactList locale={locale} />
             {/* `download` plutot qu’une ouverture d’onglet : le fichier est
                 destine a etre conserve, pas consulte au vol. Format et poids
