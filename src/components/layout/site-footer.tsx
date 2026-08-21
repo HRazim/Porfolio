@@ -20,8 +20,26 @@ export function SiteFooter({ locale }: { readonly locale: Locale }) {
   const years =
     currentYear > SITE_FOUNDED_YEAR ? `${SITE_FOUNDED_YEAR}–${currentYear}` : `${SITE_FOUNDED_YEAR}`;
 
+  // `bg-paper`, ET NON `bg-surface`. Le systeme n’a que deux fonds : `paper`
+  // est celui de la page, `surface` est celui qui se souleve. Le pied portait
+  // le second — il etait donc le bloc le plus appuye de la page, pour son
+  // contenu le moins important, et sur l’accueil il pesait plus lourd que la
+  // section de contact qui le precede.
+  //
+  // Sur `paper`, il se confond avec le fond du document, et c’est ce qu’on lui
+  // demande. Ce qui le separe de ce qui precede n’est plus une couleur mais un
+  // filet : assez pour une cloture, trop peu pour attirer l’oeil. L’alternance
+  // des sections, elle, ne change pas.
+  //
+  // Le rythme suit : `py-xl` au lieu de `py-2xl`. Soixante-quatre pixels de
+  // part et d’autre d’une ligne de mentions legales revenaient a lui donner
+  // l’amplitude d’une section de contenu.
   return (
-    <footer className="border-t border-border bg-surface py-2xl">
+    // `data-site-footer` ne sert qu'a une chose : donner prise a la regle qui
+    // lui attribue un `view-transition-name`. L'entete porte deja
+    // `data-site-header` pour son etat de defilement ; le pied suit la meme
+    // convention plutot que d'introduire une classe utilitaire de plus.
+    <footer data-site-footer className="border-t border-border bg-paper py-xl">
       <Container className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between">
         <p className="font-mono text-body-sm text-ink-subtle">
           {`© ${years} ${SITE_NAME}. ${FOOTER.copyright[locale]}`}

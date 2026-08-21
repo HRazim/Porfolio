@@ -1593,47 +1593,30 @@ export function getFeaturedProjects(): readonly Project[] {
 }
 
 /**
- * Technologies retenues pour une VIGNETTE COMPACTE, et le reste en compteur.
+ * Technologies retenues pour une VIGNETTE COMPACTE.
  *
- * Deux bornes, et une seule raison : la vignette de l’accueil dispose d’une
- * rangee de pastilles, pas de quatre.
+ * TROIS, ET AUCUN COMPTEUR. La version precedente en montrait jusqu’a quatre
+ * puis annoncait le reste par une pastille « +12 ». Ce nombre ne se lisait
+ * pas : il ressemblait a une technologie, il occupait la meme place qu’elle,
+ * et il ne disait ni lesquelles ni pourquoi celles-la. Une vignette d’accueil
+ * invite a ouvrir, elle ne fait pas l’inventaire ; l’inventaire est sur la
+ * fiche, a une tabulation de distance.
  *
- *   - QUATRE au maximum. C’est un teaser, pas un inventaire ; la liste
- *     complete est sur la fiche.
- *   - VINGT-HUIT CARACTERES de budget cumule. La colonne de l’accueil porte
- *     environ trente-quatre caracteres monospace ; six sont reserves au
- *     compteur. Une pastille « Symfony 6.4 LTS » consomme a elle seule la
- *     moitie du budget, et c’est normal : mieux vaut deux technologies sur
- *     une ligne que quatre sur deux lignes.
+ * LES TROIS PREMIERES SONT LES BONNES parce que l’ordre de declaration est
+ * deja un ordre d’importance : la pile principale d’abord, l’infrastructure
+ * ensuite, l’outillage en dernier. « PHP 8.3, Symfony 6.4 LTS, Doctrine ORM »
+ * dit ce qu’est le projet ; « Jira, UML » ne le dirait pas.
  *
- * Ces deux nombres sont des bornes de MISE EN PAGE, pas des jetons de design :
- * ils ne decrivent ni une couleur, ni une taille, ni un espacement. Ils vivent
- * ici, avec la donnee qu’ils decoupent, plutot que dans le composant.
+ * Le budget en caracteres qui bornait la rangee est parti avec le compteur :
+ * il n’existait que pour lui reserver sa place en bout de ligne. Les
+ * pastilles se replient d’elles-memes quand la carte est etroite, et la
+ * hauteur commune des trois cartes absorbe le repli.
  */
-const CARD_TECHNOLOGIES_MAX = 4;
-const CARD_TECHNOLOGIES_BUDGET = 28;
+const CARD_TECHNOLOGIES_MAX = 3;
 
-export interface CardTechnologies {
-  /** Les pastilles effectivement affichees, dans l’ordre de declaration. */
-  readonly shown: readonly string[];
-  /** Nombre de technologies non affichees. `0` quand tout tient. */
-  readonly extra: number;
-}
-
-export function pickCardTechnologies(project: Project): CardTechnologies {
-  const shown: string[] = [];
-  let budget = CARD_TECHNOLOGIES_BUDGET;
-
-  for (const technology of project.technologies) {
-    if (shown.length === CARD_TECHNOLOGIES_MAX) break;
-    // + 3 : les deux caracteres d’encadrement de la pastille et la gouttiere.
-    const cost = technology.length + 3;
-    if (cost > budget) break;
-    budget -= cost;
-    shown.push(technology);
-  }
-
-  return { shown, extra: project.technologies.length - shown.length };
+/** Les technologies affichees sur une vignette d’accueil, dans l’ordre. */
+export function pickCardTechnologies(project: Project): readonly string[] {
+  return project.technologies.slice(0, CARD_TECHNOLOGIES_MAX);
 }
 
 /** Tous les identifiants d’URL, pour generateStaticParams. */

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { localeBootScript, LOCALE_META, type Locale } from '@/content/i18n';
+import { LOCALE_META, type Locale } from '@/content/i18n';
 import { fontVariables } from '@/lib/fonts';
 import { SITE_ADDRESS, SITE_NAME, SITE_URL, SOCIAL_LINKS, STRUCTURED_CONTACT } from '@/lib/site';
 import { DEFAULT_MODE, THEME_BOOT_SCRIPT } from '@/lib/theme';
@@ -95,10 +95,10 @@ export function SiteDocument({ locale, extraFontClass, children }: SiteDocumentP
             poses avant qu’une seule regle de couleur ne soit peinte, ce qui
             supprime le scintillement qu’un effet React ne peut pas eviter. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
-        {/* Meme mecanique, pour la langue : il memorise celle de la page
-            visitee, et ne redirige que depuis la racine nue. Voir la
-            justification complete dans src/content/i18n.ts. */}
-        <script dangerouslySetInnerHTML={{ __html: localeBootScript(locale) }} />
+        {/* IL N’Y A PAS DE SCRIPT DE LANGUE ICI, ET C’EST VOULU. Celui qui
+            s’y trouvait redirigeait depuis la racine nue vers la langue
+            memorisee, et rendait le francais inatteignable — sa racine EST la
+            racine nue. La justification complete est dans src/content/i18n.ts. */}
       </head>
       <body className={extraFontClass === undefined ? fontVariables : `${fontVariables} ${extraFontClass}`}>
         <script

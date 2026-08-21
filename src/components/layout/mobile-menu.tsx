@@ -88,7 +88,7 @@ export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
         hidden={!open}
         tabIndex={-1}
         aria-label={HEADER.mobileMenuLabel[locale]}
-        className="absolute end-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-md"
+        className="panel-enter absolute end-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-md"
       >
         <ul className="flex list-none flex-col gap-sm p-0">
           {NAVIGATION.map((item) => (

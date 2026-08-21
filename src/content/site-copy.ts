@@ -169,6 +169,23 @@ export const LANGUAGE_PICKER = {
     es: 'Idioma',
     ar: 'اللغة',
   },
+  /**
+   * Libelle accessible du declencheur de deploiement, dans l’en-tete.
+   *
+   * `{langue}` est remplace par le nom de la langue COURANTE, ecrit dans
+   * cette langue. Meme convention que `{poids}` et `{years}` ailleurs.
+   *
+   * Le declencheur n’affiche que le code court — « FR » — qui ne dit pas de
+   * lui-meme ce qu’il commande. Ce libelle le dit, et il CONTIENT le texte
+   * visible plutot que de le remplacer : le critere WCAG 2.5.3 « Label in
+   * Name » l’exige, et c’est pourquoi ce n’est pas un `aria-label`.
+   */
+  trigger: {
+    fr: 'Langue : {langue}',
+    en: 'Language: {langue}',
+    es: 'Idioma: {langue}',
+    ar: 'اللغة: {langue}',
+  },
 } as const satisfies Readonly<Record<string, Translated>>;
 
 export const HEADER = {
@@ -273,6 +290,13 @@ export const HOME = {
   },
   /* --- Vignette compacte de realisation ---------------------------------
      Elle ne dit pas tout : elle donne envie d’ouvrir. */
+  /**
+   * Invitation a ouvrir, au bas de la vignette d’accueil.
+   *
+   * Elle etait reservee aux lecteurs d’ecran, accolee au titre pour
+   * expliquer une fleche. Elle est desormais ECRITE : une carte qui invite
+   * doit le dire, et le dire au meme endroit pour tout le monde.
+   */
   featuredCardCta: {
     fr: 'Ouvrir la fiche',
     en: 'Open the project',
@@ -281,15 +305,6 @@ export const HOME = {
   },
   /** Separateur entre la categorie et la periode. Purement visuel. */
   featuredCardSeparator: { fr: '·', en: '·', es: '·', ar: '·' },
-  /** `{count}` est remplace par le nombre de technologies non affichees. */
-  featuredCardMore: { fr: '+{count}', en: '+{count}', es: '+{count}', ar: '+{count}' },
-  /** Meme information, en toutes lettres, pour les lecteurs d’ecran. */
-  featuredCardMoreLabel: {
-    fr: '{count} technologies supplémentaires',
-    en: '{count} more technologies',
-    es: '{count} tecnologías más',
-    ar: '{count} تقنيات إضافية',
-  },
   featuredHeading: {
     fr: 'Réalisations',
     en: 'Projects',

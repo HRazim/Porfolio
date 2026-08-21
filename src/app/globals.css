@@ -361,14 +361,30 @@
      flux, chaque pixel qu'il prend repousse le titre hors du premier ecran.
      Voir le calcul de hauteur cumulee dans le rapport de refonte. */
   --container-portrait-sm: 8rem; /* 128px — pile mobile */
-  /* 12rem et non 20rem. La valeur n'est pas un gout, c'est un reste :
-     l'accroche a besoin de 735px pour se couper apres la virgule au plus
-     grand corps, la largeur de contenu vaut 1024px une fois les marges
-     laterales a leur maximum, il reste donc 289px a partager entre le
-     portrait et l'ecart. 12rem + 3rem = 240px : la colonne garde 784px,
-     soit 49px de marge sur le besoin. Un portrait de 20rem ne laissait que
-     608px et imposait trois lignes. */
-  --container-portrait: 12rem; /* 192px — cote a cote */
+  /* DEUX PALIERS, ET AUCUN DES DEUX N'EST UN GOUT : la taille du portrait est
+     un RESTE, celui que l'accroche laisse une fois servie.
+
+     L'accroche doit se couper apres la virgule, au plus grand corps. Le plus
+     large de ses deux morceaux est donc le plancher de la colonne de texte ;
+     mesure dans la fonte reellement servie, il vaut 678px a 1024px de large
+     (le corps y est encore de 70,4px) et 735px des 1440px, ou le corps atteint
+     son maximum de 76,3px. Le chapeau ajoute sa propre borne : sous 693px de
+     colonne, sa mesure de ligne tombe sous soixante caracteres.
+
+       colonne >= max(plancher de l'accroche, 693px)
+       portrait + ecart = contenu - colonne
+
+     A 1024px de fenetre, la largeur de contenu ne vaut que 942px — la gouttiere
+     y est encore proportionnelle. Il reste 249px, d'ou 13rem + 2rem = 240px.
+     Des 1280px, le contenu se stabilise a 1024px et le plancher a 735px : il
+     reste 289px, d'ou 15rem + 2rem = 272px, soit 17px de marge sur le besoin.
+
+     CE QUI NE PEUT PAS ETRE REPRIS. Au-dela de 1280px, la fenetre s'elargit
+     mais le contenu, lui, reste borne par `--container-page` : le vide a droite
+     appartient a la marge de page, que TOUTES les sections partagent. Le
+     reprendre ici desalignerait l'en-tete du reste de la page. */
+  --container-portrait: 13rem; /* 208px — cote a cote, a partir de lg */
+  --container-portrait-lg: 15rem; /* 240px — a partir de xl */
 
   /* =========================================================================
      8. FOCUS
@@ -823,6 +839,66 @@
     box-shadow: var(--shadow-lifted);
   }
 
+  /* --- Vignette d'accueil ---------------------------------------------------
+     Elle ne partage AUCUNE regle avec `.project-card` : l'index sert a
+     comparer, l'accueil sert a inviter. Trois differences, et chacune repond
+     a un defaut constate dans un navigateur.
+
+     LE FOND CHANGE DE JETON. `.project-card` porte `--color-surface`, qui est
+     aussi la couleur de la section ou vivent les trois vignettes : la carte
+     ne se detachait donc que par son contour, ce qui la faisait lire comme un
+     champ de formulaire. Ici le fond est `--color-paper` — 7,9 points d'ecart
+     de clarte CIE L* en theme clair, 10,2 en theme sombre. La carte redevient
+     une surface au lieu d'un cadre.
+
+     LE CONTOUR MAIGRIT. Un filet de 3 px en accent vif barrait le haut de la
+     carte au repos. Il ne signalait rien, puisque la carte ne fait rien tant
+     qu'on ne la survole pas, et il pesait plus lourd que le titre. Il ne
+     reste qu'un filet d'un pixel, en `--color-border`.
+
+     L'ACCENT NE SERT PLUS QU'A L'INTERACTION. Il apparait au survol et au
+     focus, sur le contour et sur l'invitation du pied. C'est la seule chose
+     qu'il ait a dire ici : ceci s'ouvre.
+     ------------------------------------------------------------------------- */
+  .project-card-compact {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-paper);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .project-card-compact:hover,
+  .project-card-compact:focus-within {
+    transform: translateY(calc(-1 * var(--shift-lift)));
+    border-color: var(--color-accent-vivid);
+    box-shadow: var(--shadow-lifted);
+  }
+
+  /* --- Pastille de technologie, sur la vignette d'accueil --------------------
+     `.accent-chip` pose un aplat `--color-accent-soft` cerne d'accent vif. Sur
+     `.project-card`, dont le fond est `--color-surface`, l'ecart de clarte
+     entre la pastille et la carte valait 6,5 points en theme clair et 6,0 en
+     sombre : deux bleus voisins, que seul le cerne separait.
+
+     Le fond de la carte ayant change, le meme aplat gagne 14,4 points d'ecart
+     en clair et 16,2 en sombre. La pastille se detache d'elle-meme, et le
+     cerne en accent vif part avec le probleme qu'il compensait : il dessinait
+     une boite autour d'un element qui ne fait rien, alors que l'accent est
+     reserve a ce qui s'ouvre.
+
+     L'encre reste `--color-ink-muted` : 5,03:1 sur l'aplat en theme clair,
+     5,01:1 en sombre. WCAG AA des deux cotes.
+     ------------------------------------------------------------------------- */
+  .card-chip {
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink-muted);
+  }
+
   /* --- Lien etendu a toute la carte ---------------------------------------
      UN SEUL lien dans l'ordre de tabulation : celui du titre. Son
      pseudo-element recouvre la carte entiere, ce qui rend cliquable la
@@ -845,6 +921,33 @@
     inset: 0;
     z-index: 1;
     border-radius: var(--radius-md);
+  }
+
+  /* --- Declencheur de deploiement -------------------------------------------
+     `<summary>` porte un marqueur triangulaire par defaut. Deux declarations
+     le retirent : `list-style`, que les moteurs conformes respectent, et
+     `::-webkit-details-marker`, que WebKit exige en plus.
+
+     Le chevron pivote a l'ouverture. C'est une ROTATION, pas une translation :
+     elle ne depend d'aucun axe d'ecriture et vaut donc telle quelle en arabe,
+     sans variante `rtl:`. Le demi-tour est une constante geometrique, au meme
+     titre que les coordonnees d'un trace SVG — il ne se tokenise pas.
+     ------------------------------------------------------------------------- */
+  .disclosure-trigger {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .disclosure-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure-mark {
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+
+  [open] > .disclosure-trigger .disclosure-mark {
+    rotate: 180deg;
   }
 
   /* --- Action principale --------------------------------------------------
@@ -937,8 +1040,22 @@
   --enter-delay: calc(var(--duration-stagger) * 3);
 }
 
+/* La DUREE est une variable, pas une constante : deux cascades coexistent et
+   n'ont pas le meme budget. L'entete d'accueil est le premier ecran du site,
+   rien ne lui dispute l'attention, elle peut respirer sur 320 ms. La fiche de
+   realisation, elle, s'ouvre alors qu'on lit deja : son budget est de 400 ms
+   pour le premier ecran ENTIER, delais compris, ce que `--duration-slow` ne
+   permet pas des le deuxieme rang. */
 :root[data-motion='on'] [data-enter] {
-  animation: enter-rise var(--duration-slow) var(--ease-out) var(--enter-delay, 0ms) both;
+  animation: enter-rise var(--enter-duration, var(--duration-slow)) var(--ease-out)
+    var(--enter-delay, 0ms) both;
+}
+
+/* Cascade resserree — les fiches de realisation.
+   200 ms de duree, 80 ms de pas : rang 1 visible a 200 ms, rang 2 a 280,
+   rang 3 a 360. Le premier ecran est entier avant 400 ms. */
+.cascade-tight {
+  --enter-duration: var(--duration-base);
 }
 
 /* --- APPARITION DES SECTIONS AU DEFILEMENT : SUPPRIMEE --------------------
@@ -968,6 +1085,112 @@
    animation A DUREE FINIE qui se termine toujours, sans dependre d'aucun
    evenement.
    ------------------------------------------------------------------------- */
+
+/* ===========================================================================
+   TRANSITIONS DE PAGE
+   ---------------------------------------------------------------------------
+   MECANISME : l'API de transition de vue, dans sa forme INTER-DOCUMENTS, qui
+   est purement declarative. Deux documents de meme origine qui portent tous
+   deux `@view-transition { navigation: auto }` s'enchainent par un fondu que
+   le navigateur compose lui-meme, sans une ligne de JavaScript.
+
+   POURQUOI CELLE-LA. Le critere qui prime ici n'est pas l'effet, c'est le
+   risque : une page ne doit JAMAIS pouvoir rester masquee. Cette forme-la est
+   la seule des trois qui ne puisse pas le faire.
+
+     - Elle n'ecrit rien sur le contenu reel. Le fondu se joue sur des
+       pseudo-elements que l'agent utilisateur engendre — des captures — dans
+       une couche separee. Le DOM, lui, n'est jamais mis a `opacity: 0`.
+     - La ou l'API n'existe pas, `@view-transition` est une regle-@ inconnue,
+       donc IGNOREE, et les selecteurs `::view-transition-*` sont invalides,
+       donc leurs regles sont jetees. Il ne reste rien : la navigation est
+       celle d'avant. C'est une degradation vers zero, pas vers un defaut.
+     - Elle ne demande aucun script. Elle fonctionne donc AUSSI lorsque
+       JavaScript est coupe — ou, plus exactement, elle fonctionne SURTOUT
+       la : sans script, `next/link` redevient un lien ordinaire et toute
+       navigation devient inter-documents.
+
+   CE QU'ELLE NE COUVRE PAS, ET CE QUI S'EN CHARGE. Avec JavaScript, une
+   navigation interne a une langue est prise en main par le routeur : elle est
+   INTRA-document, et `@view-transition` ne s'y applique pas. Ce cas est
+   couvert par la cascade d'entree ci-dessus, qui rejoue a chaque montage —
+   le routeur remplace le `<main>`, l'animation repart. Elle est a duree finie
+   et se termine seule : meme garantie.
+
+   POURQUOI PAS UN COMPOSANT CLIENT. React expose `<ViewTransition>`, que la
+   documentation de Next.js 16 recommande pour les navigations du routeur.
+   Deux constats l'ont ecarte, verifies et non supposes : le paquet `react`
+   installe (19.2.8) ne l'exporte pas — seule la version canari que Next.js
+   embarque le fait — et `@types/react` (19.2.18) ne le declare pas, ce qui en
+   ferait une erreur de compilation sous `strict`. Le faire passer exigerait
+   d'ecrire soi-meme la declaration d'une API experimentale. Le rapport entre
+   le gain et la dette n'y est pas.
+
+   DUREE : `--duration-base`, soit 200 ms, sous la limite de 300 ms.
+   =========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/* --- L'ENTETE ET LE PIED NE CLIGNOTENT PAS -------------------------------
+   Nommes, ils sortent de la capture `root` et forment leur propre groupe. Le
+   navigateur apparie alors l'ancien et le nouveau : comme ils sont identiques
+   d'une page a l'autre, il n'y a ni deplacement ni changement de taille a
+   interpoler, et le fondu entre deux images identiques est imperceptible —
+   l'agent utilisateur compose ces deux couches en `plus-lighter` precisement
+   pour que la somme reste constante.
+
+   Le nom doit etre UNIQUE dans le document : l'entete et le pied ne sont
+   rendus qu'une fois chacun, par `PageShell`. */
+[data-site-header] {
+  view-transition-name: site-header;
+}
+
+[data-site-footer] {
+  view-transition-name: site-footer;
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-footer),
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/* --- OUVERTURE D'UN PANNEAU ----------------------------------------------
+   Le selecteur de langue et le menu mobile apparaissaient d'un coup. Ils
+   entrent maintenant en fondu.
+
+   `@starting-style` donne la valeur AVANT la premiere resolution de style,
+   c'est-a-dire l'equivalent d'un `from` pour une transition. L'etat de REPOS,
+   lui, n'est pas declare : il vaut donc `opacity: 1`, comme tout element.
+   C'est ce qui rend la regle inoffensive — la ou `@starting-style` n'existe
+   pas, elle est ignoree et le panneau s'affiche immediatement, exactement
+   comme avant.
+
+   Aucune animation de SORTIE : elle exigerait de transitionner depuis
+   `display: none`, donc `transition-behavior: allow-discrete`, pour un
+   panneau qu'on ferme et qu'on ne regarde plus. */
+.panel-enter {
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @starting-style {
+    .panel-enter {
+      opacity: 0;
+    }
+  }
+}
 
 /* --- Bascule clair / sombre ----------------------------------------------
    `data-mode-changing` n'est pose que le temps du basculement, par la
@@ -1028,6 +1251,8 @@
      la bordure et l'ombre, qui restent ; seule la translation disparait. */
   .project-card:hover,
   .project-card:focus-within,
+  .project-card-compact:hover,
+  .project-card-compact:focus-within,
   .button-primary:hover,
   .button-primary:focus-visible,
   .button-primary:active {
@@ -1036,6 +1261,33 @@
 
   /* Soulignement balaye : il apparait, il ne se deploie plus. */
   .link-sweep::after {
+    transition: none !important;
+  }
+
+  /* --- TRANSITIONS DE PAGE ------------------------------------------------
+     DEUX BARRIERES, comme partout ailleurs dans ce fichier.
+
+     La premiere refuse la transition a la source : `navigation: none` annule
+     l'adhesion du document, et le navigateur enchaine les pages sans capture.
+
+     La seconde neutralise les animations des pseudo-elements AU CAS OU une
+     transition serait declenchee autrement. Elle est indispensable : la regle
+     universelle ci-dessus ne les atteint pas, `*` ne selectionnant aucun
+     pseudo-element. Sans animation, la transition se termine des la premiere
+     image et les captures sont retirees. */
+  @view-transition {
+    navigation: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  /* Ouverture des panneaux : ils apparaissent, ils ne fondent plus. */
+  .panel-enter {
     transition: none !important;
   }
 

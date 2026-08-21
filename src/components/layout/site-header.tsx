@@ -5,6 +5,7 @@ import { SITE_NAME } from '@/lib/site';
 
 import { Container } from './container';
 import { HeaderScrollState } from './header-scroll-state';
+import { LanguageDisclosure } from './language-disclosure';
 import { LanguagePicker } from './language-picker';
 import { MobileMenu } from './mobile-menu';
 import { SiteNav } from './site-nav';
@@ -58,16 +59,21 @@ export function SiteHeader({ locale, page, slug }: SiteHeaderProps) {
             {SITE_NAME}
           </Link>
 
-          {/* LE SECOND SELECTEUR A DEPLACE LE POINT DE RUPTURE, de `md` a
-              `lg`. Ce n’est pas un gout : a 768 px, la largeur de contenu vaut
-              707 px et le nom, les cinq entrees de navigation et la bascule de
-              mode en occupent deja pres de 640. Quatre options de langue en
-              demandent 130 de plus. Sous 1024 px, la navigation et les langues
-              passent donc toutes deux derriere le bouton de menu, ou elles ont
-              la place de s’ecrire en toutes lettres. */}
+          {/* LE POINT DE RUPTURE REVIENT A `lg`, ou il etait avant que le
+              selecteur n’entre dans l’en-tete. Le deploiement replie ne coute
+              plus que la largeur d’un code court et d’un chevron — la ou quatre
+              options ecrites cote a cote en demandaient environ 130 px — mais
+              les cinq entrees de navigation, elles, n’ont pas maigri : ce sont
+              elles qui fixent le seuil.
+
+              Sous 1024 px, navigation et langues passent donc ensemble derriere
+              le bouton de menu, ou les langues s’ecrivent en toutes lettres et
+              n’ont pas besoin d’etre repliees. */}
           <div className="flex items-center gap-md">
             <SiteNav locale={locale} className="hidden lg:block" />
-            <LanguagePicker locale={locale} page={page} slug={slug} className="hidden lg:block" />
+            <LanguageDisclosure locale={locale} className="hidden lg:block">
+              <LanguagePicker locale={locale} page={page} slug={slug} variant="full" />
+            </LanguageDisclosure>
             <ModeToggle locale={locale} />
             <MobileMenu locale={locale} page={page} slug={slug} className="lg:hidden" />
           </div>

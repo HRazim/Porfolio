@@ -17,6 +17,15 @@ export type SectionSpacing = 'compact' | 'default' | 'spacious';
  */
 export type SectionBackground = 'paper' | 'surface';
 
+/**
+ * Rang dans une cascade d'entree.
+ *
+ * L'union est FERMEE sur les quatre rangs que globals.css declare : un rang
+ * qui n'existe pas dans la feuille ne produirait aucun delai, et la cascade
+ * s'ecraserait en silence. Ici, elle ne compile pas.
+ */
+export type SectionEnterRank = 1 | 2 | 3 | 4;
+
 export type SectionTag =
   | 'section'
   | 'div'
@@ -38,6 +47,12 @@ export interface SectionProps {
   id?: string;
   /** Identifiant du titre qui nomme la section, pour `aria-labelledby`. */
   labelledBy?: string;
+  /**
+   * Rang d'entree dans la cascade de la page. Absent, la section est peinte
+   * avec la page, sans animation — c'est le defaut, et c'est ce qu'on veut
+   * pour tout ce qui doit se lire tout de suite.
+   */
+  enter?: SectionEnterRank;
   className?: string;
 }
 
@@ -74,12 +89,14 @@ export function Section({
   background = 'paper',
   id,
   labelledBy,
+  enter,
   className,
 }: SectionProps) {
   return (
     <Tag
       id={id}
       aria-labelledby={labelledBy}
+      data-enter={enter}
       className={cn(SPACING_CLASS[spacing], BACKGROUND_CLASS[background], className)}
     >
       {children}
