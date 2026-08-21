@@ -28,7 +28,7 @@ export function ProjectStar({ locale, star }: ProjectStarProps) {
       {STAR_ORDER.map((field) => {
         const value = star[field];
         return (
-          <div key={field} className="flex flex-col gap-3xs border-l border-border pl-md">
+          <div key={field} className="flex flex-col gap-3xs border-s border-border ps-md">
             <dt className="font-mono text-body-sm font-medium text-ink-subtle">
               {STAR_LABELS[field][locale]}
             </dt>

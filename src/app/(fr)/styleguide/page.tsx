@@ -428,7 +428,7 @@ export default function StyleguidePage() {
               </a>
               <a
                 href="#espacement"
-                className="link-underline ml-md font-mono text-body-sm text-accent transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
+                className="link-underline ms-md font-mono text-body-sm text-accent transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
               >
                 Soulignement natif, décoration en accent vif
               </a>

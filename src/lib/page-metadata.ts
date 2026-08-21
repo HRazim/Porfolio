@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { OG_LOCALE, pathFor, type Locale, type PageKey } from '@/content/i18n';
+import { alternatesFor, OG_LOCALE, pathFor, type Locale, type PageKey } from '@/content/i18n';
 import { PAGE_META } from '@/content/site-copy';
 
 import { pageTitle, SITE_DESCRIPTION, SITE_NAME, SITE_URL, TITLE_TEMPLATE } from './site';
@@ -92,6 +92,7 @@ export function homeMetadata(locale: Locale): Metadata {
     description: PAGE_META.home.description[locale],
     alternates: {
       canonical: pathFor('home', locale),
+      languages: alternatesFor('home'),
     },
   };
 }
@@ -139,6 +140,11 @@ export function pageMetadata({
     description,
     alternates: {
       canonical,
+      // LES QUATRE EQUIVALENTS, PLUS `x-default`. Ils sont produits par la
+      // table des routes, pas ecrits : une page ne peut donc pas se declarer
+      // une alternative qui n'existe pas, ni en oublier une. La reciprocite
+      // en decoule — A designe B parce que la table les lie tous deux.
+      languages: alternatesFor(page, slug),
     },
     openGraph: {
       type,

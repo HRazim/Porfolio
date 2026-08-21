@@ -233,7 +233,11 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
             >
               <DocumentIcon size="sm" />
               {HOME.cvLabel[locale]}
-              {` (${cvMeta})`}
+              {/* La mention est entierement latine — « PDF, 129 Ko » dans les
+                  quatre langues — alors que la page qui la porte peut etre
+                  arabe. Isolee de gauche a droite, elle s’y compose dans le
+                  bon sens. */}
+              <span dir="ltr">{` (${cvMeta})`}</span>
             </a>
           </div>
         </Container>

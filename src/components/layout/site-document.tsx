@@ -72,8 +72,14 @@ export function SiteDocument({ locale, extraFontClass, children }: SiteDocumentP
     // corrige AVANT la premiere peinture si l’utilisateur a deja choisi, ou si
     // le systeme demande le mode sombre. `suppressHydrationWarning` : cet
     // attribut est donc reecrit hors de React, et c’est voulu.
+    // `dir` est aussi structurant que `lang` : il ne fait pas que retourner
+    // la page, il donne leur sens aux proprietes LOGIQUES — `margin-inline-
+    // start`, `border-inline-end`, `text-start`. Toute la mise en page en
+    // depend, et c'est pourquoi plus aucune propriete physique directionnelle
+    // ne subsiste dans le projet.
     <html
       lang={meta.htmlLang}
+      dir={meta.direction}
       data-mode={DEFAULT_MODE}
       suppressHydrationWarning
     >

@@ -68,7 +68,7 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                   <p className="max-w-measure text-body-md text-ink-muted">{entry.summary[locale]}</p>
                 )}
                 {entry.highlights[locale].length === 0 ? null : (
-                  <ul className="mt-2xs flex max-w-measure list-disc flex-col gap-3xs pl-md text-body-md text-ink-muted">
+                  <ul className="mt-2xs flex max-w-measure list-disc flex-col gap-3xs ps-md text-body-md text-ink-muted">
                     {entry.highlights[locale].map((highlight) => (
                       <li key={highlight}>{highlight}</li>
                     ))}
@@ -105,7 +105,7 @@ function LanguagesSection({ locale }: { readonly locale: Locale }) {
               className="flex flex-col gap-3xs rounded-md border border-border bg-paper px-md py-sm"
             >
               <span className="text-body-md text-ink">{language.name[locale]}</span>
-              <span className="font-mono text-body-sm text-ink-subtle">
+              <span dir="ltr" className="font-mono text-body-sm text-ink-subtle">
                 {formatLanguageQualification(language, locale)}
               </span>
             </li>

@@ -50,7 +50,11 @@ export function ProjectCard({ locale, project, headingLevel }: ProjectCardProps)
       {project.technologies.length === 0 ? null : (
         <ul className="flex list-none flex-wrap gap-2xs p-0">
           {project.technologies.map((technology) => (
-            <li key={technology} className="accent-chip px-2xs py-3xs font-mono text-body-sm">
+            <li
+              key={technology}
+              dir="ltr"
+              className="accent-chip px-2xs py-3xs font-mono text-body-sm"
+            >
               {technology}
             </li>
           ))}

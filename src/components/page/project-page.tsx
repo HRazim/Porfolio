@@ -147,7 +147,11 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
                 </h2>
                 <ul className="mt-md flex list-none flex-wrap gap-2xs p-0">
                   {project.technologies.map((technology) => (
-                    <li key={technology} className="accent-chip px-sm py-2xs font-mono text-body-sm">
+                    <li
+                      key={technology}
+                      dir="ltr"
+                      className="accent-chip px-sm py-2xs font-mono text-body-sm"
+                    >
                       {technology}
                     </li>
                   ))}
@@ -162,7 +166,7 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
                 >
                   {PROJECT_DETAIL.featuresHeading[locale]}
                 </h2>
-                <ul className="mt-md flex max-w-measure list-disc flex-col gap-2xs pl-md text-body-md text-ink-muted">
+                <ul className="mt-md flex max-w-measure list-disc flex-col gap-2xs ps-md text-body-md text-ink-muted">
                   {project.features[locale].map((feature) => (
                     <li key={feature}>{feature}</li>
                   ))}
@@ -208,7 +212,7 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
               <p>{PROJECT_DETAIL.learningsEmpty[locale]}</p>
             </Prose>
           ) : (
-            <ul className="mt-md flex max-w-measure list-disc flex-col gap-md pl-md text-body-md text-ink-muted">
+            <ul className="mt-md flex max-w-measure list-disc flex-col gap-md ps-md text-body-md text-ink-muted">
               {project.learnings[locale].map((learning) => (
                 <li key={learning}>{learning}</li>
               ))}
@@ -273,7 +277,7 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
                 {next === null ? null : (
                   <Link
                     href={pathFor('project', locale, next.slug)}
-                    className="flex flex-col gap-3xs text-ink link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent sm:text-right"
+                    className="flex flex-col gap-3xs text-ink link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent sm:text-end"
                   >
                     <span className="font-mono text-body-sm text-ink-subtle">
                       {PROJECT_DETAIL.nextLabel[locale]}

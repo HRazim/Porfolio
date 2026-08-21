@@ -77,7 +77,7 @@ export function ProjectCardCompact({ locale, project, headingLevel }: ProjectCar
                 coûterait vingt-sept pixels sur une carte qui en compte deux
                 cent trente-neuf. Le libellé complet reste annoncé aux lecteurs
                 d’écran, qui n’ont que faire d’un pictogramme. */}
-            <ArrowIcon size="sm" className="ml-2xs inline-block" />
+            <ArrowIcon size="sm" className="ms-2xs inline-block" />
             <span className="sr-only">{HOME.featuredCardCta[locale]}</span>
           </span>
         </Link>
@@ -88,7 +88,7 @@ export function ProjectCardCompact({ locale, project, headingLevel }: ProjectCar
       {shown.length === 0 ? null : (
         <ul className="mt-auto flex list-none flex-wrap gap-3xs p-0">
           {shown.map((technology) => (
-            <li key={technology} className="accent-chip px-2xs py-3xs font-mono text-body-sm">
+            <li key={technology} dir="ltr" className="accent-chip px-2xs py-3xs font-mono text-body-sm">
               {technology}
             </li>
           ))}
