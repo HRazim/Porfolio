@@ -223,57 +223,46 @@ export function alternatesFor(
    servirait au robot d’indexation un contenu qui n’est pas celui de l’URL.
    --------------------------------------------------------------------------- */
 
-export const LOCALE_STORAGE_KEY = 'portfolio-locale';
+/* ---------------------------------------------------------------------------
+   IL N'Y A PLUS DE REDIRECTION DE LANGUE, ET C'EST LA CORRECTION.
+   ---------------------------------------------------------------------------
+   Un script d'amorcage vivait ici. Il memorisait la langue de chaque page
+   visitee, et, sur la racine nue, renvoyait vers la langue memorisee.
 
-/**
- * Script d’amorçage de la langue, injecté tel quel dans `<head>`.
- *
- * IL FAIT DEUX CHOSES, ET PAS UNE DE PLUS.
- *
- * 1. IL MÉMORISE. Sur chaque page, il écrit la langue de cette page dans le
- *    stockage local. Il n’y a donc aucun gestionnaire d’événement sur le
- *    sélecteur : cliquer « Español » navigue vers une page espagnole, et
- *    c’est cette page qui enregistre le choix. Le sélecteur reste ce qu’il
- *    doit être — des liens.
- *
- * 2. IL RESTAURE, À UN SEUL ENDROIT. Sur la racine `/` — l’adresse qu’on
- *    atteint depuis un signet, un moteur ou un lien nu — et seulement là, une
- *    préférence enregistrée différente de la langue par défaut renvoie vers
- *    l’accueil de cette langue.
- *
- * POURQUOI PAS AILLEURS. « Une URL explicite l’emporte sur une préférence
- * enregistrée » : `/en/about` demande l’anglais, et rien ne doit contredire
- * cette demande. La racine est le seul cas où le visiteur n’a rien demandé.
- *
- * POURQUOI PAS DE SCINTILLEMENT. Le script est SYNCHRONE et placé avant tout
- * contenu : la redirection part avant la première peinture. Un `useEffect`
- * afficherait la page française puis sauterait — exactement ce qu’il faut
- * éviter. Même raison que le script du mode clair / sombre, voir src/lib/theme.ts.
- *
- * POURQUOI IL N’EMPÊCHE PAS L’INDEXATION. La redirection exige une préférence
- * ENREGISTRÉE. Un robot arrive avec un stockage vide : il reçoit la racine
- * française, telle qu’elle est servie.
- *
- * Le tout dans un try/catch : un stockage refusé — navigation privée, cookies
- * bloqués — ne doit jamais empêcher la page de s’afficher.
- */
-export function localeBootScript(locale: Locale): string {
-  const homes: Record<string, string> = {};
-  for (const target of LOCALES) homes[target] = pathFor('home', target);
+   IL RENDAIT LE FRANCAIS INATTEIGNABLE. Le francais est la seule langue sans
+   prefixe : sa racine est `/`, c'est-a-dire exactement l'adresse que le script
+   traitait comme une arrivee sans intention. Apres une visite en arabe, cliquer
+   « Francais » menait a `/`, ou le script lisait « arabe » et repartait vers
+   `/ar`. Le lien ne pouvait pas aboutir. L'anglais et l'espagnol, eux,
+   fonctionnaient — leur racine porte un prefixe, que le script laissait passer.
 
-  return [
-    '(function(){try{',
-    `var k=${JSON.stringify(LOCALE_STORAGE_KEY)};`,
-    `var c=${JSON.stringify(locale)};`,
-    `var h=${JSON.stringify(homes)};`,
-    `var r=${JSON.stringify(pathFor('home', DEFAULT_LOCALE))};`,
-    // L’export statique peut servir /index.html ; la barre finale est
-    // optionnelle. Les deux formes designent la meme adresse.
-    'var p=location.pathname.replace(/index\\.html$/,"").replace(/(.)\\/$/,"$1");',
-    'if(p==="")p=r;',
-    'var s=localStorage.getItem(k);',
-    'if(p===r&&s&&s!==c&&h[s]){location.replace(h[s]);return;}',
-    'localStorage.setItem(k,c);',
-    '}catch(x){}})()',
-  ].join('');
-}
+   LA DISTINCTION N'EST PAS RATTRAPABLE SUR UN SITE STATIQUE. Pour ne rediriger
+   que les arrivees sans intention, le script devrait savoir si le visiteur a
+   DEMANDE `/` ou s'il y a simplement atterri. Aucun signal disponible dans le
+   document ne repond a cette question :
+
+     - `location` est identique dans les deux cas — c'est tout le probleme ;
+     - `document.referrer` est vide depuis un signet comme depuis un lien
+       externe, et il est couramment ampute par une politique de referent ;
+     - le type de navigation (`performance`) distingue rechargement, retour
+       arriere et navigation, jamais une intention de langue ;
+     - un drapeau de session dirait « ce n'est pas la premiere page de cet
+       onglet », ce qui est une autre question : ouvrir `/` deliberement dans
+       un nouvel onglet redeviendrait indiscernable d'une arrivee subie.
+
+   Restait a marquer les liens du selecteur — `/?hl=fr`, `/#fr`. Cela
+   fonctionnerait, au prix d'une verrue dans la barre d'adresse a chaque
+   changement de langue, et d'une adresse partageable differente de l'adresse
+   canonique.
+
+   LE CHOIX EST DONC FAIT : plus de redirection. Une redirection qui empeche
+   d'atteindre une page coute plus cher que le confort qu'elle rendait, lequel
+   ne jouait que sur une seule adresse.
+
+   Le stockage part avec elle : rien d'autre ne le lisait, et une preference
+   que personne ne consulte n'est pas une preference, c'est du code mort.
+
+   CE QUI RESTE. Les quatre langues sont atteignables par leur adresse, le
+   selecteur mene toujours ou il dit, et le document ne porte plus qu'un seul
+   script d'amorcage — celui du theme, qui, lui, ne navigue pas.
+   --------------------------------------------------------------------------- */
