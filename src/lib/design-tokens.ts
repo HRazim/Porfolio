@@ -205,7 +205,7 @@ export const DURATION_TOKENS: readonly MotionToken[] = [
   { name: 'none', cssVar: '--duration-none', usage: 'Mouvement reduit — effectivement nul' },
   { name: 'fast', cssVar: '--duration-fast', usage: 'Survol, changement de couleur' },
   { name: 'base', cssVar: '--duration-base', usage: 'Bascule de mode, soulignement, elevation' },
-  { name: 'slow', cssVar: '--duration-slow', usage: 'Entree en cascade, apparition au defilement' },
+  { name: 'slow', cssVar: '--duration-slow', usage: 'Entree en cascade de l entete' },
   { name: 'stagger', cssVar: '--duration-stagger', usage: 'Pas de decalage d une cascade' },
 ] as const;
 
@@ -224,6 +224,158 @@ export const SHIFT_TOKENS: readonly MotionToken[] = [
 export const EASING_TOKENS: readonly MotionToken[] = [
   { name: 'out', cssVar: '--ease-out', usage: 'Entree, decompression' },
   { name: 'in-out', cssVar: '--ease-in-out', usage: 'Aller-retour, bascule' },
+] as const;
+
+/**
+ * ---------------------------------------------------------------------------
+ * INVENTAIRE DU MOUVEMENT
+ * ---------------------------------------------------------------------------
+ *
+ * Chaque mouvement du site, avec le jeton qui en fixe la duree, celui qui en
+ * fixe la courbe, et ce qui le declenche. La table est ici, et non dans le
+ * balisage du guide de style, pour une raison : une enumeration ecrite a la
+ * main dans du JSX ne se relit pas, elle se perime. Celle-ci se compare a la
+ * feuille compilee.
+ *
+ * `demo` dit si le guide de style peut MONTRER le mouvement sur place. Trois
+ * ne le peuvent pas : une transition de page suppose qu'on change de page, et
+ * l'ouverture d'un panneau suppose le panneau, qui vit dans l'entete.
+ * ---------------------------------------------------------------------------
+ */
+export interface MotionEntry {
+  /** Ce qui bouge, nomme du point de vue du lecteur. */
+  readonly label: string;
+  /** Selecteur ou attribut qui porte la regle, tel qu'il est ecrit. */
+  readonly target: string;
+  /** Proprietes animees. */
+  readonly properties: string;
+  /** Jeton de duree. */
+  readonly duration: string;
+  /** Jeton de courbe. */
+  readonly easing: string;
+  readonly trigger: string;
+  /** Le guide de style peut-il le montrer sur place ? */
+  readonly demo: boolean;
+}
+
+export const MOTION_INVENTORY: readonly MotionEntry[] = [
+  {
+    label: 'Entree en cascade',
+    target: '[data-enter]',
+    properties: 'opacite + translation de bloc',
+    duration: '--duration-slow',
+    easing: '--ease-out',
+    trigger: 'ouverture de page',
+    demo: true,
+  },
+  {
+    label: 'Entree en cascade, resserree',
+    target: '.cascade-tight [data-enter]',
+    properties: 'opacite + translation de bloc',
+    duration: '--duration-base',
+    easing: '--ease-out',
+    trigger: 'ouverture d une fiche',
+    demo: true,
+  },
+  {
+    label: 'Transition de page',
+    target: '::view-transition-old / new (root)',
+    properties: 'capture de page',
+    duration: '--duration-base',
+    easing: '--ease-in-out',
+    trigger: 'navigation entre documents',
+    demo: false,
+  },
+  {
+    label: 'Entete et pied, persistants',
+    target: '::view-transition-* (site-header, site-footer)',
+    properties: 'capture nommee',
+    duration: '--duration-base',
+    easing: '--ease-in-out',
+    trigger: 'navigation entre documents',
+    demo: false,
+  },
+  {
+    label: 'Ouverture d un panneau',
+    target: '.panel-enter',
+    properties: 'opacite',
+    duration: '--duration-fast',
+    easing: '--ease-out',
+    trigger: 'selecteur de langue, menu mobile',
+    demo: false,
+  },
+  {
+    label: 'Elevation d une carte',
+    target: '.project-card, .project-card-compact',
+    properties: 'transform, box-shadow, border-color',
+    duration: '--duration-base',
+    easing: '--ease-out',
+    trigger: 'survol et focus',
+    demo: true,
+  },
+  {
+    label: 'Retour du bouton d action',
+    target: '.button-primary',
+    properties: 'transform, box-shadow',
+    duration: '--duration-base',
+    easing: '--ease-out',
+    trigger: 'survol, focus, appui',
+    demo: true,
+  },
+  {
+    label: 'Soulignement balaye',
+    target: '.link-sweep::after',
+    properties: 'transform',
+    duration: '--duration-base',
+    easing: '--ease-out',
+    trigger: 'survol et focus',
+    demo: true,
+  },
+  {
+    label: 'Soulignement natif',
+    target: '.link-underline, .prose a',
+    properties: 'color, text-decoration-color, epaisseur',
+    duration: '--duration-fast / --duration-base',
+    easing: '--ease-out',
+    trigger: 'survol et focus',
+    demo: true,
+  },
+  {
+    label: 'Lien d evitement',
+    target: '.skip-link',
+    properties: 'transform',
+    duration: '--duration-fast',
+    easing: '--ease-out',
+    trigger: 'focus',
+    demo: false,
+  },
+  {
+    label: 'Chevron du selecteur',
+    target: '.disclosure-mark',
+    properties: 'rotate',
+    duration: '--duration-fast',
+    easing: '--ease-out',
+    trigger: 'ouverture du selecteur',
+    demo: false,
+  },
+  {
+    label: 'Fond de l entete',
+    target: '[data-site-header]',
+    properties: 'background-color, border-color',
+    duration: '--duration-base',
+    easing: '--ease-out',
+    trigger: 'defilement',
+    demo: false,
+  },
+  {
+    label: 'Bascule clair / sombre',
+    target: '[data-mode-changing] *',
+    properties: 'couleurs, fill, box-shadow',
+    duration: '--duration-base',
+    easing: '--ease-in-out',
+    trigger: 'bascule de mode',
+    demo: true,
+  },
 ] as const;
 
 /** Familles typographiques exposees par le systeme. */

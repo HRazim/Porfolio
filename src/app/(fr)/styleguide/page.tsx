@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/layout/container';
 import { PageShell } from '@/components/layout/page-shell';
+import { ProjectCard } from '@/components/project/project-card';
+import { ProjectCardCompact } from '@/components/project/project-card-compact';
 import { Grid } from '@/components/layout/grid';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
@@ -16,12 +18,14 @@ import { SpacingScale } from '@/components/styleguide/spacing-scale';
 import { ModeToggle } from '@/components/layout/mode-toggle';
 import { TypeSpecimen } from '@/components/styleguide/type-specimen';
 import type { Locale } from '@/content/i18n';
+import { getFeaturedProjects } from '@/content/projects';
 import { MAIN_CONTENT_ID, PAGE_META } from '@/content/site-copy';
 import {
   DURATION_TOKENS,
   EASING_TOKENS,
   FONT_TOKENS,
   GLYPH_TEST_LINE,
+  MOTION_INVENTORY,
   PANGRAMS,
   RADIUS_TOKENS,
   RULE_TOKENS,
@@ -117,7 +121,21 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return <p className="font-mono text-body-sm text-ink-subtle">{children}</p>;
 }
 
+/** Pastilles de demonstration : trois noms de technologie, de longueurs
+ *  differentes, pour que le repli de la rangee se voie. */
+const SAMPLE_CHIPS = ['PHP 8.3', 'Symfony 6.4 LTS', 'Docker'] as const;
+
+/** Les quatre rangs que la feuille declare. */
+const ENTER_RANKS = [1, 2, 3, 4] as const;
+
 export default function StyleguidePage() {
+  // La demonstration emploie une realisation REELLE, jamais une donnee
+  // inventee : une vignette qui ne montre pas ce que le site montre ne
+  // verifie rien. `getFeaturedProjects` ne rend jamais un tableau vide — la
+  // page d'accueil ne compilerait pas sans elle — mais l'index n'est pas
+  // garanti par le type, d'ou le repli.
+  const [sample] = getFeaturedProjects();
+
   return (
     /* `page={null}` : cette page n'existe qu'en francais. Le selecteur de
        langue renvoie donc a l'accueil de la langue visee — la seule
@@ -334,51 +352,13 @@ export default function StyleguidePage() {
             <ScalarTokenList tokens={SHIFT_TOKENS} cssVars={SHIFT_VARS} />
           </div>
 
-          <h3 className="mt-2xl text-display-sm text-ink">Les cinq animations</h3>
+          <h3 className="mt-2xl text-display-sm text-ink">Où ces jetons servent</h3>
           <Prose className="mt-2xs">
             <p>
-              Aucune ne retarde la lecture : le contenu est rendu statiquement
-              et présent dans le HTML servi. Aucune ne conditionne une
-              fonction. Toutes puisent leurs durées et leurs courbes dans les
-              jetons ci-dessus. Surtout, <strong>aucune ne pose une opacité
-              nulle en état de repos</strong> : la seule opacité nulle du
-              projet est le premier keyframe de <code>enter-rise</code>, dans
-              une animation à durée finie qui se termine d’elle-même.
-            </p>
-            <ul>
-              <li>
-                Entrée en cascade de l’en-tête, au chargement — quatre rangs
-                déclarés par <code>data-enter</code>, trois pas de{' '}
-                <code>--duration-stagger</code>, durée{' '}
-                <code>--duration-slow</code> : 560 ms au total. Une sixième
-                animation a existé, une apparition des sections au défilement ;
-                elle masquait le contenu et confiait sa révélation à un
-                observateur. Elle a été retirée.
-              </li>
-              <li>
-                Soulignement balayé des liens de navigation et de fiche —{' '}
-                <code>--duration-base</code>, au survol et au focus.
-              </li>
-              <li>
-                Élévation des cartes de réalisation —{' '}
-                <code>--duration-base</code>, translation{' '}
-                <code>--shift-lift</code>, bordure en accent vif.
-              </li>
-              <li>
-                Retour visuel du bouton d’action — anneau en accent vif au
-                survol, retour au repos à l’activation.
-              </li>
-              <li>
-                Fondu des couleurs à la bascule de mode —{' '}
-                <code>--duration-base</code>, armé le temps du basculement
-                seulement.
-              </li>
-            </ul>
-            <p>
-              Les cinq sont neutralisées par{' '}
-              <code>prefers-reduced-motion: reduce</code>, avec le défilement
-              doux. Sous cette préférence le script d’amorçage ne pose même pas{' '}
-              <code>data-motion</code>.
+              Les jetons ci-dessus n’ont de sens que rapportes a ce qu’ils
+              animent. L’inventaire complet — chaque mouvement, sa duree, sa
+              courbe et son declencheur — forme la section{' '}
+              <a href="#mouvement">Mouvement</a>, en fin de guide.
             </p>
           </Prose>
 
@@ -506,6 +486,210 @@ export default function StyleguidePage() {
               </li>
             ))}
           </Grid>
+        </Container>
+      </Section>
+
+      {/* ------------------------------------------------------------------ */}
+      <Section background="paper" labelledBy="cartes">
+        <Container>
+          <Eyebrow>06</Eyebrow>
+          <SectionHeading id="cartes">Vignettes de réalisation</SectionHeading>
+          <Prose className="mt-2xs">
+            <p>
+              Deux variantes, et elles ne repondent pas a la meme question. Sur
+              l’index, on COMPARE des realisations entre elles : la vignette doit
+              porter de quoi choisir. Sur l’accueil, on ne compare rien : trois
+              vignettes annoncent qu’il y a du travail derriere, et le visiteur
+              ouvre celle qui l’intrigue.
+            </p>
+            <p>
+              Les deux sont rendues ci-dessous avec la meme realisation, cote a
+              cote, pour que l’ecart se voie. Toutes deux sont cliquables de bord
+              a bord et ne coutent qu’UNE tabulation : le pseudo-element{' '}
+              <code>.card-stretch</code> etend le lien du titre a la carte
+              entiere, sans imbriquer de lien dans un lien.
+            </p>
+          </Prose>
+
+          <Grid columns={2} gap="lg" className="mt-xl items-start">
+            <div>
+              <p className="font-mono text-body-sm text-ink-subtle">
+                .project-card — index et fiches
+              </p>
+              <div className="mt-md">
+                <ProjectCard locale={locale} project={sample} headingLevel={3} />
+              </div>
+            </div>
+            <div>
+              <p className="font-mono text-body-sm text-ink-subtle">
+                .project-card-compact — accueil
+              </p>
+              <div className="mt-md">
+                <ProjectCardCompact locale={locale} project={sample} headingLevel={3} />
+              </div>
+            </div>
+          </Grid>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Pastilles de technologie</h3>
+          <Prose className="mt-2xs">
+            <p>
+              Deux aplats pour un meme role, parce qu’ils ne se posent pas sur le
+              meme fond. <code>.accent-chip</code> vit sur{' '}
+              <code>.project-card</code>, dont le fond est{' '}
+              <code>--color-surface</code> : l’ecart de clarte entre la pastille
+              et la carte n’y vaut que 6,5 points, d’ou le cerne en accent vif
+              qui la detache. <code>.card-chip</code> vit sur{' '}
+              <code>.project-card-compact</code>, dont le fond est{' '}
+              <code>--color-paper</code> : l’ecart passe a 14,4 points, la
+              pastille se detache d’elle-meme, et le cerne part — il dessinait
+              une boite autour d’un element qui ne fait rien, alors que l’accent
+              est reserve a ce qui s’ouvre.
+            </p>
+          </Prose>
+          <div className="mt-lg flex flex-col gap-lg">
+            <div className="rounded-md bg-surface p-md">
+              <p className="font-mono text-body-sm text-ink-subtle">
+                .accent-chip sur --color-surface
+              </p>
+              <ul className="mt-2xs flex list-none flex-wrap gap-2xs p-0">
+                {SAMPLE_CHIPS.map((label) => (
+                  <li key={label} className="accent-chip px-sm py-2xs font-mono text-body-sm">
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-md bg-paper p-md">
+              <p className="font-mono text-body-sm text-ink-subtle">
+                .card-chip sur --color-paper
+              </p>
+              <ul className="mt-2xs flex list-none flex-wrap gap-2xs p-0">
+                {SAMPLE_CHIPS.map((label) => (
+                  <li key={label} className="card-chip px-sm py-2xs font-mono text-body-sm">
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* ------------------------------------------------------------------ */}
+      <Section background="surface" labelledBy="mouvement">
+        <Container>
+          <Eyebrow>07</Eyebrow>
+          <SectionHeading id="mouvement">Mouvement</SectionHeading>
+          <Prose className="mt-2xs">
+            <p>
+              Treize mouvements, et une seule regle qui les gouverne tous :{' '}
+              <strong>aucun ne pose une opacite nulle en etat de repos</strong>.
+              La seule opacite nulle du projet est le premier keyframe de{' '}
+              <code>enter-rise</code>, dans une animation a duree finie qui se
+              termine d’elle-meme — sans evenement, sans hydratation, sans
+              observateur. Une sixieme animation a existe, une apparition des
+              sections au defilement : elle masquait le contenu et confiait sa
+              revelation a un observateur. Vingt-neuf sections pouvaient rester
+              invisibles pour toujours. Elle a ete retiree, et rien ne l’a
+              remplacee.
+            </p>
+            <p>
+              Les transitions de page n’ecrivent rien sur le contenu reel : le
+              fondu se joue sur des captures que l’agent utilisateur engendre
+              dans une couche a part. La ou l’API n’existe pas, la regle est
+              ignoree et il ne reste rien — une degradation vers zero, pas vers
+              un defaut.
+            </p>
+          </Prose>
+
+          <div className="mt-xl overflow-x-auto">
+            <table className="w-full border-collapse text-start">
+              <caption className="pb-sm text-start text-body-sm text-ink-subtle">
+                Duree et courbe sont des noms de jetons : leurs valeurs sont
+                celles de la section 04.
+              </caption>
+              <thead>
+                <tr className="border-b border-ink-subtle">
+                  {['Mouvement', 'Cible', 'Propriétés', 'Durée', 'Courbe', 'Déclencheur'].map(
+                    (head) => (
+                      <th
+                        key={head}
+                        scope="col"
+                        className="py-2xs pe-md font-mono text-body-sm font-medium text-ink"
+                      >
+                        {head}
+                      </th>
+                    ),
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {MOTION_INVENTORY.map((entry) => (
+                  <tr key={entry.target + entry.label} className="border-b border-border">
+                    <th
+                      scope="row"
+                      className="py-2xs pe-md text-body-sm font-normal text-ink"
+                    >
+                      {entry.label}
+                    </th>
+                    <td dir="ltr" className="py-2xs pe-md font-mono text-body-sm text-ink-muted">
+                      {entry.target}
+                    </td>
+                    <td className="py-2xs pe-md text-body-sm text-ink-muted">
+                      {entry.properties}
+                    </td>
+                    <td dir="ltr" className="py-2xs pe-md font-mono text-body-sm text-ink-muted">
+                      {entry.duration}
+                    </td>
+                    <td dir="ltr" className="py-2xs pe-md font-mono text-body-sm text-ink-muted">
+                      {entry.easing}
+                    </td>
+                    <td className="py-2xs pe-md text-body-sm text-ink-muted">{entry.trigger}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Cascade d’entrée</h3>
+          <Prose className="mt-2xs">
+            <p>
+              Elle a joue au chargement de cette page. Les quatre rangs
+              ci-dessous portent <code>data-enter</code> de 1 a 4 : un pas de{' '}
+              <code>--duration-stagger</code> les separe, et chacun dure{' '}
+              <code>--duration-slow</code>. Rechargez pour la revoir. Une fiche
+              de realisation emploie la meme mecanique sous{' '}
+              <code>.cascade-tight</code>, qui ramene la duree a{' '}
+              <code>--duration-base</code> : son premier ecran est entier avant
+              quatre cents millisecondes.
+            </p>
+          </Prose>
+          <ul className="mt-lg flex list-none flex-col gap-2xs p-0">
+            {ENTER_RANKS.map((rank) => (
+              <li
+                key={rank}
+                data-enter={rank}
+                className="rounded-sm border border-border bg-paper p-sm font-mono text-body-sm text-ink-muted"
+              >
+                data-enter=&quot;{rank}&quot;
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="mt-2xl text-display-sm text-ink">Mouvement réduit</h3>
+          <Prose className="mt-2xs">
+            <p>
+              Les treize sont neutralises par{' '}
+              <code>prefers-reduced-motion: reduce</code>, avec le defilement
+              doux. DEUX BARRIERES, et non une : le script d’amorcage ne pose
+              meme pas <code>data-motion</code>, donc la cascade n’est pas
+              armee ; et les regles de la feuille neutralisent chaque animation
+              nommement, au cas ou l’attribut serait pose autrement. Les
+              pseudo-elements de transition y sont nommes a part : la regle
+              universelle ne les atteint pas, <code>*</code> n’en selectionnant
+              aucun.
+            </p>
+          </Prose>
         </Container>
       </Section>
     </main>
