@@ -77,16 +77,28 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
   const hasPresentation = hasContext || hasTechnologies || hasFeatures;
 
   return (
-    <main id={MAIN_CONTENT_ID}>
+    /* CASCADE D'OUVERTURE. Les blocs entrent dans l'ordre de lecture, un rang
+       par bloc, 80 ms de pas, 200 ms de duree — `cascade-tight` resserre la
+       duree, voir globals.css.
+
+       LE SURTITRE ET LE TITRE N'ONT AUCUN RANG, ET C'EST LE POINT : un rang,
+       meme sans delai, ferait monter le titre depuis l'opacite nulle pendant
+       200 ms. Ils sont peints avec la page, a l'instant zero. La cascade
+       commence APRES eux — on lit le titre pendant que le reste arrive.
+
+       L'entree se fait sur l'axe de BLOC, jamais sur l'axe en ligne : c'est
+       la meme direction dans les quatre langues, et cela n'introduit aucune
+       propriete directionnelle physique a retourner en arabe. */
+    <main id={MAIN_CONTENT_ID} className="cascade-tight">
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{PROJECT_DETAIL.eyebrow[locale]}</p>
           <h1 className="section-rule mt-sm text-display-lg text-ink">{project.title[locale]}</h1>
           <Prose size="lead" className="mt-lg">
-            <p>{project.tagline[locale]}</p>
+            <p data-enter="1">{project.tagline[locale]}</p>
           </Prose>
 
-          <dl className="mt-2xl flex flex-wrap gap-x-2xl gap-y-md">
+          <dl data-enter="2" className="mt-2xl flex flex-wrap gap-x-2xl gap-y-md">
             <div className="flex flex-col gap-3xs">
               <dt className="font-mono text-body-sm text-ink-subtle">
                 {PROJECT_DETAIL.categoryHeading[locale]}
@@ -127,7 +139,7 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
       </Section>
 
       {hasPresentation ? (
-        <Section background="surface">
+        <Section background="surface" enter={3}>
           <Container>
             {hasContext ? (
               <>

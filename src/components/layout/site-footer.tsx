@@ -35,7 +35,11 @@ export function SiteFooter({ locale }: { readonly locale: Locale }) {
   // part et d’autre d’une ligne de mentions legales revenaient a lui donner
   // l’amplitude d’une section de contenu.
   return (
-    <footer className="border-t border-border bg-paper py-xl">
+    // `data-site-footer` ne sert qu'a une chose : donner prise a la regle qui
+    // lui attribue un `view-transition-name`. L'entete porte deja
+    // `data-site-header` pour son etat de defilement ; le pied suit la meme
+    // convention plutot que d'introduire une classe utilitaire de plus.
+    <footer data-site-footer className="border-t border-border bg-paper py-xl">
       <Container className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between">
         <p className="font-mono text-body-sm text-ink-subtle">
           {`© ${years} ${SITE_NAME}. ${FOOTER.copyright[locale]}`}

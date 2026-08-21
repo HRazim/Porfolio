@@ -130,7 +130,7 @@ export function LanguageDisclosure({ locale, children, className }: LanguageDisc
           commentaire : Tailwind analyse le fichier entier, commentaires
           compris, et le citer suffirait a faire entrer une regle
           directionnelle physique dans la feuille compilee. */}
-      <div className="absolute end-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-sm">
+      <div className="panel-enter absolute end-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-sm">
         {children}
       </div>
     </details>

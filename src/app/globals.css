@@ -1040,8 +1040,22 @@
   --enter-delay: calc(var(--duration-stagger) * 3);
 }
 
+/* La DUREE est une variable, pas une constante : deux cascades coexistent et
+   n'ont pas le meme budget. L'entete d'accueil est le premier ecran du site,
+   rien ne lui dispute l'attention, elle peut respirer sur 320 ms. La fiche de
+   realisation, elle, s'ouvre alors qu'on lit deja : son budget est de 400 ms
+   pour le premier ecran ENTIER, delais compris, ce que `--duration-slow` ne
+   permet pas des le deuxieme rang. */
 :root[data-motion='on'] [data-enter] {
-  animation: enter-rise var(--duration-slow) var(--ease-out) var(--enter-delay, 0ms) both;
+  animation: enter-rise var(--enter-duration, var(--duration-slow)) var(--ease-out)
+    var(--enter-delay, 0ms) both;
+}
+
+/* Cascade resserree — les fiches de realisation.
+   200 ms de duree, 80 ms de pas : rang 1 visible a 200 ms, rang 2 a 280,
+   rang 3 a 360. Le premier ecran est entier avant 400 ms. */
+.cascade-tight {
+  --enter-duration: var(--duration-base);
 }
 
 /* --- APPARITION DES SECTIONS AU DEFILEMENT : SUPPRIMEE --------------------
@@ -1071,6 +1085,112 @@
    animation A DUREE FINIE qui se termine toujours, sans dependre d'aucun
    evenement.
    ------------------------------------------------------------------------- */
+
+/* ===========================================================================
+   TRANSITIONS DE PAGE
+   ---------------------------------------------------------------------------
+   MECANISME : l'API de transition de vue, dans sa forme INTER-DOCUMENTS, qui
+   est purement declarative. Deux documents de meme origine qui portent tous
+   deux `@view-transition { navigation: auto }` s'enchainent par un fondu que
+   le navigateur compose lui-meme, sans une ligne de JavaScript.
+
+   POURQUOI CELLE-LA. Le critere qui prime ici n'est pas l'effet, c'est le
+   risque : une page ne doit JAMAIS pouvoir rester masquee. Cette forme-la est
+   la seule des trois qui ne puisse pas le faire.
+
+     - Elle n'ecrit rien sur le contenu reel. Le fondu se joue sur des
+       pseudo-elements que l'agent utilisateur engendre — des captures — dans
+       une couche separee. Le DOM, lui, n'est jamais mis a `opacity: 0`.
+     - La ou l'API n'existe pas, `@view-transition` est une regle-@ inconnue,
+       donc IGNOREE, et les selecteurs `::view-transition-*` sont invalides,
+       donc leurs regles sont jetees. Il ne reste rien : la navigation est
+       celle d'avant. C'est une degradation vers zero, pas vers un defaut.
+     - Elle ne demande aucun script. Elle fonctionne donc AUSSI lorsque
+       JavaScript est coupe — ou, plus exactement, elle fonctionne SURTOUT
+       la : sans script, `next/link` redevient un lien ordinaire et toute
+       navigation devient inter-documents.
+
+   CE QU'ELLE NE COUVRE PAS, ET CE QUI S'EN CHARGE. Avec JavaScript, une
+   navigation interne a une langue est prise en main par le routeur : elle est
+   INTRA-document, et `@view-transition` ne s'y applique pas. Ce cas est
+   couvert par la cascade d'entree ci-dessus, qui rejoue a chaque montage —
+   le routeur remplace le `<main>`, l'animation repart. Elle est a duree finie
+   et se termine seule : meme garantie.
+
+   POURQUOI PAS UN COMPOSANT CLIENT. React expose `<ViewTransition>`, que la
+   documentation de Next.js 16 recommande pour les navigations du routeur.
+   Deux constats l'ont ecarte, verifies et non supposes : le paquet `react`
+   installe (19.2.8) ne l'exporte pas — seule la version canari que Next.js
+   embarque le fait — et `@types/react` (19.2.18) ne le declare pas, ce qui en
+   ferait une erreur de compilation sous `strict`. Le faire passer exigerait
+   d'ecrire soi-meme la declaration d'une API experimentale. Le rapport entre
+   le gain et la dette n'y est pas.
+
+   DUREE : `--duration-base`, soit 200 ms, sous la limite de 300 ms.
+   =========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/* --- L'ENTETE ET LE PIED NE CLIGNOTENT PAS -------------------------------
+   Nommes, ils sortent de la capture `root` et forment leur propre groupe. Le
+   navigateur apparie alors l'ancien et le nouveau : comme ils sont identiques
+   d'une page a l'autre, il n'y a ni deplacement ni changement de taille a
+   interpoler, et le fondu entre deux images identiques est imperceptible —
+   l'agent utilisateur compose ces deux couches en `plus-lighter` precisement
+   pour que la somme reste constante.
+
+   Le nom doit etre UNIQUE dans le document : l'entete et le pied ne sont
+   rendus qu'une fois chacun, par `PageShell`. */
+[data-site-header] {
+  view-transition-name: site-header;
+}
+
+[data-site-footer] {
+  view-transition-name: site-footer;
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-footer),
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/* --- OUVERTURE D'UN PANNEAU ----------------------------------------------
+   Le selecteur de langue et le menu mobile apparaissaient d'un coup. Ils
+   entrent maintenant en fondu.
+
+   `@starting-style` donne la valeur AVANT la premiere resolution de style,
+   c'est-a-dire l'equivalent d'un `from` pour une transition. L'etat de REPOS,
+   lui, n'est pas declare : il vaut donc `opacity: 1`, comme tout element.
+   C'est ce qui rend la regle inoffensive — la ou `@starting-style` n'existe
+   pas, elle est ignoree et le panneau s'affiche immediatement, exactement
+   comme avant.
+
+   Aucune animation de SORTIE : elle exigerait de transitionner depuis
+   `display: none`, donc `transition-behavior: allow-discrete`, pour un
+   panneau qu'on ferme et qu'on ne regarde plus. */
+.panel-enter {
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @starting-style {
+    .panel-enter {
+      opacity: 0;
+    }
+  }
+}
 
 /* --- Bascule clair / sombre ----------------------------------------------
    `data-mode-changing` n'est pose que le temps du basculement, par la
@@ -1141,6 +1261,33 @@
 
   /* Soulignement balaye : il apparait, il ne se deploie plus. */
   .link-sweep::after {
+    transition: none !important;
+  }
+
+  /* --- TRANSITIONS DE PAGE ------------------------------------------------
+     DEUX BARRIERES, comme partout ailleurs dans ce fichier.
+
+     La premiere refuse la transition a la source : `navigation: none` annule
+     l'adhesion du document, et le navigateur enchaine les pages sans capture.
+
+     La seconde neutralise les animations des pseudo-elements AU CAS OU une
+     transition serait declenchee autrement. Elle est indispensable : la regle
+     universelle ci-dessus ne les atteint pas, `*` ne selectionnant aucun
+     pseudo-element. Sans animation, la transition se termine des la premiere
+     image et les captures sont retirees. */
+  @view-transition {
+    navigation: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  /* Ouverture des panneaux : ils apparaissent, ils ne fondent plus. */
+  .panel-enter {
     transition: none !important;
   }
 
