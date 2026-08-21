@@ -1,11 +1,13 @@
 import Link from 'next/link';
 
 import { ArrowIcon } from '@/components/ui/icons';
+import { pathFor, type Locale } from '@/content/i18n';
 import { formatPeriodYears } from '@/content/period';
 import { CATEGORY_LABELS, pickCardTechnologies, type Project } from '@/content/projects';
 import { COMMON, HOME } from '@/content/site-copy';
 
 export interface ProjectCardCompactProps {
+  readonly locale: Locale;
   readonly project: Project;
   /** Niveau du titre, pour ne jamais sauter de rang dans le plan de la page. */
   readonly headingLevel: 2 | 3;
@@ -45,17 +47,17 @@ export interface ProjectCardCompactProps {
  * Rendu côté serveur.
  * ---------------------------------------------------------------------------
  */
-export function ProjectCardCompact({ project, headingLevel }: ProjectCardCompactProps) {
+export function ProjectCardCompact({ locale, project, headingLevel }: ProjectCardCompactProps) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
-  const years = formatPeriodYears(project.period);
+  const years = formatPeriodYears(project.period, locale);
   const { shown, extra } = pickCardTechnologies(project);
 
   return (
     <article className="project-card group relative flex h-full flex-col gap-2xs p-xs">
       <p className="flex flex-wrap items-center gap-x-2xs font-mono text-body-sm text-ink-subtle">
-        <span>{CATEGORY_LABELS[project.category]}</span>
-        <span aria-hidden="true">{HOME.featuredCardSeparator}</span>
-        <span>{years ?? COMMON.toBeSpecified}</span>
+        <span>{CATEGORY_LABELS[project.category][locale]}</span>
+        <span aria-hidden="true">{HOME.featuredCardSeparator[locale]}</span>
+        <span>{years ?? COMMON.toBeSpecified[locale]}</span>
       </p>
 
       {/* Le `line-clamp` est posé sur un span À L’INTÉRIEUR du lien, jamais
@@ -66,37 +68,37 @@ export function ProjectCardCompact({ project, headingLevel }: ProjectCardCompact
           est donc borné à deux lignes sans mettre la zone cliquable en jeu. */}
       <Heading className="text-body-md text-ink">
         <Link
-          href={`/realisations/${project.slug}`}
+          href={pathFor('project', locale, project.slug)}
           className="card-stretch transition-colors duration-[var(--duration-fast)] ease-out group-hover:text-accent"
         >
           <span className="line-clamp-2">
-            {project.title}
+            {project.title[locale]}
             {/* L’invitation tient dans la flèche : une ligne de texte de plus
                 coûterait vingt-sept pixels sur une carte qui en compte deux
                 cent trente-neuf. Le libellé complet reste annoncé aux lecteurs
                 d’écran, qui n’ont que faire d’un pictogramme. */}
-            <ArrowIcon size="sm" className="ml-2xs inline-block" />
-            <span className="sr-only">{HOME.featuredCardCta}</span>
+            <ArrowIcon size="sm" className="ms-2xs inline-block" />
+            <span className="sr-only">{HOME.featuredCardCta[locale]}</span>
           </span>
         </Link>
       </Heading>
 
-      <p className="line-clamp-2 text-body-sm text-ink-muted">{project.tagline}</p>
+      <p className="line-clamp-2 text-body-sm text-ink-muted">{project.tagline[locale]}</p>
 
       {shown.length === 0 ? null : (
         <ul className="mt-auto flex list-none flex-wrap gap-3xs p-0">
           {shown.map((technology) => (
-            <li key={technology} className="accent-chip px-2xs py-3xs font-mono text-body-sm">
+            <li key={technology} dir="ltr" className="accent-chip px-2xs py-3xs font-mono text-body-sm">
               {technology}
             </li>
           ))}
           {extra === 0 ? null : (
             <li className="accent-chip px-2xs py-3xs font-mono text-body-sm">
               <span aria-hidden="true">
-                {HOME.featuredCardMore.replace('{count}', String(extra))}
+                {HOME.featuredCardMore[locale].replace('{count}', String(extra))}
               </span>
               <span className="sr-only">
-                {HOME.featuredCardMoreLabel.replace('{count}', String(extra))}
+                {HOME.featuredCardMoreLabel[locale].replace('{count}', String(extra))}
               </span>
             </li>
           )}

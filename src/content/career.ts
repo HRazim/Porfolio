@@ -15,6 +15,7 @@
  * ---------------------------------------------------------------------------
  */
 
+import { invariant, type Locale, type Translated, type TranslatedList } from './i18n';
 import type { Period } from './period';
 
 export type CareerKind = 'formation' | 'experience';
@@ -24,16 +25,16 @@ export interface CareerEntry {
   readonly id: string;
   readonly kind: CareerKind;
   /** Intitule du diplome ou du poste. */
-  readonly title: string;
+  readonly title: Translated;
   /** Etablissement ou employeur. `null` tant que la donnee n’est pas etablie. */
-  readonly organisation: string | null;
+  readonly organisation: Translated | null;
   /** Ville. `null` lorsqu’elle n’est pas documentee separement. */
-  readonly location: string | null;
+  readonly location: Translated | null;
   readonly period: Period;
   /** Resume en une a deux phrases. `null` tant que la redaction n’a pas eu lieu. */
-  readonly summary: string | null;
+  readonly summary: Translated | null;
   /** Points saillants. Tableau vide plutot que champ optionnel. */
-  readonly highlights: readonly string[];
+  readonly highlights: TranslatedList;
 }
 
 /**
@@ -44,56 +45,94 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
   {
     id: 'master-ingenierie-affaires',
     kind: 'formation',
-    title: 'Master Ingénierie d’Affaires',
-    organisation: 'Paris School of Business',
+    title: {
+      fr: 'Master Ingénierie d’Affaires',
+      en: 'Master Ingénierie d’Affaires (business engineering)',
+      es: 'Master Ingénierie d’Affaires (ingeniería de negocios)',
+      ar: 'Master Ingénierie d’Affaires (هندسة الأعمال)',
+    },
+    organisation: invariant('Paris School of Business'),
     location: null,
     period: { kind: 'connue', start: '2026', end: '2028' },
     summary: null,
-    highlights: ['En alternance : quatre jours en entreprise, un jour en formation'],
+    highlights: {
+      fr: ['En alternance : quatre jours en entreprise, un jour en formation'],
+      en: ['Work-study: four days in the company, one day in class'],
+      es: ['En alternancia: cuatro días en la empresa, un día de formación'],
+      ar: ['بالتناوب: أربعة أيام في الشركة، ويوم في التكوين'],
+    },
   },
   {
     id: 'but-informatique',
     kind: 'formation',
-    title: 'BUT Informatique, double diplôme',
-    organisation: 'IUT de Vélizy-Villacoublay — Université Paris-Saclay',
+    title: {
+      fr: 'BUT Informatique, double diplôme',
+      en: 'BUT Informatique (three-year computer science degree), double degree',
+      es: 'BUT Informatique (grado en informática), doble titulación',
+      ar: 'BUT Informatique (إجازة في المعلوماتية)، شهادة مزدوجة',
+    },
+    organisation: invariant('IUT de Vélizy-Villacoublay — Université Paris-Saclay'),
     location: null,
     period: { kind: 'connue', start: '2023', end: '2026' },
     summary: null,
     // L’annee au Quebec est une composante du double diplome, pas une
     // formation distincte : elle est donc rattachee a cette entree.
-    highlights: [
-      'Année à l’Université du Québec à Chicoutimi en 2025-2026, au titre du double diplôme',
-    ],
+    highlights: {
+      fr: ['Année à l’Université du Québec à Chicoutimi en 2025-2026, au titre du double diplôme'],
+      en: ['Year at the Université du Québec à Chicoutimi in 2025-2026, as part of the double degree'],
+      es: ['Año en la Université du Québec à Chicoutimi en 2025-2026, dentro de la doble titulación'],
+      ar: ['سنة في Université du Québec à Chicoutimi في 2025-2026، ضمن الشهادة المزدوجة'],
+    },
   },
   {
     id: 'baccalaureat-sti2d',
     kind: 'formation',
-    title: 'Baccalauréat STI2D',
-    organisation: 'Lycée Saint-François d’Assise',
-    location: 'Montigny-le-Bretonneux',
+    title: {
+      fr: 'Baccalauréat STI2D',
+      en: 'Baccalauréat STI2D (French secondary school diploma, engineering track)',
+      es: 'Baccalauréat STI2D (bachillerato francés, itinerario tecnológico)',
+      ar: 'Baccalauréat STI2D (البكالوريا الفرنسية، مسار تكنولوجي)',
+    },
+    organisation: invariant('Lycée Saint-François d’Assise'),
+    location: invariant('Montigny-le-Bretonneux'),
     period: { kind: 'connue', start: '2020', end: '2023' },
     summary: null,
-    highlights: ['Mention Bien'],
+    highlights: {
+      fr: ['Mention Bien'],
+      en: ['Mention Bien (French grading, 14 to 16 out of 20)'],
+      es: ['Mention Bien (calificación francesa, de 14 a 16 sobre 20)'],
+      ar: ['Mention Bien (التقدير الفرنسي، من 14 إلى 16 من 20)'],
+    },
   },
   {
     id: 'egis-developpeur',
     kind: 'experience',
-    title: 'Développeur informatique, stage',
-    organisation: 'Egis',
-    location: 'Guyancourt',
+    title: {
+      fr: 'Développeur informatique, stage',
+      en: 'Software developer, internship',
+      es: 'Desarrollador informático, prácticas',
+      ar: 'مطوِّر برمجيات، تدريب',
+    },
+    organisation: invariant('Egis'),
+    location: invariant('Guyancourt'),
     period: { kind: 'connue', start: '2025-04-14', end: '2025-06-20' },
     summary: null,
-    highlights: [],
+    highlights: { fr: [], en: [], es: [], ar: [] },
   },
   {
     id: 'forum-orientation-trappes',
     kind: 'experience',
-    title: 'Intervenant',
-    organisation: 'Forum de l’orientation',
-    location: 'Trappes',
+    title: {
+      fr: 'Intervenant',
+      en: 'Speaker',
+      es: 'Ponente',
+      ar: 'متحدّث',
+    },
+    organisation: invariant('Forum de l’orientation'),
+    location: invariant('Trappes'),
     period: { kind: 'connue', start: '2025-02', end: '2025-02' },
     summary: null,
-    highlights: [],
+    highlights: { fr: [], en: [], es: [], ar: [] },
   },
 ];
 
@@ -104,53 +143,80 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
  */
 export type LanguageLevel = 'langue-maternelle' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
 
-export const LANGUAGE_LEVEL_LABELS: Readonly<Record<LanguageLevel, string>> = {
-  'langue-maternelle': 'Langue maternelle',
-  C2: 'C2',
-  C1: 'C1',
-  B2: 'B2',
-  B1: 'B1',
-  A2: 'A2',
-  A1: 'A1',
+export const LANGUAGE_LEVEL_LABELS: Readonly<Record<LanguageLevel, Translated>> = {
+  'langue-maternelle': {
+    fr: 'Langue maternelle',
+    en: 'Native language',
+    es: 'Lengua materna',
+    ar: 'اللغة الأم',
+  },
+  // Les codes du cadre europeen sont des codes, pas des mots : identiques
+  // dans toutes les langues.
+  C2: invariant('C2'),
+  C1: invariant('C1'),
+  B2: invariant('B2'),
+  B1: invariant('B1'),
+  A2: invariant('A2'),
+  A1: invariant('A1'),
 };
 
 export interface LanguageSkill {
   /** Identifiant stable, en kebab-case. */
   readonly id: string;
-  readonly name: string;
+  readonly name: Translated;
   /**
    * Niveau du cadre europeen. `null` lorsqu’un score certifie le remplace :
    * un chiffre verifiable vaut mieux qu’une auto-evaluation posee a cote.
    */
   readonly level: LanguageLevel | null;
   /** Certification obtenue. `null` en l’absence de certification documentee. */
-  readonly certification: string | null;
+  readonly certification: Translated | null;
 }
 
 const LANGUAGES: readonly LanguageSkill[] = [
   {
     id: 'francais',
-    name: 'Français',
+    name: {
+      fr: 'Français',
+      en: 'French',
+      es: 'Francés',
+      ar: 'الفرنسية',
+    },
     level: 'langue-maternelle',
     certification: null,
   },
   {
     id: 'anglais',
-    name: 'Anglais',
+    name: {
+      fr: 'Anglais',
+      en: 'English',
+      es: 'Inglés',
+      ar: 'الإنجليزية',
+    },
     // Le score se suffit : une equivalence CECRL posee a cote serait une
     // interpretation de ma part, la que le chiffre est verifiable.
     level: null,
-    certification: 'TOEIC 870',
+    certification: invariant('TOEIC 870'),
   },
   {
     id: 'espagnol',
-    name: 'Espagnol',
+    name: {
+      fr: 'Espagnol',
+      en: 'Spanish',
+      es: 'Español',
+      ar: 'الإسبانية',
+    },
     level: 'B2',
     certification: null,
   },
   {
     id: 'arabe',
-    name: 'Arabe',
+    name: {
+      fr: 'Arabe',
+      en: 'Arabic',
+      es: 'Árabe',
+      ar: 'العربية',
+    },
     level: 'B1',
     certification: null,
   },
@@ -175,39 +241,86 @@ export function getLanguages(): readonly LanguageSkill[] {
 export interface Reading {
   /** Identifiant stable, en kebab-case. */
   readonly id: string;
-  readonly title: string;
-  readonly author: string;
-  readonly takeaway: string;
+  readonly title: Translated;
+  readonly author: Translated;
+  readonly takeaway: Translated;
 }
 
 const READINGS: readonly Reading[] = [
   {
     id: 'lois-nature-humaine',
-    title: 'Les lois de la nature humaine',
-    author: 'Robert Greene',
-    takeaway:
-      'Écouter ce qui n’est pas dit. En entretien comme en négociation, l’information utile est rarement celle qu’on vous donne.',
+    title: {
+      fr: 'Les lois de la nature humaine',
+      en: 'The Laws of Human Nature',
+      es: 'Las leyes de la naturaleza humana',
+      ar: 'قوانين الطبيعة البشرية',
+    },
+    author: invariant('Robert Greene'),
+    takeaway: {
+      fr:
+        'Écouter ce qui n’est pas dit. En entretien comme en négociation, l’information utile est rarement celle qu’on vous donne.',
+      en:
+        'Listen to what is not said. In an interview as in a negotiation, the useful piece of information is rarely the one you are handed.',
+      es:
+        'Escuchar lo que no se dice. En una entrevista como en una negociación, la información útil rara vez es la que te dan.',
+      ar:
+        'الإصغاء إلى ما لا يُقال. في المقابلة كما في التفاوض، نادرًا ما تكون المعلومة المفيدة هي تلك التي تُعطى لك.',
+    },
   },
   {
     id: 'psychologie-argent',
-    title: 'La psychologie de l’argent',
-    author: 'Morgan Housel',
-    takeaway:
-      'Les décisions financières sont d’abord des décisions humaines. Comprendre le comportement avant les chiffres.',
+    title: {
+      fr: 'La psychologie de l’argent',
+      en: 'The Psychology of Money',
+      es: 'La psicología del dinero',
+      ar: 'سيكولوجية المال',
+    },
+    author: invariant('Morgan Housel'),
+    takeaway: {
+      fr:
+        'Les décisions financières sont d’abord des décisions humaines. Comprendre le comportement avant les chiffres.',
+      en:
+        'Financial decisions are human decisions first. Understand the behaviour before the numbers.',
+      es:
+        'Las decisiones financieras son ante todo decisiones humanas. Entender el comportamiento antes que las cifras.',
+      ar:
+        'القرارات المالية هي قرارات بشرية قبل كل شيء. فهم السلوك قبل الأرقام.',
+    },
   },
   {
     id: 'outlive',
-    title: 'Outlive',
-    author: 'Peter Attia',
-    takeaway:
-      'Raisonner en horizon long plutôt qu’en résultat immédiat, et l’appliquer ailleurs qu’à la santé.',
+    title: invariant('Outlive'),
+    author: invariant('Peter Attia'),
+    takeaway: {
+      fr:
+        'Raisonner en horizon long plutôt qu’en résultat immédiat, et l’appliquer ailleurs qu’à la santé.',
+      en:
+        'Think in long horizons rather than immediate results, and apply it beyond health.',
+      es:
+        'Razonar a largo plazo en vez de buscar el resultado inmediato, y aplicarlo más allá de la salud.',
+      ar:
+        'التفكير على المدى الطويل بدل النتيجة الفورية، وتطبيق ذلك في غير مجال الصحة.',
+    },
   },
   {
     id: 'notre-derniere-invention',
-    title: 'Notre dernière invention',
-    author: 'James Barrat',
-    takeaway:
-      'S’intéresser à ce qu’une technologie rend possible avant de s’enthousiasmer pour ce qu’elle fait déjà.',
+    title: {
+      fr: 'Notre dernière invention',
+      en: 'Our Final Invention',
+      es: 'Nuestra invención final',
+      ar: 'اختراعنا الأخير',
+    },
+    author: invariant('James Barrat'),
+    takeaway: {
+      fr:
+        'S’intéresser à ce qu’une technologie rend possible avant de s’enthousiasmer pour ce qu’elle fait déjà.',
+      en:
+        'Take an interest in what a technology makes possible before getting excited about what it already does.',
+      es:
+        'Interesarse por lo que una tecnología hace posible antes de entusiasmarse por lo que ya hace.',
+      ar:
+        'الاهتمام بما تتيحه التقنية قبل الحماس لما تفعله بالفعل.',
+    },
   },
 ];
 
@@ -221,9 +334,12 @@ export function getReadings(): readonly Reading[] {
  * deux. La composition vit ici et non dans le composant, celui-ci ne
  * redigeant rien.
  */
-export function formatLanguageQualification(language: LanguageSkill): string {
+export function formatLanguageQualification(
+  language: LanguageSkill,
+  locale: Locale,
+): string {
   const parts: string[] = [];
-  if (language.level !== null) parts.push(LANGUAGE_LEVEL_LABELS[language.level]);
-  if (language.certification !== null) parts.push(language.certification);
+  if (language.level !== null) parts.push(LANGUAGE_LEVEL_LABELS[language.level][locale]);
+  if (language.certification !== null) parts.push(language.certification[locale]);
   return parts.join(' — ');
 }

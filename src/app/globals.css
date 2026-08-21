@@ -58,12 +58,27 @@
      (voir src/lib/fonts.ts). Les piles completes sont composees ici.
      Utilitaires generes : font-display, font-body, font-mono.
      ========================================================================= */
-  --font-display: var(--font-display-face), 'Iowan Old Style', Georgia,
+  /* LA FONTE ARABE EST DANS LES TROIS PILES, ET C'EST TOUT LE MECANISME.
+     Le repli de police se fait GLYPHE PAR GLYPHE : Instrument Serif et
+     Instrument Sans ne portent aucun caractere arabe, le navigateur passe
+     donc a la famille suivante pour ces caracteres-la, et pour eux seuls.
+     Un mot latin au milieu d'une phrase arabe — Egis, Kotlin — reste rendu
+     par Instrument. Aucune regle `:lang()` n'est necessaire.
+
+     La valeur de repli du `var()` n'est pas une politesse : sans elle, une
+     variable indefinie rendrait la declaration entiere invalide sur les
+     pages non arabes, ou `--font-arabic-face` n'est pas posee. Le nom cite
+     ne designe alors qu'une fonte eventuellement installee localement, et
+     rien n'est telecharge. */
+  --font-display: var(--font-display-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), 'Iowan Old Style', Georgia,
     'Times New Roman', serif;
-  --font-body: var(--font-body-face), system-ui, -apple-system, 'Segoe UI',
-    sans-serif;
-  --font-mono: var(--font-mono-face), ui-monospace, 'SFMono-Regular', Menlo,
-    'Cascadia Mono', monospace;
+  --font-body: var(--font-body-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-mono: var(--font-mono-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), ui-monospace,
+    'SFMono-Regular', Menlo, 'Cascadia Mono', monospace;
 
   /* =========================================================================
      2. ECHELLE TYPOGRAPHIQUE — MODULAIRE, RATIO CONSTANT 1.25
@@ -346,7 +361,14 @@
      flux, chaque pixel qu'il prend repousse le titre hors du premier ecran.
      Voir le calcul de hauteur cumulee dans le rapport de refonte. */
   --container-portrait-sm: 8rem; /* 128px — pile mobile */
-  --container-portrait: 20rem; /* 320px — cote a cote */
+  /* 12rem et non 20rem. La valeur n'est pas un gout, c'est un reste :
+     l'accroche a besoin de 735px pour se couper apres la virgule au plus
+     grand corps, la largeur de contenu vaut 1024px une fois les marges
+     laterales a leur maximum, il reste donc 289px a partager entre le
+     portrait et l'ecart. 12rem + 3rem = 240px : la colonne garde 784px,
+     soit 49px de marge sur le besoin. Un portrait de 20rem ne laissait que
+     608px et imposait trois lignes. */
+  --container-portrait: 12rem; /* 192px — cote a cote */
 
   /* =========================================================================
      8. FOCUS

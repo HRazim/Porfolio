@@ -1,6 +1,9 @@
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { LOCALE_META, type Locale } from '@/content/i18n';
+import { BYTE_UNITS } from '@/content/site-copy';
+
 /**
  * ---------------------------------------------------------------------------
  * TAILLE REELLE D’UN ACTIF DE public/
@@ -35,14 +38,29 @@ export function publicAssetBytes(publicPath: string): number {
 }
 
 /**
- * Poids lisible, en kibioctets entiers.
+ * Poids lisible, DANS LA LANGUE DE LA PAGE.
  *
  * Arrondi a l’unite : la decimale d’un poids de fichier n’informe personne,
  * et une valeur trop precise donne l’illusion d’une mesure qu’elle n’est pas.
  * Au-dela du mebioctet, une decimale redevient utile — « 1,4 Mo » et
  * « 1 Mo » ne disent pas la meme chose.
+ *
+ * La langue est un PARAMETRE OBLIGATOIRE, et non un parametre par defaut :
+ * la version precedente ecrivait « Ko » en dur, ce qui n’etait faux que dans
+ * trois langues sur quatre et ne se voyait donc pas depuis le francais. Une
+ * valeur par defaut aurait laisse la meme faute possible, silencieusement.
+ *
+ * Ce qui varie tient en deux valeurs, chacune prise dans sa table :
+ *   - l’unite,      dans BYTE_UNITS   (contenu, quatre langues obligatoires) ;
+ *   - la virgule,   dans LOCALE_META  (format, une entree par langue).
+ * Aucune des deux n’est ecrite ici.
  */
-export function formatBytes(bytes: number): string {
-  if (bytes < KIB * KIB) return `${Math.round(bytes / KIB)} Ko`;
-  return `${(bytes / (KIB * KIB)).toFixed(1).replace('.', ',')} Mo`;
+export function formatBytes(bytes: number, locale: Locale): string {
+  if (bytes < KIB * KIB) {
+    return `${Math.round(bytes / KIB)} ${BYTE_UNITS.kibibyte[locale]}`;
+  }
+  // `toFixed` produit toujours un point : c’est la representation machine du
+  // nombre, pas son ecriture. La marque decimale de la langue la remplace.
+  const value = (bytes / (KIB * KIB)).toFixed(1).replace('.', LOCALE_META[locale].decimalSeparator);
+  return `${value} ${BYTE_UNITS.mebibyte[locale]}`;
 }

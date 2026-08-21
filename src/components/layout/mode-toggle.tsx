@@ -3,6 +3,7 @@
 import { useCallback, useSyncExternalStore } from 'react';
 
 import { MoonIcon, SunIcon } from '@/components/ui/icons';
+import type { Locale } from '@/content/i18n';
 import { THEME_TOGGLE } from '@/content/site-copy';
 import {
   DEFAULT_MODE,
@@ -68,7 +69,7 @@ function transitionMs(root: HTMLElement): number {
   return raw.endsWith('ms') ? value : value * 1000;
 }
 
-export function ModeToggle() {
+export function ModeToggle({ locale }: { readonly locale: Locale }) {
   const mode = useSyncExternalStore(subscribe, readMode, serverMode);
 
   const toggle = useCallback(() => {
@@ -103,7 +104,7 @@ export function ModeToggle() {
     >
       <Icon size="sm" />
       <span className="sr-only">
-        {isDark ? THEME_TOGGLE.toLight : THEME_TOGGLE.toDark}
+        {isDark ? THEME_TOGGLE.toLight[locale] : THEME_TOGGLE.toDark[locale]}
       </span>
     </button>
   );

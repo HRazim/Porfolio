@@ -123,18 +123,37 @@ export function DocumentIcon(props: IconProps) {
   );
 }
 
-export function ArrowIcon(props: IconProps) {
+/**
+ * ---------------------------------------------------------------------------
+ * ICONES DIRECTIONNELLES
+ * ---------------------------------------------------------------------------
+ *
+ * Une fleche qui dit « la suite » pointe vers la fin de la ligne : a droite en
+ * ecriture latine, A GAUCHE en arabe. Une fleche figee vers la droite y
+ * signifierait « retour en arriere ».
+ *
+ * Le retournement est pose SUR LE COMPOSANT, pas sur ses appels : un
+ * appelant qui l’oublierait produirait une fleche a contresens, et rien ne le
+ * signalerait. Il n’y a donc rien a se rappeler.
+ *
+ * `rtl:` est une variante de Tailwind qui cible `[dir='rtl']`. Elle ne
+ * s’active que sous l’attribut de direction pose par la mise en page racine
+ * arabe — les trois autres langues ne voient pas la regle.
+ */
+const FLIP_IN_RTL = 'rtl:-scale-x-100';
+
+export function ArrowIcon({ className, ...props }: IconProps) {
   return (
-    <IconBase {...props}>
+    <IconBase {...props} className={cn(FLIP_IN_RTL, className)}>
       <path d="M4 12h16" />
       <path d="m13 5 7 7-7 7" />
     </IconBase>
   );
 }
 
-export function ExternalLinkIcon(props: IconProps) {
+export function ExternalLinkIcon({ className, ...props }: IconProps) {
   return (
-    <IconBase {...props}>
+    <IconBase {...props} className={cn(FLIP_IN_RTL, className)}>
       <path d="M14 4h6v6" />
       <path d="M20 4 11 13" />
       <path d="M18 14.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10" />

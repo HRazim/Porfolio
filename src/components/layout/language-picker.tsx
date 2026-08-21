@@ -1,0 +1,136 @@
+import { LOCALE_META, LOCALES, pathFor, type Locale, type PageKey } from '@/content/i18n';
+import { LANGUAGE_PICKER } from '@/content/site-copy';
+import { cn } from '@/lib/cn';
+
+/**
+ * ---------------------------------------------------------------------------
+ * SÉLECTEUR DE LANGUE — QUATRE LIENS, AUCUN ÉTAT
+ * ---------------------------------------------------------------------------
+ *
+ * RENDU CÔTÉ SERVEUR, et c’est le point important. Changer de langue, ici,
+ * c’est changer de page : chaque option est un `<a href>` vers l’URL de la
+ * même page dans la langue visée. Un moteur d’indexation peut la suivre, un
+ * visiteur peut l’ouvrir dans un nouvel onglet, et la copier depuis la barre
+ * d’adresse donne un lien qui fonctionne. Aucun bouton, aucun gestionnaire
+ * d’événement, aucun composant client.
+ *
+ * La destination est calculée par `pathFor`, à partir de la table des routes.
+ * Le sélecteur ne connaît donc aucune URL : il reçoit l’identité de la page
+ * et laisse la table décider. C’est ce qui garantit que `/parcours` mène à
+ * `/en/career` et non à `/en/parcours`.
+ *
+ * LA PERSISTANCE N’EST PAS ICI. Elle est dans le script d’amorçage de
+ * src/content/i18n.ts : la page d’arrivée enregistre sa propre langue. Un
+ * gestionnaire de clic sur ces liens aurait exigé un composant client pour
+ * une écriture que la page suivante fait de toute façon.
+ *
+ * ---------------------------------------------------------------------------
+ * NOM ACCESSIBLE
+ * ---------------------------------------------------------------------------
+ *
+ * Chaque option porte SES DEUX libellés : le code court et le nom de la langue
+ * écrit dans cette langue. L’un est visible, l’autre réservé aux lecteurs
+ * d’écran, selon la variante — mais tous deux comptent dans le nom accessible.
+ *
+ * Ce n’est pas de la redondance. Si le code court était masqué par
+ * `aria-hidden`, le nom accessible de l’option arabe serait « العربية » alors
+ * que l’écran affiche « AR » : le critère WCAG 2.5.3 « Label in Name »
+ * (niveau A) exige que le nom accessible CONTIENNE le texte visible. En les
+ * gardant tous les deux, il le contient toujours.
+ *
+ * `lang` sur le nom natif fait basculer la voix de synthèse : « Français »
+ * n’est pas prononçable par une voix arabe, ni « العربية » par une voix
+ * française.
+ *
+ * `hrefLang` annonce la langue de la RESSOURCE VISÉE, ce qui n’est pas la même
+ * information — l’un décrit le texte de l’élément, l’autre ce qu’il y a au
+ * bout du lien.
+ * ---------------------------------------------------------------------------
+ */
+
+/** `compact` pour l’en-tête — codes courts ; `full` pour le menu mobile. */
+export type LanguagePickerVariant = 'compact' | 'full';
+
+export interface LanguagePickerProps {
+  readonly locale: Locale;
+  /**
+   * Page vers laquelle pointer dans les autres langues.
+   *
+   * `null` pour une page sans équivalent traduit — le guide de style et la
+   * page 404. Les options mènent alors à l’accueil de la langue visée, seule
+   * destination qu’on puisse promettre sans mentir.
+   */
+  readonly page: PageKey | null;
+  /** Identifiant de réalisation, pour une fiche. */
+  readonly slug?: string;
+  readonly variant?: LanguagePickerVariant;
+  readonly className?: string;
+}
+
+const LIST_CLASS: Record<LanguagePickerVariant, string> = {
+  compact: 'flex-row items-center gap-3xs',
+  full: 'flex-col items-start gap-2xs',
+};
+
+const LINK_CLASS: Record<LanguagePickerVariant, string> = {
+  compact: 'rounded-sm px-2xs py-3xs font-mono text-body-sm',
+  full: 'rounded-sm px-2xs py-2xs text-body-md',
+};
+
+export function LanguagePicker({
+  locale,
+  page,
+  slug,
+  variant = 'compact',
+  className,
+}: LanguagePickerProps) {
+  return (
+    <nav aria-label={LANGUAGE_PICKER.label[locale]} className={className}>
+      <ul className={cn('flex list-none p-0', LIST_CLASS[variant])}>
+        {LOCALES.map((target) => {
+          const meta = LOCALE_META[target];
+          const isCurrent = target === locale;
+          const compact = variant === 'compact';
+
+          return (
+            <li key={target}>
+              {/* UN `<a>` ORDINAIRE, ET NON `next/link`. Chaque langue a sa
+                  propre mise en page racine ; Next.js documente qu'une
+                  navigation entre deux racines provoque un CHARGEMENT COMPLET
+                  du document. `Link` promettrait une transition cote client
+                  qu'il ne peut pas tenir, et préchargerait au passage les trois
+                  autres langues de chaque page visitée.
+
+                  Note de lecture du HTML produit : React 19 serialise cette
+                  propriete telle quelle, `hrefLang`, casse melangee — avec
+                  `<a>` comme avec `Link`, verifie sur les deux. Ce n'est pas
+                  un defaut : la specification HTML rend les noms d'attributs
+                  insensibles a la casse, et tout analyseur — navigateur ou
+                  robot — expose donc bien `hreflang`. */}
+              <a
+                href={page === null ? pathFor('home', target) : pathFor(page, target, slug)}
+                hrefLang={meta.htmlLang}
+                // « Élément courant dans un ensemble » : l’option désigne une
+                // LANGUE, pas une page — `page` serait plus étroit que vrai
+                // lorsque la page n’a pas d’équivalent traduit.
+                aria-current={isCurrent ? 'true' : undefined}
+                className={cn(
+                  LINK_CLASS[variant],
+                  'inline-block transition-colors duration-[var(--duration-fast)] ease-out',
+                  isCurrent
+                    ? 'bg-accent-soft text-accent'
+                    : 'text-ink-muted hover:text-accent',
+                )}
+              >
+                <span className={compact ? undefined : 'sr-only'}>{meta.shortLabel}</span>
+                <span lang={meta.htmlLang} className={compact ? 'sr-only' : undefined}>
+                  {meta.nativeName}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}

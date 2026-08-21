@@ -237,7 +237,7 @@ export function AccentComparison() {
                     <div key={accent.cssVar} className="flex flex-col gap-3xs">
                       <dt className="font-mono text-body-sm font-medium text-ink">
                         {accent.name}
-                        <span className="ml-2xs font-normal text-ink-subtle">
+                        <span className="ms-2xs font-normal text-ink-subtle">
                           {value || PLACEHOLDER}
                         </span>
                       </dt>
@@ -266,18 +266,18 @@ export function ContrastTable() {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-left">
-        <caption className="pb-sm text-left text-body-sm text-ink-subtle">
+      <table className="w-full border-collapse text-start">
+        <caption className="pb-sm text-start text-body-sm text-ink-subtle">
           Ratios calcules a l’execution depuis les variables CSS du theme actif.
           Seuil AA : 4,5:1 pour un texte inferieur a 24 px non gras, 3:1 pour du
           grand texte.
         </caption>
         <thead>
           <tr className="border-b border-ink-subtle">
-            <th scope="col" className="py-2xs pr-md font-mono text-body-sm font-medium text-ink">
+            <th scope="col" className="py-2xs pe-md font-mono text-body-sm font-medium text-ink">
               Combinaison
             </th>
-            <th scope="col" className="py-2xs pr-md font-mono text-body-sm font-medium text-ink">
+            <th scope="col" className="py-2xs pe-md font-mono text-body-sm font-medium text-ink">
               Ratio
             </th>
             <th scope="col" className="py-2xs font-mono text-body-sm font-medium text-ink">
@@ -314,11 +314,11 @@ export function ContrastTable() {
               <tr key={pair.label} className="border-b border-border">
                 <th
                   scope="row"
-                  className="py-2xs pr-md font-mono text-body-sm font-normal text-ink-muted"
+                  className="py-2xs pe-md font-mono text-body-sm font-normal text-ink-muted"
                 >
                   {pair.label}
                 </th>
-                <td className="py-2xs pr-md font-mono text-body-sm text-ink">
+                <td className="py-2xs pe-md font-mono text-body-sm text-ink">
                   {ratio === null ? PLACEHOLDER : `${ratio.toFixed(2)}:1`}
                 </td>
                 <td className="py-2xs text-body-sm text-ink-muted">{verdict}</td>

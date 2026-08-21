@@ -1,4 +1,9 @@
-import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import {
+  IBM_Plex_Sans_Arabic,
+  Instrument_Sans,
+  Instrument_Serif,
+  JetBrains_Mono,
+} from 'next/font/google';
 
 /**
  * ---------------------------------------------------------------------------
@@ -97,7 +102,61 @@ export const fontMono = JetBrains_Mono({
   display: 'swap',
 });
 
-/** Classe a appliquer sur `<html>` pour exposer les trois variables. */
+/**
+ * ---------------------------------------------------------------------------
+ * ARABE — UNE SEULE FAMILLE POUR LES TROIS ROLES
+ * ---------------------------------------------------------------------------
+ *
+ * L'ecriture arabe ne connait pas l'opposition serif / sans qui structure la
+ * typographie latine : une seule famille doit donc porter les titres, le
+ * corps et les libelles. Elle est choisie pour tenir les trois.
+ *
+ * POURQUOI IBM PLEX SANS ARABIC, ET POURQUOI PAS NOTO NASKH ARABIC.
+ *
+ *   1. ELLE EST PEIGNABLE. Satori compose les vignettes de partage au moyen
+ *      d'opentype.js, qui ne sait pas lire les substitutions contextuelles de
+ *      format 3 (`lookupType: 5 - substFormat: 3 is not yet supported`). Les
+ *      tables GSUB de treize fontes candidates ont ete lues : TOUTE la
+ *      famille Noto Arabic, Amiri, Lateef et Noto Kufi en emploient, et sont
+ *      donc refusees. Constate par la construction, puis explique par la
+ *      lecture des tables.
+ *
+ *   2. ELLE EST FAITE POUR LE TEXTE SUIVI. Les traductions arabes du site
+ *      comptent pres de onze mille caracteres, en majorite de la prose. Une
+ *      Naskh de tradition calligraphique — Amiri — est superbe en grand et
+ *      fatigante en petit ; Plex Arabic est dessinee pour l'interface et le
+ *      texte long.
+ *
+ *   3. ELLE COHABITE AVEC DU LATIN. Les pages arabes sont pleines de noms
+ *      propres qui ne se traduisent pas : Egis, Kotlin, Paris School of
+ *      Business, MAROUAN Hazim-Rayan. Plex Arabic appartient a une
+ *      superfamille dessinee avec une grotesque latine : ses proportions et
+ *      son rythme s'accordent a Instrument Sans, qui rend ces mots-la.
+ *
+ *   4. LICENCE SIL Open Font, comme les deux fontes deja versionnees.
+ *
+ * Graisses telechargees : 400 (courant), 500 (emphase, employee par les
+ * libelles de la methode STAR). Aucune autre : la regle du projet interdit de
+ * declarer une graisse qui n'est pas reellement servie.
+ *
+ * Sous-ensemble : `arabic` UNIQUEMENT. Le latin vient d'Instrument, et la
+ * plage Unicode declaree par ce sous-ensemble est ce qui garantit qu'aucune
+ * page francaise, anglaise ou espagnole ne telecharge ce fichier.
+ */
+export const fontArabic = IBM_Plex_Sans_Arabic({
+  variable: '--font-arabic-face',
+  subsets: ['arabic'],
+  weight: ['400', '500'],
+  style: ['normal'],
+  display: 'swap',
+});
+
+/**
+ * Classe a appliquer sur `<html>` pour exposer les trois variables latines.
+ *
+ * La variable arabe n'y figure PAS : elle est posee separement, et seulement
+ * sur les documents arabes. Voir `fontVariablesFor` dans site-document.tsx.
+ */
 export const fontVariables = [
   fontDisplay.variable,
   fontBody.variable,

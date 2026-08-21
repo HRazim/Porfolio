@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
 
+import type { Locale } from '@/content/i18n';
 import { COMMON } from '@/content/site-copy';
 import { cn } from '@/lib/cn';
 
 import { ExternalLinkIcon } from './icons';
 
 export interface ExternalLinkProps {
+  readonly locale: Locale;
   readonly href: string;
   readonly children: ReactNode;
   readonly className?: string;
@@ -23,7 +25,7 @@ export interface ExternalLinkProps {
  *
  * Rendu cote serveur.
  */
-export function ExternalLink({ href, children, className, showIcon = true }: ExternalLinkProps) {
+export function ExternalLink({ locale, href, children, className, showIcon = true }: ExternalLinkProps) {
   return (
     <a
       href={href}
@@ -36,7 +38,7 @@ export function ExternalLink({ href, children, className, showIcon = true }: Ext
     >
       {children}
       {showIcon ? <ExternalLinkIcon size="sm" /> : null}
-      <span className="sr-only">{` (${COMMON.newWindow})`}</span>
+      <span className="sr-only">{` (${COMMON.newWindow[locale]})`}</span>
     </a>
   );
 }

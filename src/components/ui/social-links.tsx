@@ -1,3 +1,4 @@
+import type { Locale } from '@/content/i18n';
 import { COMMON } from '@/content/site-copy';
 import { cn } from '@/lib/cn';
 import { SOCIAL_LINKS } from '@/lib/site';
@@ -5,6 +6,7 @@ import { SOCIAL_LINKS } from '@/lib/site';
 import { SOCIAL_ICONS } from './icons';
 
 export interface SocialLinksProps {
+  readonly locale: Locale;
   /** Libelle accessible de la liste. */
   readonly label: string;
   readonly className?: string;
@@ -20,7 +22,7 @@ export interface SocialLinksProps {
  *
  * Rendu cote serveur.
  */
-export function SocialLinks({ label, className }: SocialLinksProps) {
+export function SocialLinks({ locale, label, className }: SocialLinksProps) {
   return (
     <ul aria-label={label} className={cn('flex list-none items-center gap-sm p-0', className)}>
       {SOCIAL_LINKS.map((link) => {
@@ -34,7 +36,7 @@ export function SocialLinks({ label, className }: SocialLinksProps) {
               className="link-sweep inline-flex items-center gap-2xs rounded-sm p-2xs text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
             >
               <Icon size="sm" />
-              <span className="sr-only">{`${link.label} (${COMMON.newWindow})`}</span>
+              <span className="sr-only">{`${link.label} (${COMMON.newWindow[locale]})`}</span>
             </a>
           </li>
         );

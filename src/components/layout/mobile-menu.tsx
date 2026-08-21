@@ -4,10 +4,17 @@ import Link from 'next/link';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { CloseIcon, MenuIcon } from '@/components/ui/icons';
+import type { Locale, PageKey } from '@/content/i18n';
 import { HEADER, NAVIGATION } from '@/content/site-copy';
 import { cn } from '@/lib/cn';
 
+import { LanguagePicker } from './language-picker';
+
 export interface MobileMenuProps {
+  readonly locale: Locale;
+  /** Page courante, transmise au sélecteur de langue du panneau. */
+  readonly page: PageKey | null;
+  readonly slug?: string;
   readonly className?: string;
 }
 
@@ -33,7 +40,7 @@ export interface MobileMenuProps {
  *   - la touche Echap referme le panneau et rend le focus au declencheur.
  * ---------------------------------------------------------------------------
  */
-export function MobileMenu({ className }: MobileMenuProps) {
+export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -68,7 +75,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        aria-label={open ? HEADER.menuClose : HEADER.menuOpen}
+        aria-label={open ? HEADER.menuClose[locale] : HEADER.menuOpen[locale]}
         onClick={() => setOpen((previous) => !previous)}
         className="inline-flex items-center justify-center rounded-sm p-2xs text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
       >
@@ -80,22 +87,31 @@ export function MobileMenu({ className }: MobileMenuProps) {
         id={panelId}
         hidden={!open}
         tabIndex={-1}
-        aria-label={HEADER.mobileMenuLabel}
-        className="absolute right-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-md"
+        aria-label={HEADER.mobileMenuLabel[locale]}
+        className="absolute end-0 top-full z-50 mt-2xs min-w-3xl rounded-md border border-border bg-surface p-md"
       >
         <ul className="flex list-none flex-col gap-sm p-0">
           {NAVIGATION.map((item) => (
-            <li key={item.href}>
+            <li key={item.key}>
               <Link
-                href={item.href}
+                href={item.href(locale)}
                 onClick={() => setOpen(false)}
                 className="link-sweep inline-block py-2xs text-body-md text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
               >
-                {item.label}
+                {item.label[locale]}
               </Link>
             </li>
           ))}
         </ul>
+
+        {/* Les langues s’ecrivent ici en toutes lettres — « Français »,
+            « English », « Español », « العربية » — la ou l’en-tete n’a la
+            place que des codes courts. Ce sont les memes liens : le selecteur
+            ne devient pas un composant client parce qu’il est monte dans un
+            panneau qui, lui, en est un. */}
+        <div className="mt-md border-t border-border pt-md">
+          <LanguagePicker locale={locale} page={page} slug={slug} variant="full" />
+        </div>
       </nav>
     </div>
   );

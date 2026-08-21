@@ -53,6 +53,26 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
 
   /**
+   * Page 404 globale.
+   *
+   * NECESSAIRE DEPUIS QUE LE SITE A QUATRE MISES EN PAGE RACINES. Une adresse
+   * qui ne correspond a aucune route n'appartient a aucune langue : Next.js ne
+   * peut donc pas choisir la racine dans laquelle composer la 404, et sert sa
+   * page par defaut — sans styles, sans en-tete, sans un mot ecrit ici. La
+   * documentation nomme ce cas explicitement et donne ce drapeau pour reponse.
+   *
+   * Constate, pas suppose : sans lui, `_not-found.html` faisait 7,9 Ko et ne
+   * portait meme pas d'attribut `lang`.
+   *
+   * Le drapeau est marque experimental par Next.js. Il n'active aucune
+   * fonctionnalite dynamique et ne compromet pas l'export statique, que
+   * `npm run verify:export` continue de verifier.
+   */
+  experimental: {
+    globalNotFound: true,
+  },
+
+  /**
    * PAS de bloc `images`, et c'est delibere.
    *
    * Un plafond `deviceSizes` / `imageSizes` a existe ici tant que le portrait

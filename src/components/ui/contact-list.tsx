@@ -1,4 +1,5 @@
-import { CONTACT_POINTS } from '@/lib/site';
+import type { Locale } from '@/content/i18n';
+import { CONTACT_POINTS, type ContactKind } from '@/lib/site';
 
 import { CONTACT_ICONS } from './icons';
 
@@ -12,25 +13,46 @@ import { CONTACT_ICONS } from './icons';
  *
  * Rendu cote serveur.
  */
-export function ContactList() {
+/**
+ * Quelle coordonnee reste de gauche a droite en toute langue ?
+ *
+ * Une adresse electronique est un IDENTIFIANT : elle s'ecrit dans le meme
+ * sens partout, et l'arobase comme le point qui l'entourent sont des
+ * caracteres neutres que l'algorithme bidirectionnel deplacerait dans une
+ * phrase arabe. Une localite, elle, est un nom de lieu : « باريس، فرنسا »
+ * s'ecrit de droite a gauche comme le reste de la page.
+ *
+ * Une table plutot qu'un branchement dans le JSX : la question se pose une
+ * fois par nature de coordonnee, et la reponse se lit d'un coup d'oeil.
+ */
+const LATIN_VALUE: Readonly<Record<ContactKind, boolean>> = {
+  email: true,
+  location: false,
+};
+
+export function ContactList({ locale }: { readonly locale: Locale }) {
   return (
     <address className="not-italic">
       <ul className="flex list-none flex-col gap-sm p-0">
         {CONTACT_POINTS.map((point) => {
           const Icon = CONTACT_ICONS[point.kind];
+          const dir = LATIN_VALUE[point.kind] ? 'ltr' : undefined;
           return (
             <li key={point.kind} className="flex items-start gap-sm">
               <Icon size="sm" className="mt-3xs text-ink-subtle" />
               <span className="flex flex-col gap-3xs">
-                <span className="font-mono text-body-sm text-ink-subtle">{point.label}</span>
+                <span className="font-mono text-body-sm text-ink-subtle">{point.label[locale]}</span>
                 {point.href === null ? (
-                  <span className="text-body-md text-ink">{point.display}</span>
+                  <span dir={dir} className="text-body-md text-ink">
+                    {point.display[locale]}
+                  </span>
                 ) : (
                   <a
+                    dir={dir}
                     href={point.href}
                     className="text-body-md text-ink link-underline transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
                   >
-                    {point.display}
+                    {point.display[locale]}
                   </a>
                 )}
               </span>
