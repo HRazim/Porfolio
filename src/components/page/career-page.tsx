@@ -131,18 +131,26 @@ function LanguagesSection({ locale }: { readonly locale: Locale }) {
  */
 export function CareerPage({ locale }: { readonly locale: Locale }) {
   return (
-    <main id={MAIN_CONTENT_ID}>
+    /* CASCADE D'ARRIVEE. Elle est le mecanisme de transition des navigations
+       INTERNES a une langue : le routeur remplace le `<main>`, l'animation
+       repart. `cascade-tight` la cadence a `--duration-base`, un pas de
+       `--duration-stagger` : rang 1 a 200 ms, rang 2 a 280 ms.
+
+       LE SURTITRE ET LE TITRE N'ONT AUCUN RANG. Ils sont peints avec la page,
+       a l'instant zero : le contenu est lisible avant que la cascade ne
+       commence, et elle ne retarde donc jamais la lecture. */
+    <main id={MAIN_CONTENT_ID} className="cascade-tight">
       <Section spacing="spacious" background="paper">
         <Container>
           <p className="font-mono text-body-sm text-ink-subtle">{CAREER.eyebrow[locale]}</p>
           <h1 className="section-rule mt-sm text-display-lg text-ink">{CAREER.heading[locale]}</h1>
           <Prose size="lead" className="mt-lg">
-            <p>{CAREER.intro[locale]}</p>
+            <p data-enter="1">{CAREER.intro[locale]}</p>
           </Prose>
         </Container>
       </Section>
 
-      <Section background="surface">
+      <Section background="surface" enter={2}>
         <Container>
           <div className="flex flex-col gap-3xl">
             <CareerSection
