@@ -181,7 +181,7 @@ export const LANGUAGE_PICKER = {
    * Name » l’exige, et c’est pourquoi ce n’est pas un `aria-label`.
    */
   trigger: {
-    fr: 'Langue : {langue}',
+    fr: 'Langue : {langue}',
     en: 'Language: {langue}',
     es: 'Idioma: {langue}',
     ar: 'اللغة: {langue}',
