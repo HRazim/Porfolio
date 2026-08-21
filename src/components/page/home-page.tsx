@@ -60,7 +60,10 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
   /* Poids du CV, lu sur le fichier pendant le rendu statique.
      Voir src/lib/public-asset.ts : la mention affichee ne peut pas
      diverger du fichier reellement servi. */
-  const cvMeta = HOME.cvMeta[locale].replace('{poids}', formatBytes(publicAssetBytes(CV_PATH)));
+  const cvMeta = HOME.cvMeta[locale].replace(
+    '{poids}',
+    formatBytes(publicAssetBytes(CV_PATH), locale),
+  );
 
   return (
     <main id={MAIN_CONTENT_ID}>
@@ -233,11 +236,19 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
             >
               <DocumentIcon size="sm" />
               {HOME.cvLabel[locale]}
-              {/* La mention est entierement latine — « PDF, 129 Ko » dans les
-                  quatre langues — alors que la page qui la porte peut etre
-                  arabe. Isolee de gauche a droite, elle s’y compose dans le
-                  bon sens. */}
-              <span dir="ltr">{` (${cvMeta})`}</span>
+              {/* PLUS DE `dir="ltr"` ICI, ET C’EST LA CORRECTION.
+                  La mention etait entierement latine — « PDF, 129 Ko » dans
+                  les quatre langues — et l’isoler de gauche a droite la
+                  rendait correctement sur une page arabe. Maintenant qu’elle
+                  se traduit, elle vaut « PDF، 129 كيلوبايت » : la forcer en
+                  base gauche-a-droite placerait l’unite arabe a l’extremite
+                  GAUCHE, donc en premier sous l’oeil d’un lecteur arabe, qui
+                  lirait la mention a l’envers.
+                  Sans isolation, l’algorithme bidirectionnel fait le travail :
+                  « PDF » est une suite de caracteres fortement latins, il
+                  reste lisible tel quel a l’interieur d’un paragraphe arabe,
+                  et les parentheses se reflechissent d’elles-memes. */}
+              {` (${cvMeta})`}
             </a>
           </div>
         </Container>

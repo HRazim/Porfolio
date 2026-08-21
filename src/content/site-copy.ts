@@ -111,6 +111,29 @@ export const COMMON = {
 } as const satisfies Readonly<Record<string, Translated>>;
 
 /**
+ * Unités de poids de fichier.
+ *
+ * Elles vivent ICI et non dans le formateur, pour la même raison que le reste :
+ * une chaîne lue par un humain est du contenu, et le contenu porte ses quatre
+ * variantes ou ne compile pas. Le formateur, lui, ne sait que diviser et
+ * arrondir — voir `formatBytes` dans src/lib/public-asset.ts.
+ *
+ * Le défaut corrigé était exactement celui-là : l’abréviation était écrite
+ * dans le formateur, donc hors du système de traduction, et le lien de
+ * téléchargement annonçait « PDF, 129 Ko » en anglais, en espagnol et en
+ * arabe.
+ *
+ * L’arabe emploie le mot entier plutôt qu’une abréviation : « ك.ب » existe
+ * mais ne se lit pas de soi, alors que كيلوبايت est le terme courant.
+ */
+export const BYTE_UNITS = {
+  /** 1 024 octets. */
+  kibibyte: { fr: 'Ko', en: 'KB', es: 'KB', ar: 'كيلوبايت' },
+  /** 1 048 576 octets. */
+  mebibyte: { fr: 'Mo', en: 'MB', es: 'MB', ar: 'ميغابايت' },
+} as const satisfies Readonly<Record<string, Translated>>;
+
+/**
  * Bascule clair / sombre.
  *
  * Le libelle annonce l’ACTION a venir et non l’etat courant : un bouton dit

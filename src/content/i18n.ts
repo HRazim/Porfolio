@@ -87,13 +87,50 @@ export interface LocaleMeta {
   readonly nativeName: string;
   /** Code court affiché dans le sélecteur, en majuscules. */
   readonly shortLabel: string;
+  /**
+   * Marque décimale de la langue.
+   *
+   * L’anglais sépare par un point, le français et l’espagnol par une virgule.
+   * L’arabe dispose d’une marque propre — ٫, U+066B — mais elle accompagne les
+   * chiffres arabo-indiens ; le site a tranché pour les chiffres occidentaux,
+   * et c’est donc la virgule qui va avec, comme dans l’usage maghrébin.
+   *
+   * Cette valeur ne remplace pas `Intl.NumberFormat`, qui n’est pas employé
+   * ici : le seul nombre décimal du site est un poids de fichier à une
+   * décimale. Une table de quatre entrées suffit, et elle est lisible.
+   */
+  readonly decimalSeparator: string;
 }
 
 export const LOCALE_META: Readonly<Record<Locale, LocaleMeta>> = {
-  fr: { htmlLang: 'fr', direction: 'ltr', nativeName: 'Français', shortLabel: 'FR' },
-  en: { htmlLang: 'en', direction: 'ltr', nativeName: 'English', shortLabel: 'EN' },
-  es: { htmlLang: 'es', direction: 'ltr', nativeName: 'Español', shortLabel: 'ES' },
-  ar: { htmlLang: 'ar', direction: 'rtl', nativeName: 'العربية', shortLabel: 'AR' },
+  fr: {
+    htmlLang: 'fr',
+    direction: 'ltr',
+    nativeName: 'Français',
+    shortLabel: 'FR',
+    decimalSeparator: ',',
+  },
+  en: {
+    htmlLang: 'en',
+    direction: 'ltr',
+    nativeName: 'English',
+    shortLabel: 'EN',
+    decimalSeparator: '.',
+  },
+  es: {
+    htmlLang: 'es',
+    direction: 'ltr',
+    nativeName: 'Español',
+    shortLabel: 'ES',
+    decimalSeparator: ',',
+  },
+  ar: {
+    htmlLang: 'ar',
+    direction: 'rtl',
+    nativeName: 'العربية',
+    shortLabel: 'AR',
+    decimalSeparator: ',',
+  },
 };
 
 /**
