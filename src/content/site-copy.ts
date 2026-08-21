@@ -62,8 +62,6 @@ export const THEME_TOGGLE = {
 export const HEADER = {
   /** Libelle accessible de la balise nav principale. */
   navLabel: 'Navigation principale',
-  /** Libelle accessible du lien du logo. */
-  homeLinkLabel: 'Retour à l’accueil',
   menuOpen: 'Ouvrir le menu',
   menuClose: 'Fermer le menu',
   /** Libelle accessible du panneau de navigation mobile. */
@@ -88,11 +86,21 @@ export const FOOTER = {
  *
  * Chacune tient sous soixante caracteres, sans superlatif, sans mot creux et
  * sans promesse invérifiable. Chacune explore une direction differente.
+ *
+ * LES ESPACES INSECABLES NE SONT PAS DECORATIVES. Elles lient les groupes de
+ * mots que la composition ne doit jamais briser — le titre de metier avant
+ * tout. Sans elles, `text-wrap: balance` coupe la ligne apres « ingenieur » :
+ * c'est la coupe qui egalise le mieux les deux lignes, et c'est la pire au
+ * sens du sens.
+ *
+ * Chaque groupe lie a ete mesure sur la fonte reellement servie : le plus
+ * large, « ingenieur d'affaires », vaut 300 px a la plus petite taille du
+ * systeme, contre 328 px de colonne a 360 px de large. Il tient.
  * ---------------------------------------------------------------------------
  */
 const HEADLINE_OPTIONS = {
   /** Identite franche : nomme les deux competences, sans revendiquer de titre. */
-  identite: 'Développeur formé, ingénieur d’affaires en devenir.',
+  identite: 'Développeur formé, ingénieur d’affaires en devenir.',
   /** Tension : situe la personne entre deux mondes plutot que de l’etiqueter. */
   tension: 'Entre ceux qui construisent et ceux qui vendent.',
   /** Apport : ce que l’interlocuteur y gagne, pose comme une methode. */

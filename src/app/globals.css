@@ -346,7 +346,14 @@
      flux, chaque pixel qu'il prend repousse le titre hors du premier ecran.
      Voir le calcul de hauteur cumulee dans le rapport de refonte. */
   --container-portrait-sm: 8rem; /* 128px — pile mobile */
-  --container-portrait: 20rem; /* 320px — cote a cote */
+  /* 12rem et non 20rem. La valeur n'est pas un gout, c'est un reste :
+     l'accroche a besoin de 735px pour se couper apres la virgule au plus
+     grand corps, la largeur de contenu vaut 1024px une fois les marges
+     laterales a leur maximum, il reste donc 289px a partager entre le
+     portrait et l'ecart. 12rem + 3rem = 240px : la colonne garde 784px,
+     soit 49px de marge sur le besoin. Un portrait de 20rem ne laissait que
+     608px et imposait trois lignes. */
+  --container-portrait: 12rem; /* 192px — cote a cote */
 
   /* =========================================================================
      8. FOCUS

@@ -18,7 +18,6 @@ import {
   PORTRAIT_SIZE,
   PORTRAIT_SIZES,
   PORTRAIT_WIDTHS,
-  SITE_NAME,
 } from '@/lib/site';
 
 /**
@@ -72,9 +71,11 @@ export default function HomePage() {
     <main id={MAIN_CONTENT_ID}>
       {/* 1 — ENTETE -------------------------------------------------------
           Cascade d’entree au chargement, par `data-enter`, dont le rang est
-          declare ici et non deduit d’un `nth-child`. Quatre rangs, trois pas
-          de 80 ms, 320 ms de duree : 560 ms au total, sous la limite de
-          600 ms.
+          declare ici et non deduit d’un `nth-child`. Trois rangs, deux pas
+          de 80 ms, 320 ms de duree : 480 ms au total, sous la limite de
+          600 ms. Le rang 4 existe toujours dans le systeme, decrit par le
+          guide de style ; l’accueil n’a plus que trois elements a faire
+          entrer depuis le retrait du surtitre.
 
           Elle est SANS RISQUE, contrairement a l’apparition au defilement qui
           a ete retiree : c’est une animation CSS a duree finie, qui se termine
@@ -84,7 +85,23 @@ export default function HomePage() {
           mouvement est refuse ou si JavaScript ne s’execute pas. */}
       <Section spacing="spacious" background="paper">
         <Container>
-          <div className="flex flex-col gap-lg md:flex-row md:items-center md:gap-3xl">
+          {/* MISE EN COLONNES A `lg`, ET NON A `md`. Le passage cote a cote
+              est commande par la place qu’il laisse au titre, pas par la
+              largeur de l’ecran. A 768 px, la colonne de texte ne mesurait
+              que 291 px : l’accroche s’y composait sur quatre a cinq lignes.
+              Empilee, elle dispose de toute la largeur de contenu — 707 px —
+              et tient sur deux lignes des 640 px.
+
+              ALIGNEMENT PAR LE HAUT, et non centre. Le bloc de texte est plus
+              haut que le portrait, et il change de hauteur d’une langue a
+              l’autre. Centrer fait donc descendre le portrait d’une valeur
+              qui depend du texte : c’est ce decalage qui se voyait. Aligner
+              par le haut ancre le portrait sur l’accroche, et l’ancrage ne
+              bouge plus quelle que soit la langue.
+
+              L’ecart passe de 6 rem a 3 rem : chaque pixel repris ici va a la
+              colonne de texte, seule variable qui decide du nombre de lignes. */}
+          <div className="flex flex-col gap-lg lg:flex-row lg:items-start lg:gap-xl">
             {/* Element le plus grand de la page : charge en priorite, jamais
                 en differe. Les deux encodages sont produits a l’avance et
                 servis tels quels, aucun optimiseur n’intervient. Le repli
@@ -94,7 +111,20 @@ export default function HomePage() {
                 Le rang d’entree est pose sur l’IMAGE et non sur `<picture>` :
                 `<picture>` est un element en ligne non remplace, sur lequel
                 `transform` ne s’applique pas. */}
-            <picture>
+            {/* Le decalage optique est porte par `<picture>`, seul element de
+                cette paire a etre un enfant du conteneur flexible : une marge
+                verticale posee sur l’image, qui reste en ligne, ne produirait
+                aucun effet de mise en page.
+
+                8 px, soit --spacing-2xs. Ce n’est pas un ajustement au juge :
+                l’interlignage de `display-xl` vaut 1, la boite de ligne vaut
+                donc 1 em pendant que la fonte en occupe 1,30 ; le demi-
+                interlignage vaut -0,15 em, et le haut des capitales tombe a
+                -0,15 + 0,99 - 0,72 = 0,12 em sous le haut de la boite. Entre
+                70 et 76 px de corps, cela fait 8,4 a 9,2 px. Le portrait a un
+                bord franc, l’accroche n’en a pas : sans ce decalage, le bord
+                du portrait s’aligne sur du vide et parait monter. */}
+            <picture className="shrink-0 lg:mt-2xs">
               <source srcSet={portraitSrcSet('avif')} sizes={PORTRAIT_SIZES} type="image/avif" />
               <source srcSet={portraitSrcSet('webp')} sizes={PORTRAIT_SIZES} type="image/webp" />
               <img
@@ -106,28 +136,37 @@ export default function HomePage() {
                 fetchPriority="high"
                 decoding="async"
                 data-enter="1"
-                className="w-portrait-sm shrink-0 rounded-md border border-border md:w-portrait"
+                className="w-portrait-sm shrink-0 rounded-md border border-border lg:w-portrait"
               />
             </picture>
 
             <div className="min-w-0 flex-1">
-              <p data-enter="2" className="font-mono text-body-sm text-ink-subtle">
-                {SITE_NAME}
-              </p>
-              {/* Un cran d’echelle plus bas sous `md`, et non une taille
+              {/* LE NOM N’EST PLUS REPETE ICI. Il figurait en surtitre, a
+                  quelques centimetres du logo qui le porte deja sur toutes
+                  les pages : deux occurrences du meme nom dans le meme champ
+                  de vision. Le logo suffit, et lui seul le montre desormais.
+
+                  Un cran d’echelle plus bas sous `md`, et non une taille
                   inventee : `display-xl` vaut 61 px des 360 px de large, ou il
-                  etale l’accroche sur cinq lignes et repousse la phrase de
+                  etale l’accroche sur quatre lignes et repousse la phrase de
                   contexte hors du premier ecran. `display-lg` la ramene a
-                  quatre lignes. Les deux jetons existent deja ; seule change
-                  celui qui est applique. */}
+                  trois. Les deux jetons existent deja ; seule change celui qui
+                  est applique.
+
+                  `break-words` n’agit jamais aux largeurs servies : il ne se
+                  declenche que si un mot — ici un groupe lie par une espace
+                  insecable — ne tient pas seul sur une ligne. Cela n’arrive
+                  qu’en dessous de 352 px de large, sous la plus petite largeur
+                  de reference du projet. C’est un filet : mieux vaut une coupe
+                  laide qu’un debordement hors de l’ecran. */}
               <h1
-                data-enter="3"
-                className="section-rule mt-2xs text-display-lg text-ink md:text-display-xl"
+                data-enter="2"
+                className="section-rule break-words text-display-lg text-ink md:text-display-xl"
               >
                 {HOME.headline}
               </h1>
               <Prose size="lead" className="mt-md">
-                <p data-enter="4">{HOME.lede}</p>
+                <p data-enter="3">{HOME.lede}</p>
               </Prose>
               {/* Le developpement part sur sa propre page. L’accueil garde une
                   phrase et un renvoi : c’est ce qu’une page d’accueil doit

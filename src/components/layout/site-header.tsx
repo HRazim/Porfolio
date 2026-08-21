@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import { HEADER } from '@/content/site-copy';
 import { SITE_NAME } from '@/lib/site';
 
 import { Container } from './container';
@@ -33,9 +32,18 @@ export function SiteHeader() {
         className="sticky top-0 z-40 bg-paper"
       >
         <Container className="flex items-center justify-between gap-md py-xs">
+          {/* AUCUN `aria-label` ICI. Il y en avait un, et il nuisait : un
+              `aria-label` REMPLACE le texte de l’element au lieu de s’y
+              ajouter. Le lien affichait « MAROUAN Hazim-Rayan » et annoncait
+              « Retour à l’accueil » — deux libelles disjoints, ce que le
+              critere WCAG 2.5.3 « Label in Name » (niveau A) interdit.
+
+              Le defaut etait latent tant que l’accueil repetait le nom en
+              surtitre. Ce surtitre a ete retire comme redondant : le nom ne
+              subsiste que dans ce lien, et il doit donc y etre annonce. Sans
+              `aria-label`, le nom accessible du lien est son propre texte. */}
           <Link
             href="/"
-            aria-label={HEADER.homeLinkLabel}
             className="link-sweep inline-block font-mono text-body-sm font-medium tracking-wide text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
           >
             {SITE_NAME}
