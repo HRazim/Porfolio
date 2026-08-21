@@ -161,6 +161,22 @@ export function ExternalLinkIcon({ className, ...props }: IconProps) {
   );
 }
 
+/**
+ * Chevron vers le bas.
+ *
+ * IL NE SE RETOURNE PAS. Un chevron vertical designe le bas, pas la fin de la
+ * ligne : `FLIP_IN_RTL` n’a rien a y faire, contrairement a la fleche et au
+ * lien externe ci-dessus. En arabe comme en francais, un panneau se deploie
+ * vers le bas.
+ */
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m6 9 6 6 6-6" />
+    </IconBase>
+  );
+}
+
 export function MenuIcon(props: IconProps) {
   return (
     <IconBase {...props}>

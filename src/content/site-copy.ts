@@ -169,6 +169,23 @@ export const LANGUAGE_PICKER = {
     es: 'Idioma',
     ar: 'اللغة',
   },
+  /**
+   * Libelle accessible du declencheur de deploiement, dans l’en-tete.
+   *
+   * `{langue}` est remplace par le nom de la langue COURANTE, ecrit dans
+   * cette langue. Meme convention que `{poids}` et `{years}` ailleurs.
+   *
+   * Le declencheur n’affiche que le code court — « FR » — qui ne dit pas de
+   * lui-meme ce qu’il commande. Ce libelle le dit, et il CONTIENT le texte
+   * visible plutot que de le remplacer : le critere WCAG 2.5.3 « Label in
+   * Name » l’exige, et c’est pourquoi ce n’est pas un `aria-label`.
+   */
+  trigger: {
+    fr: 'Langue : {langue}',
+    en: 'Language: {langue}',
+    es: 'Idioma: {langue}',
+    ar: 'اللغة: {langue}',
+  },
 } as const satisfies Readonly<Record<string, Translated>>;
 
 export const HEADER = {

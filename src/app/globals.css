@@ -907,6 +907,33 @@
     border-radius: var(--radius-md);
   }
 
+  /* --- Declencheur de deploiement -------------------------------------------
+     `<summary>` porte un marqueur triangulaire par defaut. Deux declarations
+     le retirent : `list-style`, que les moteurs conformes respectent, et
+     `::-webkit-details-marker`, que WebKit exige en plus.
+
+     Le chevron pivote a l'ouverture. C'est une ROTATION, pas une translation :
+     elle ne depend d'aucun axe d'ecriture et vaut donc telle quelle en arabe,
+     sans variante `rtl:`. Le demi-tour est une constante geometrique, au meme
+     titre que les coordonnees d'un trace SVG — il ne se tokenise pas.
+     ------------------------------------------------------------------------- */
+  .disclosure-trigger {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .disclosure-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure-mark {
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+
+  [open] > .disclosure-trigger .disclosure-mark {
+    rotate: 180deg;
+  }
+
   /* --- Action principale --------------------------------------------------
      Fond en accent lisible, texte en encre de contraste : 6,05:1 en clair,
      6,24:1 en sombre. Au survol, un anneau en accent vif et une elevation ;
