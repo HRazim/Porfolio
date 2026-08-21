@@ -123,18 +123,18 @@ export function DocumentIcon(props: IconProps) {
   );
 }
 
-export function ArrowIcon(props: IconProps) {
+export function ArrowIcon({ className, ...props }: IconProps) {
   return (
-    <IconBase {...props}>
+    <IconBase {...props} className={className}>
       <path d="M4 12h16" />
       <path d="m13 5 7 7-7 7" />
     </IconBase>
   );
 }
 
-export function ExternalLinkIcon(props: IconProps) {
+export function ExternalLinkIcon({ className, ...props }: IconProps) {
   return (
-    <IconBase {...props}>
+    <IconBase {...props} className={className}>
       <path d="M14 4h6v6" />
       <path d="M20 4 11 13" />
       <path d="M18 14.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10" />

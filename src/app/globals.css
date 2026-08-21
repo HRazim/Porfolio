@@ -58,12 +58,27 @@
      (voir src/lib/fonts.ts). Les piles completes sont composees ici.
      Utilitaires generes : font-display, font-body, font-mono.
      ========================================================================= */
-  --font-display: var(--font-display-face), 'Iowan Old Style', Georgia,
+  /* LA FONTE ARABE EST DANS LES TROIS PILES, ET C'EST TOUT LE MECANISME.
+     Le repli de police se fait GLYPHE PAR GLYPHE : Instrument Serif et
+     Instrument Sans ne portent aucun caractere arabe, le navigateur passe
+     donc a la famille suivante pour ces caracteres-la, et pour eux seuls.
+     Un mot latin au milieu d'une phrase arabe — Egis, Kotlin — reste rendu
+     par Instrument. Aucune regle `:lang()` n'est necessaire.
+
+     La valeur de repli du `var()` n'est pas une politesse : sans elle, une
+     variable indefinie rendrait la declaration entiere invalide sur les
+     pages non arabes, ou `--font-arabic-face` n'est pas posee. Le nom cite
+     ne designe alors qu'une fonte eventuellement installee localement, et
+     rien n'est telecharge. */
+  --font-display: var(--font-display-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), 'Iowan Old Style', Georgia,
     'Times New Roman', serif;
-  --font-body: var(--font-body-face), system-ui, -apple-system, 'Segoe UI',
-    sans-serif;
-  --font-mono: var(--font-mono-face), ui-monospace, 'SFMono-Regular', Menlo,
-    'Cascadia Mono', monospace;
+  --font-body: var(--font-body-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-mono: var(--font-mono-face),
+    var(--font-arabic-face, 'IBM Plex Sans Arabic'), ui-monospace,
+    'SFMono-Regular', Menlo, 'Cascadia Mono', monospace;
 
   /* =========================================================================
      2. ECHELLE TYPOGRAPHIQUE — MODULAIRE, RATIO CONSTANT 1.25

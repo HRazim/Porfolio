@@ -1,4 +1,5 @@
 import { SocialLinks } from '@/components/ui/social-links';
+import type { Locale } from '@/content/i18n';
 import { FOOTER } from '@/content/site-copy';
 import { SITE_FOUNDED_YEAR, SITE_NAME } from '@/lib/site';
 
@@ -14,7 +15,7 @@ import { Container } from './container';
  *
  * Rendu cote serveur.
  */
-export function SiteFooter() {
+export function SiteFooter({ locale }: { readonly locale: Locale }) {
   const currentYear = new Date().getFullYear();
   const years =
     currentYear > SITE_FOUNDED_YEAR ? `${SITE_FOUNDED_YEAR}–${currentYear}` : `${SITE_FOUNDED_YEAR}`;
@@ -23,9 +24,9 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-surface py-2xl">
       <Container className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between">
         <p className="font-mono text-body-sm text-ink-subtle">
-          {`© ${years} ${SITE_NAME}. ${FOOTER.copyright}`}
+          {`© ${years} ${SITE_NAME}. ${FOOTER.copyright[locale]}`}
         </p>
-        <SocialLinks label={FOOTER.socialLabel} />
+        <SocialLinks locale={locale} label={FOOTER.socialLabel[locale]} />
       </Container>
     </footer>
   );

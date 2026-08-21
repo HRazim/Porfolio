@@ -1,3 +1,4 @@
+import type { Locale } from '@/content/i18n';
 import { COMMON, MAIN_CONTENT_ID } from '@/content/site-copy';
 
 /**
@@ -10,10 +11,10 @@ import { COMMON, MAIN_CONTENT_ID } from '@/content/site-copy';
  *
  * Rendu cote serveur.
  */
-export function SkipLink() {
+export function SkipLink({ locale }: { readonly locale: Locale }) {
   return (
     <a href={`#${MAIN_CONTENT_ID}`} className="skip-link">
-      {COMMON.skipToContent}
+      {COMMON.skipToContent[locale]}
     </a>
   );
 }

@@ -11,12 +11,15 @@
  * ---------------------------------------------------------------------------
  */
 
+import type { Translated } from '@/content/i18n';
+
 /** Nom complet, tel qu’il doit apparaitre dans chaque balise title. */
 export const SITE_NAME = 'MAROUAN Hazim-Rayan';
 
 /** Langue et region du document. */
-export const SITE_LOCALE = 'fr_FR';
-export const SITE_LANG = 'fr';
+/* SITE_LOCALE et SITE_LANG ont ete retires : ils affirmaient que le site
+   n'a qu'une langue. La langue d'un document vient desormais de
+   LOCALE_META, et son code Open Graph de OG_LOCALE — voir i18n.ts. */
 
 /**
  * URL canonique.
@@ -47,9 +50,21 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? FALLBACK_SITE_URL;
  * 148 caracteres : sous la limite de 155 au-dela de laquelle les moteurs
  * tronquent, et au-dessus de 120, en deca desquels ils completent eux-memes.
  */
-export const SITE_DESCRIPTION =
+export const SITE_DESCRIPTION: Translated = {
+  fr:
   'Portfolio de MAROUAN Hazim-Rayan, développeur de formation qui se destine ' +
-  'à l’ingénierie d’affaires : un parcours entre la technique et le commerce.';
+  'à l’ingénierie d’affaires : un parcours entre la technique et le commerce.',
+  en:
+    'Portfolio of MAROUAN Hazim-Rayan, a developer by training heading for ' +
+    'business engineering: a path between engineering and commerce.',
+  es:
+    'Portafolio de MAROUAN Hazim-Rayan, desarrollador de formación que se ' +
+    'dirige hacia la ingeniería de negocios: una trayectoria entre la ' +
+    'técnica y el comercio.',
+  ar:
+    'أعمال MAROUAN Hazim-Rayan، مطوِّر بالتكوين يتّجه نحو هندسة الأعمال: ' +
+    'مسار بين التقنية والتجارة.',
+};
 
 /**
  * Composition des titres de page.
@@ -88,10 +103,11 @@ export const PORTRAIT_SIZE = 800;
 /**
  * Largeur d’affichage annoncee au navigateur.
  * Doit rester alignee sur --container-portrait-sm / --container-portrait et
- * sur le point de rupture `md` (48rem), sans quoi le navigateur telecharge
- * une variante qui ne correspond pas a la place reellement occupee.
+ * sur le point de rupture ou l’en-tete passe en colonnes — `lg` (64rem) —
+ * sans quoi le navigateur telecharge une variante qui ne correspond pas a la
+ * place reellement occupee.
  */
-export const PORTRAIT_SIZES = '(min-width: 48rem) 20rem, 8rem';
+export const PORTRAIT_SIZES = '(min-width: 64rem) 12rem, 8rem';
 
 /** Type de lien social connu du systeme. */
 export type SocialNetwork = 'github' | 'linkedin';
@@ -126,8 +142,23 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
  * n’est ecrite qu’une seule fois.
  */
 export const SITE_ADDRESS = {
-  locality: 'Paris',
-  country: 'France',
+  /**
+   * Un nom de lieu se traduit, contrairement a un nom de personne :
+   * « Paris » s’ecrit باريس en arabe, et « France » devient Francia en
+   * espagnol. Le `countryCode`, lui, est une norme, pas une langue.
+   */
+  locality: {
+    fr: 'Paris',
+    en: 'Paris',
+    es: 'París',
+    ar: 'باريس',
+  } satisfies Translated,
+  country: {
+    fr: 'France',
+    en: 'France',
+    es: 'Francia',
+    ar: 'فرنسا',
+  } satisfies Translated,
   /** Code ISO 3166-1 alpha-2, pour schema.org. */
   countryCode: 'FR',
 } as const;
@@ -151,9 +182,15 @@ export type ContactKind = 'email' | 'location';
 
 export interface ContactPoint {
   readonly kind: ContactKind;
-  readonly label: string;
-  /** Valeur affichee, mise en forme pour la lecture humaine. */
-  readonly display: string;
+  readonly label: Translated;
+  /**
+   * Valeur affichee, mise en forme pour la lecture humaine.
+   *
+   * Traduite parce qu’une localite l’est : « Paris, France » devient
+   * « باريس، فرنسا ». Un courriel, lui, porte la meme chaine dans les
+   * quatre langues — c’est une adresse, pas du texte.
+   */
+  readonly display: Translated;
   /** Cible du lien. `null` lorsque la coordonnee n’est pas actionnable. */
   readonly href: string | null;
 }
@@ -168,14 +205,31 @@ const EMAIL = 'rhazim@gmx.com';
 export const CONTACT_POINTS: readonly ContactPoint[] = [
   {
     kind: 'email',
-    label: 'Courriel',
-    display: EMAIL,
+    label: {
+      fr: 'Courriel',
+      en: 'Email',
+      es: 'Correo electrónico',
+      ar: 'البريد الإلكتروني',
+    },
+    display: { fr: EMAIL, en: EMAIL, es: EMAIL, ar: EMAIL },
     href: `mailto:${EMAIL}`,
   },
   {
     kind: 'location',
-    label: 'Localisation',
-    display: `${SITE_ADDRESS.locality}, ${SITE_ADDRESS.country}`,
+    label: {
+      fr: 'Localisation',
+      en: 'Location',
+      es: 'Ubicación',
+      ar: 'الموقع',
+    },
+    display: {
+      fr: `${SITE_ADDRESS.locality.fr}, ${SITE_ADDRESS.country.fr}`,
+      en: `${SITE_ADDRESS.locality.en}, ${SITE_ADDRESS.country.en}`,
+      es: `${SITE_ADDRESS.locality.es}, ${SITE_ADDRESS.country.es}`,
+      // La virgule arabe (U+060C) remplace la virgule latine, comme le
+      // veut la ponctuation de cette ecriture.
+      ar: `${SITE_ADDRESS.locality.ar}، ${SITE_ADDRESS.country.ar}`,
+    },
     href: null,
   },
 ];

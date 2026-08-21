@@ -3,6 +3,8 @@ import { join } from 'node:path';
 
 import { ImageResponse } from 'next/og';
 
+import type { Direction } from '@/content/i18n';
+
 /**
  * ---------------------------------------------------------------------------
  * IMAGE DE PARTAGE — RENDUE À LA CONSTRUCTION
@@ -39,16 +41,6 @@ import { ImageResponse } from 'next/og';
  */
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_CONTENT_TYPE = 'image/png';
-
-/**
- * Chemin de la vignette du site, produite par src/app/opengraph-image.tsx.
- *
- * Il n'est utile qu'aux pages qui declarent leur propre bloc `openGraph` :
- * Next.js REMPLACE alors le bloc herite, images comprises, et la vignette
- * du site doit etre redonnee explicitement. Les autres pages l'heritent
- * sans rien declarer.
- */
-export const OG_SHARE_PATH = '/opengraph-image';
 
 const GLOBALS_CSS = join(process.cwd(), 'src', 'app', 'globals.css');
 const FONT_DIR = join(process.cwd(), 'src', 'assets', 'fonts');
@@ -108,14 +100,22 @@ export function ogSpace(name: string): number {
 
 const SERIF = readFileSync(join(FONT_DIR, 'instrument-serif-400.ttf'));
 const MONO = readFileSync(join(FONT_DIR, 'jetbrains-mono-400.ttf'));
+const ARABIC = readFileSync(join(FONT_DIR, 'ibm-plex-sans-arabic-400.ttf'));
 
 export interface ShareImageProps {
-  /** Ligne de surtitre, en monospace. */
-  readonly eyebrow: string;
+  /**
+   * Ligne de surtitre, en monospace.
+   *
+   * Omise lorsque la vignette ne porte qu’un nom propre : répéter le nom en
+   * petit au-dessus du même nom en grand ne serait pas une composition.
+   */
+  readonly eyebrow?: string;
   /** Ligne principale, en serif display. */
   readonly title: string;
   /** Pied de vignette, en monospace. */
   readonly footer: string;
+  /** Sens d’ecriture de la vignette. */
+  readonly direction?: Direction;
 }
 
 /**
@@ -124,7 +124,12 @@ export interface ShareImageProps {
  * Rien n’est écrit ici — les trois lignes viennent des données, les couleurs
  * et les mesures des jetons.
  */
-export function renderShareImage({ eyebrow, title, footer }: ShareImageProps): ImageResponse {
+export function renderShareImage({
+  eyebrow,
+  title,
+  footer,
+  direction = 'ltr',
+}: ShareImageProps): ImageResponse {
   const paper = ogColor('paper');
   const ink = ogColor('ink');
   const inkSubtle = ogColor('ink-subtle');
@@ -143,9 +148,16 @@ export function renderShareImage({ eyebrow, title, footer }: ShareImageProps): I
           backgroundColor: paper,
           padding: pad,
           fontFamily: 'JetBrains Mono',
+          direction,
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: direction === 'rtl' ? 'flex-end' : 'flex-start',
+          }}
+        >
           <div
             style={{
               display: 'flex',
@@ -155,31 +167,60 @@ export function renderShareImage({ eyebrow, title, footer }: ShareImageProps): I
               borderRadius: ogSpace('3xs'),
             }}
           />
+          {eyebrow === undefined ? null : (
+            <div
+              style={{
+                display: 'flex',
+                marginTop: ogSpace('lg'),
+                fontSize: ogText('body-lg'),
+                color: inkSubtle,
+              }}
+            >
+              {eyebrow}
+            </div>
+          )}
           <div
             style={{
               display: 'flex',
-              marginTop: ogSpace('lg'),
-              fontSize: ogText('body-lg'),
-              color: inkSubtle,
-            }}
-          >
-            {eyebrow}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              marginTop: ogSpace('sm'),
+              marginTop: eyebrow === undefined ? ogSpace('lg') : ogSpace('sm'),
               fontFamily: 'Instrument Serif',
               fontSize: ogText('display-xl'),
               lineHeight: 1.05,
               color: ink,
+              flexWrap: 'wrap',
+              flexDirection: direction === 'rtl' ? 'row-reverse' : 'row',
+              justifyContent: 'flex-start',
+              alignContent: 'flex-start',
+              columnGap: 0,
             }}
           >
-            {title}
+            {/* SATORI NE REORDONNE PAS LE BIDIRECTIONNEL. Il faconne
+                correctement CHAQUE mot arabe — les lettres se lient, les
+                diacritiques se posent — mais il place les mots de gauche a
+                droite, dans l'ordre logique. La phrase se lit donc a
+                l'envers, et `direction: 'rtl'` n'y change rien : essaye,
+                sans effet.
+
+                L'ordre des mots est donc donne explicitement, au moyen d'une
+                boite flexible en `row-reverse` qui passe a la ligne. Chaque
+                mot reste un fragment de texte que Satori faconne comme il
+                sait le faire ; seule leur POSITION est reprise en main. */}
+            {direction === 'rtl'
+              ? title.split(' ').map((word, index) => (
+                  <span key={`${index}-${word}`} style={{ flexShrink: 0 }}>{word}</span>
+                ))
+              : title}
           </div>
         </div>
 
-        <div style={{ display: 'flex', fontSize: ogText('body-md'), color: inkSubtle }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: direction === 'rtl' ? 'flex-end' : 'flex-start',
+            fontSize: ogText('body-md'),
+            color: inkSubtle,
+          }}
+        >
           {footer}
         </div>
       </div>
@@ -190,6 +231,7 @@ export function renderShareImage({ eyebrow, title, footer }: ShareImageProps): I
       fonts: [
         { name: 'Instrument Serif', data: SERIF, style: 'normal', weight: 400 },
         { name: 'JetBrains Mono', data: MONO, style: 'normal', weight: 400 },
+        { name: 'IBM Plex Sans Arabic', data: ARABIC, style: 'normal', weight: 400 },
       ],
     },
   );

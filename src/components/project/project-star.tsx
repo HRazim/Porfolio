@@ -1,7 +1,9 @@
+import type { Locale } from '@/content/i18n';
 import { COMMON } from '@/content/site-copy';
 import { STAR_LABELS, STAR_ORDER, type ProjectStar as ProjectStarData } from '@/content/projects';
 
 export interface ProjectStarProps {
+  readonly locale: Locale;
   readonly star: ProjectStarData;
 }
 
@@ -20,7 +22,7 @@ export interface ProjectStarProps {
  *
  * Rendu cote serveur.
  */
-export function ProjectStar({ star }: ProjectStarProps) {
+export function ProjectStar({ locale, star }: ProjectStarProps) {
   return (
     <dl className="flex flex-col gap-md">
       {STAR_ORDER.map((field) => {
@@ -28,7 +30,7 @@ export function ProjectStar({ star }: ProjectStarProps) {
         return (
           <div key={field} className="flex flex-col gap-3xs border-l border-border pl-md">
             <dt className="font-mono text-body-sm font-medium text-ink-subtle">
-              {STAR_LABELS[field]}
+              {STAR_LABELS[field][locale]}
             </dt>
             <dd
               className={
@@ -37,7 +39,7 @@ export function ProjectStar({ star }: ProjectStarProps) {
                   : 'max-w-measure text-body-md text-ink-muted'
               }
             >
-              {value ?? COMMON.toBeSpecified}
+              {value?.[locale] ?? COMMON.toBeSpecified[locale]}
             </dd>
           </div>
         );

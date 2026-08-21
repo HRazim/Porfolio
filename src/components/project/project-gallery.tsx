@@ -1,6 +1,8 @@
+import type { Locale } from '@/content/i18n';
 import type { ProjectVisual } from '@/content/projects';
 
 export interface ProjectGalleryProps {
+  readonly locale: Locale;
   readonly visuals: readonly ProjectVisual[];
 }
 
@@ -45,7 +47,7 @@ function srcSet(visual: ProjectVisual, extension: 'avif' | 'webp'): string {
   return visual.widths.map((w) => `${visual.src}-${w}.${extension} ${w}w`).join(', ');
 }
 
-export function ProjectGallery({ visuals }: ProjectGalleryProps) {
+export function ProjectGallery({ locale, visuals }: ProjectGalleryProps) {
   return (
     <ul className="mt-lg grid list-none grid-cols-1 gap-xl p-0 sm:grid-cols-2">
       {visuals.map((visual, index) => {
@@ -66,14 +68,14 @@ export function ProjectGallery({ visuals }: ProjectGalleryProps) {
                   src={`${visual.src}-${fallbackWidth}.webp`}
                   width={visual.width}
                   height={visual.height}
-                  alt={visual.alt}
+                  alt={visual.alt[locale]}
                   loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                   className="h-auto w-full rounded-md border border-border bg-surface"
                 />
               </picture>
               <figcaption className="font-mono text-body-sm text-ink-subtle">
-                {visual.caption}
+                {visual.caption[locale]}
               </figcaption>
             </figure>
           </li>
