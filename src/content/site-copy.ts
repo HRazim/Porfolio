@@ -45,7 +45,6 @@ export const COMMON = {
   newWindow: 'nouvelle fenêtre',
   /** Affiche a la place d’une donnee non encore documentee. */
   toBeSpecified: 'À préciser',
-  backToTop: 'Revenir en haut',
 } as const;
 
 /**
@@ -70,47 +69,30 @@ export const HEADER = {
 
 export const FOOTER = {
   socialLabel: 'Réseaux sociaux',
-  contactLabel: 'Coordonnées',
   /** `{years}` est remplace par l’annee ou la plage d’annees. */
   copyright: 'Tous droits réservés.',
 } as const;
 
-/**
- * ---------------------------------------------------------------------------
- * ACCROCHE — TROIS FORMULATIONS, UNE SEULE RENDUE
- * ---------------------------------------------------------------------------
- *
- * LE PROPRIETAIRE TRANCHERA. Les trois sont conservees ici pour etre
- * comparees ; changer d’option consiste a faire pointer `HOME.headline` vers
- * une autre entree, sans toucher a une seule ligne de JSX.
- *
- * Chacune tient sous soixante caracteres, sans superlatif, sans mot creux et
- * sans promesse invérifiable. Chacune explore une direction differente.
- *
- * LES ESPACES INSECABLES NE SONT PAS DECORATIVES. Elles lient les groupes de
- * mots que la composition ne doit jamais briser — le titre de metier avant
- * tout. Sans elles, `text-wrap: balance` coupe la ligne apres « ingenieur » :
- * c'est la coupe qui egalise le mieux les deux lignes, et c'est la pire au
- * sens du sens.
- *
- * Chaque groupe lie a ete mesure sur la fonte reellement servie : le plus
- * large, « ingenieur d'affaires », vaut 300 px a la plus petite taille du
- * systeme, contre 328 px de colonne a 360 px de large. Il tient.
- * ---------------------------------------------------------------------------
- */
-const HEADLINE_OPTIONS = {
-  /** Identite franche : nomme les deux competences, sans revendiquer de titre. */
-  identite: 'Développeur formé, ingénieur d’affaires en devenir.',
-  /** Tension : situe la personne entre deux mondes plutot que de l’etiqueter. */
-  tension: 'Entre ceux qui construisent et ceux qui vendent.',
-  /** Apport : ce que l’interlocuteur y gagne, pose comme une methode. */
-  apport: 'Comprendre le besoin avant d’écrire la solution.',
-} as const;
-
 export const HOME = {
-  headlineOptions: HEADLINE_OPTIONS,
-  /** Formulation rendue. Les deux autres attendent dans HEADLINE_OPTIONS. */
-  headline: HEADLINE_OPTIONS.identite,
+  /**
+   * ACCROCHE — LA FORMULATION RETENUE.
+   *
+   * Deux autres l'ont accompagnee ici le temps d'etre comparees : une qui
+   * situait la personne entre deux mondes, une qui posait une methode. Le
+   * proprietaire a tranche en faveur de celle-ci ; les deux autres sont
+   * retirees plutot que de dormir dans le fichier.
+   *
+   * LES ESPACES INSECABLES NE SONT PAS DECORATIVES. Elles lient les groupes
+   * de mots que la composition ne doit jamais briser — le titre de metier
+   * avant tout. Sans elles, `text-wrap: balance` coupe la ligne apres
+   * « ingenieur » : c'est la coupe qui egalise le mieux les deux lignes, et
+   * c'est la pire au sens du sens.
+   *
+   * Chaque groupe lie a ete mesure sur la fonte reellement servie : le plus
+   * large, « ingenieur d'affaires », vaut 300 px a la plus petite taille du
+   * systeme, contre 328 px de colonne a 360 px de large. Il tient.
+   */
+  headline: 'Développeur formé, ingénieur d’affaires en devenir.',
   /**
    * UNE phrase de contexte, pas davantage. Le developpement appartient
    * desormais a la page « À propos », vers laquelle pointe le renvoi
