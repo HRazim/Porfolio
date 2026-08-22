@@ -4,7 +4,9 @@
  * l'appellent — un par langue — sont les seuls a la declarer.
  */
 import { Container } from '@/components/layout/container';
-import { ChevronDownIcon } from '@/components/ui/icons';
+import { ExternalLink } from '@/components/ui/external-link';
+import { ChevronDownIcon, LocationIcon } from '@/components/ui/icons';
+import { mapUrlFor } from '@/lib/map-url';
 import { bindTail } from '@/lib/no-break';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
@@ -63,7 +65,54 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                 {entry.organisation === null && entry.location === null ? null : (
                   <p className="font-mono text-body-sm text-ink-subtle">
                     {entry.organisation?.[locale] ?? COMMON.toBeSpecified[locale]}
-                    {entry.location === null ? null : ` — ${entry.location[locale]}`}
+                    {entry.location === null ? null : (
+                      <>
+                        {' — '}
+                        {entry.mapQuery === null ? (
+                          entry.location[locale]
+                        ) : (
+                          /* LA LOCALITE DEVIENT UN LIEN VERS UNE CARTE.
+                             `ExternalLink` porte deja `target="_blank"`,
+                             `rel="noopener noreferrer"` et la mention hors
+                             ecran « (nouvelle fenetre) » : un lien sortant de
+                             plus n’est pas un traitement de plus.
+
+                             LE NOM ACCESSIBLE NE SE LIMITE PAS A LA VILLE.
+                             Deux liens portant le meme texte et menant
+                             ailleurs sont un defaut ; ici le nom vaut
+                             « Guyancourt — Egis sur une carte (nouvelle
+                             fenetre) » : il CONTIENT le texte visible, dit
+                             quel lieu, et dit que la destination est une
+                             carte et non une page du site.
+
+                             `dir="ltr"` SUR LE NOM DE LIEU. En arabe, un mot
+                             latin isole dans un flux droite-a-gauche est
+                             rendu par l’algorithme bidirectionnel selon ce
+                             qui l’entoure ; un nom propre a un ordre a lui.
+                             C’est un attribut de direction, pas une propriete
+                             physique — meme mecanique que les valeurs latines
+                             de la liste de contact.
+
+                             LE PICTOGRAMME EST UNE EPINGLE, non la fleche des
+                             liens sortants : elle dit la carte, et le
+                             changement d’onglet est deja dit par la mention
+                             hors ecran. Elle ne se retourne pas en arabe —
+                             une epingle designe un point, pas une fin de
+                             ligne. */
+                          <ExternalLink
+                            locale={locale}
+                            href={mapUrlFor(entry.mapQuery)}
+                            showIcon={false}
+                          >
+                            <span dir="ltr">{entry.location[locale]}</span>
+                            <LocationIcon size="sm" />
+                            <span className="sr-only">
+                              {` — ${entry.organisation?.[locale] ?? entry.location[locale]} ${COMMON.onMap[locale]}`}
+                            </span>
+                          </ExternalLink>
+                        )}
+                      </>
+                    )}
                   </p>
                 )}
                 {entry.summary === null ? null : (

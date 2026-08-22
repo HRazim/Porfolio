@@ -1,4 +1,7 @@
-import type { Locale, PageKey } from '@/content/i18n';
+import Link from 'next/link';
+
+import { pathFor, type Locale, type PageKey } from '@/content/i18n';
+import { HEADER } from '@/content/site-copy';
 import { SITE_NAME } from '@/lib/site';
 
 import { Container } from './container';
@@ -47,40 +50,45 @@ export function SiteHeader({ locale, page, slug }: SiteHeaderProps) {
             ceder. La resserrer sous `lg` ne change donc RIEN visuellement,
             sauf d’empecher le nom du site de se couper en deux lignes. */}
         <Container className="flex items-center justify-between gap-3xs py-xs lg:gap-md">
-          {/* LE NOM N’EST PLUS UN LIEN, ET C’EST UNE CORRECTION.
-              Il menait a l’accueil, et l’entree « Accueil » de la navigation
-              le suit IMMEDIATEMENT dans l’ordre du document : deux liens
-              consecutifs vers la meme adresse, qu’un lecteur d’ecran annonce
-              l’un apres l’autre. Mesure sur rendu reel : 72 rendus sur 144,
-              soit les 36 pages dans les deux themes A LA LARGEUR DE BUREAU —
-              sous 1024 px la navigation passe derriere le menu et les deux
-              liens ne se suivent plus.
+          {/* LE NOM REDEVIENT UN LIEN, ET C’EST L’ENTREE DE NAVIGATION QUI
+              CEDE. Les deux menaient a l’accueil et se suivaient dans l’ordre
+              de tabulation : un lecteur d’ecran annoncait deux liens pour une
+              seule destination. Le correctif precedent avait retire celui-ci —
+              il retirait le mauvais. Cliquer le nom en haut a gauche pour
+              revenir a l’accueil ne s’apprend pas, et ce qui ne s’apprend pas
+              ne se remplace pas par une entree de menu. Les quatre entrees
+              restantes sont les quatre SECTIONS du site ; l’accueil n’est pas
+              une section, c’est le site.
 
-              DES DEUX LIENS, C’EST CELUI-CI QUI PART. Son nom accessible est
-              un nom de personne : il ne dit pas ou il mene, et sa destination
-              ne se devine que du contexte. « Accueil » la dit, dans les quatre
-              langues, et reste joignable partout — la navigation de bureau
-              sous 1024 px, le menu au-dessus.
+              LE NOM D’UNE PERSONNE NE DIT PAS OU MENE UN LIEN. La destination
+              est donc ecrite DANS le lien, dans un element hors ecran, et non
+              dans un `aria-label` : celui-ci REMPLACERAIT « MAROUAN
+              Hazim-Rayan » au lieu de s’y ajouter, et le texte affiche a
+              l’ecran deviendrait introuvable pour un lecteur d’ecran — ce que
+              le critere WCAG 2.5.3 « Label in Name » (niveau A) interdit, et
+              qui avait deja du etre corrige ici une fois. Le nom accessible
+              vaut « MAROUAN Hazim-Rayan — Accueil » : il CONTIENT le texte
+              visible, et il dit la destination.
 
-              L’AUTRE ISSUE A ETE ECARTEE. Garder le lien en le retirant de
-              l’arbre d’accessibilite — `aria-hidden` et `tabindex="-1"` —
-              aurait preserve la convention a la souris, mais laisse a l’ecran
-              un lien souligne au survol que le clavier ne peut pas atteindre.
-              Ce site ne pose pas d’element qui ment sur ce qu’il est.
+              `aria-current="page"` SUR L’ACCUEIL LUI-MEME : le lien y pointe
+              vers la page ou l’on se trouve deja, et l’annoncer coute un
+              attribut. `page` et non `true` — c’est une page, pas un element
+              courant dans un ensemble.
 
-              AUCUN `aria-label` NON PLUS, quand il etait encore un lien : il
-              REMPLACE le texte au lieu de s’y ajouter, et annoncer « Retour à
-              l’accueil » sur un element qui affiche un nom violait le critere
-              WCAG 2.5.3 « Label in Name ». */}
-          {/* L’INTERLETTRAGE ELARGI NE VAUT QU’A PARTIR DE `lg`. Sous cette
+              L’INTERLETTRAGE ELARGI NE VAUT QU’A PARTIR DE `lg`. Sous cette
               largeur, le nom retombe sur celui de son echelon typographique —
               aucune valeur n’est inventee ici, l’utilitaire est simplement
               retire. Il coutait 0,015 em sur dix-neuf caracteres, soit quatre
               pixels : exactement ce qui manquait pour que le nom tienne sur
               une ligne a 320 px. */}
-          <span className="inline-block font-mono text-body-sm font-medium text-ink lg:tracking-wide">
+          <Link
+            href={pathFor('home', locale)}
+            aria-current={page === 'home' ? 'page' : undefined}
+            className="link-sweep inline-block font-mono text-body-sm font-medium text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent lg:tracking-wide"
+          >
             {SITE_NAME}
-          </span>
+            <span className="sr-only"> — {HEADER.homeDestination[locale]}</span>
+          </Link>
 
           {/* SEULE LA NAVIGATION PASSE ENCORE DERRIERE LE BOUTON DE MENU.
               Le selecteur de langue en est sorti : mesure dans un navigateur,
