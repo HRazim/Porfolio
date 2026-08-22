@@ -164,10 +164,26 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
                   regles : elle est declaree sur `<html>` par la mise en page
                   racine, et heritee ici. En arabe, la cesure ne s’applique pas
                   — l’ecriture ne coupe pas les mots ainsi — et la declaration
-                  y est simplement sans effet. */}
+                  y est simplement sans effet.
+
+                  ET `break-words` REVIENT A COTE D’ELLE, apres mesure dans un
+                  vrai navigateur. `hyphens: auto` n’est pas une garantie : il
+                  demande au moteur un DICTIONNAIRE DE COUPURE pour la langue,
+                  et celui-ci peut manquer. Constate, pas suppose — Chromium
+                  sans interface n’en a aucun, et l’accroche debordait alors du
+                  document : 403 px de large pour une fenetre de 320, 406 pour
+                  390. Une page qui defile horizontalement echoue au critere
+                  WCAG 1.4.10 « Reflow ».
+
+                  L’ORDRE DES DEUX COMPTE, ET IL EST DANS CET ORDRE. Le moteur
+                  cherche d’abord une syllabe ; il ne coupe n’importe ou que si
+                  aucune ne convient. La ou la cesure fonctionne, `break-words`
+                  ne se declenche jamais — le defaut qu’il causait ne revient
+                  donc pas. La ou elle manque, une coupure laide vaut mieux
+                  qu’un document plus large que l’ecran. */}
               <h1
                 data-enter="2"
-                className="section-rule hyphens-auto text-display-lg text-ink md:text-display-xl"
+                className="section-rule hyphens-auto break-words text-display-lg text-ink md:text-display-xl"
               >
                 {HOME.headline[locale]}
               </h1>
