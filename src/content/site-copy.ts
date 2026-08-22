@@ -42,7 +42,7 @@ import { contactHrefFor, pathFor, type Locale, type Translated, type TranslatedL
 
 /** Une entree de navigation : un chemin par langue, un libelle par langue. */
 export interface NavItem {
-  readonly key: 'home' | 'about' | 'projects' | 'career' | 'contact';
+  readonly key: 'about' | 'projects' | 'career' | 'contact';
   readonly label: Translated;
   /** Chemin resolu pour une langue donnee. */
   readonly href: (locale: Locale) => Route;
@@ -55,13 +55,19 @@ export interface NavItem {
  *
  * Les chemins ne sont plus des litteraux mais des fonctions de la langue :
  * la table des routes de i18n.ts en est l’unique source.
+ *
+ * PAS D’ENTREE « ACCUEIL », ET C’EST LE NOM DU SITE QUI LA REMPLACE. Les deux
+ * ont coexiste : deux liens vers la meme adresse, l’un derriere l’autre dans
+ * l’ordre de tabulation, qu’un lecteur d’ecran annonce tous les deux. Des
+ * deux, celui qui part est l’entree de navigation, parce que cliquer le nom
+ * en haut a gauche pour revenir a l’accueil est une convention que personne
+ * n’a besoin d’apprendre — et que les quatre entrees restantes sont les
+ * quatre SECTIONS du site. L’accueil n’est pas une section, c’est le site.
+ *
+ * Le libelle n’a pas disparu pour autant : il est devenu `HEADER.homeLink`,
+ * ou il nomme la destination du lien du nom du site.
  */
 export const NAVIGATION: readonly NavItem[] = [
-  {
-    key: 'home',
-    label: { fr: 'Accueil', en: 'Home', es: 'Inicio', ar: 'الرئيسية' },
-    href: (locale) => pathFor('home', locale),
-  },
   {
     key: 'about',
     label: { fr: 'À propos', en: 'About', es: 'Acerca de', ar: 'عني' },
@@ -196,13 +202,34 @@ export const HEADER = {
     es: 'Navegación principal',
     ar: 'التنقّل الرئيسي',
   },
-  /* Le lien du logo N’A PLUS de libelle accessible dedie, et c’est voulu.
-     Il en portait un — « Retour à l’accueil » — qui REMPLACAIT le nom visible
-     au lieu de s’y ajouter : un `aria-label` ecrase le texte de l’element.
-     Le nom etait donc affiche a l’ecran et introuvable pour un lecteur
-     d’ecran, ce que le critere WCAG 2.5.3 « Label in Name » (niveau A)
-     interdit. Sans `aria-label`, le nom accessible du lien redevient son
-     texte : « MAROUAN Hazim-Rayan ». */
+  /**
+   * Destination du lien porte par le nom du site, dite pour ceux qui ne
+   * voient pas ou il se trouve.
+   *
+   * CE SONT LES QUATRE LIBELLES DE L’ANCIENNE ENTREE « ACCUEIL » de la
+   * navigation, deplaces ici. Aucun mot n’a ete invente : l’entree est
+   * partie, son libelle a change d’emploi.
+   *
+   * IL S’AJOUTE AU NOM VISIBLE, IL NE LE REMPLACE PAS. Un `aria-label`
+   * ecraserait « MAROUAN Hazim-Rayan » et le rendrait introuvable pour un
+   * lecteur d’ecran alors qu’il est ecrit a l’ecran — c’est ce que le
+   * critere WCAG 2.5.3 « Label in Name » (niveau A) interdit, et c’est le
+   * defaut qui avait deja ete corrige une fois ici. Rendu dans un element
+   * hors ecran a l’interieur du lien, le libelle s’ajoute : le nom
+   * accessible devient « MAROUAN Hazim-Rayan — Accueil », qui CONTIENT le
+   * texte visible et dit ou le lien mene.
+   *
+   * `homeDestination` et non `homeLink` : `NOT_FOUND.homeLink` existe deja et
+   * porte tout autre chose — « Retour à l’accueil », un libelle VISIBLE sur
+   * la page 404. Deux cles de meme nom pour deux textes differents finiraient
+   * par etre confondues.
+   */
+  homeDestination: {
+    fr: 'Accueil',
+    en: 'Home',
+    es: 'Inicio',
+    ar: 'الرئيسية',
+  },
   menuOpen: {
     fr: 'Ouvrir le menu',
     en: 'Open menu',
