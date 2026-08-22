@@ -92,49 +92,75 @@ export function LanguagePicker({
           const isCurrent = target === locale;
           const compact = variant === 'compact';
 
+          // Le meme habillage pour les deux formes : seule change la nature de
+          // l’element, jamais son apparence.
+          const shell = cn(
+            LINK_CLASS[variant],
+            'inline-block transition-colors duration-[var(--duration-fast)] ease-out',
+            // `text-ink` ET NON `text-accent` SUR CET APLAT. Mesure sur les
+            // pixels rendus : l’accent sur `--color-accent-soft` donne 3,87:1
+            // dans les deux thèmes — sous les 4,5:1 exigés. Le chiffre était
+            // déjà écrit dans `globals.css`, qui interdit nommément cette
+            // paire ; le calcul depuis les jetons ne l’a jamais vue parce
+            // qu’il vérifie les paires que le système DÉCLARE, non celles que
+            // deux utilitaires forment ici. L’encre pleine sur le même aplat
+            // vaut 10,91:1 en clair et 10,05:1 en sombre.
+            isCurrent ? 'bg-accent-soft text-ink' : 'text-ink-muted hover:text-accent',
+          );
+          const labels = (
+            <>
+              <span className={compact ? undefined : 'sr-only'}>{meta.shortLabel}</span>
+              <span lang={meta.htmlLang} className={compact ? 'sr-only' : undefined}>
+                {meta.nativeName}
+              </span>
+            </>
+          );
+
           return (
             <li key={target}>
-              {/* UN `<a>` ORDINAIRE, ET NON `next/link`. Chaque langue a sa
-                  propre mise en page racine ; Next.js documente qu'une
-                  navigation entre deux racines provoque un CHARGEMENT COMPLET
-                  du document. `Link` promettrait une transition cote client
-                  qu'il ne peut pas tenir, et préchargerait au passage les trois
-                  autres langues de chaque page visitée.
+              {isCurrent ? (
+                /* LA LANGUE COURANTE N’EST PAS UN LIEN, ET C’EST UNE
+                   CORRECTION. Elle pointait vers la page ou l’on se trouve
+                   deja : un arret de tabulation par page qui ne mene nulle
+                   part, dans les quatre langues.
 
-                  Note de lecture du HTML produit : React 19 serialise cette
-                  propriete telle quelle, `hrefLang`, casse melangee — avec
-                  `<a>` comme avec `Link`, verifie sur les deux. Ce n'est pas
-                  un defaut : la specification HTML rend les noms d'attributs
-                  insensibles a la casse, et tout analyseur — navigateur ou
-                  robot — expose donc bien `hreflang`. */}
-              <a
-                href={page === null ? pathFor('home', target) : pathFor(page, target, slug)}
-                hrefLang={meta.htmlLang}
-                // « Élément courant dans un ensemble » : l’option désigne une
-                // LANGUE, pas une page — `page` serait plus étroit que vrai
-                // lorsque la page n’a pas d’équivalent traduit.
-                aria-current={isCurrent ? 'true' : undefined}
-                // `text-ink` ET NON `text-accent` SUR CET APLAT. Mesure sur les
-                // pixels rendus : l’accent sur `--color-accent-soft` donne
-                // 3,87:1 dans les deux thèmes — sous les 4,5:1 exigés. Le
-                // chiffre était déjà écrit dans `globals.css`, qui interdit
-                // nommément cette paire ; le calcul depuis les jetons ne l’a
-                // jamais vue parce qu’il vérifie les paires que le système
-                // DÉCLARE, non celles que deux utilitaires forment ici.
-                // L’encre pleine sur le même aplat vaut 10,91:1 en clair et
-                // 10,05:1 en sombre, et distingue mieux l’option courante des
-                // autres, qui restent en encre atténuée.
-                className={cn(
-                  LINK_CLASS[variant],
-                  'inline-block transition-colors duration-[var(--duration-fast)] ease-out',
-                  isCurrent ? 'bg-accent-soft text-ink' : 'text-ink-muted hover:text-accent',
-                )}
-              >
-                <span className={compact ? undefined : 'sr-only'}>{meta.shortLabel}</span>
-                <span lang={meta.htmlLang} className={compact ? 'sr-only' : undefined}>
-                  {meta.nativeName}
+                   MESURE QUI L’A REVELE : sur l’accueil francais, sous 1024 px
+                   ou la navigation est repliee, ce lien vers « / » suivait
+                   IMMEDIATEMENT celui du nom du site, qui mene au meme
+                   endroit. Deux liens consecutifs vers une seule destination —
+                   l’alerte meme que ce projet vient de corriger ailleurs.
+                   Reordonner les langues l’aurait deplacee ; la retirer la
+                   supprime, et sur les trente-six pages a la fois.
+
+                   `aria-current` RESTE, sur un element qui n’est plus
+                   interactif : l’attribut n’exige pas de l’etre, et c’est lui
+                   qui dit « vous y etes ». La forme reste identique a l’oeil —
+                   meme aplat, meme encre, meme boite. */
+                <span aria-current="true" className={shell}>
+                  {labels}
                 </span>
-              </a>
+              ) : (
+                /* UN `<a>` ORDINAIRE, ET NON `next/link`. Chaque langue a sa
+                   propre mise en page racine ; Next.js documente qu'une
+                   navigation entre deux racines provoque un CHARGEMENT COMPLET
+                   du document. `Link` promettrait une transition cote client
+                   qu'il ne peut pas tenir, et préchargerait au passage les
+                   trois autres langues de chaque page visitée.
+
+                   Note de lecture du HTML produit : React 19 serialise cette
+                   propriete telle quelle, `hrefLang`, casse melangee — avec
+                   `<a>` comme avec `Link`, verifie sur les deux. Ce n'est pas
+                   un defaut : la specification HTML rend les noms d'attributs
+                   insensibles a la casse, et tout analyseur — navigateur ou
+                   robot — expose donc bien `hreflang`. */
+                <a
+                  href={page === null ? pathFor('home', target) : pathFor(page, target, slug)}
+                  hrefLang={meta.htmlLang}
+                  className={shell}
+                >
+                  {labels}
+                </a>
+              )}
             </li>
           );
         })}
