@@ -109,7 +109,15 @@ export function LanguageDisclosure({ locale, children, className }: LanguageDisc
     <details ref={detailsRef} className={cn('relative', className)}>
       <summary
         ref={summaryRef}
-        className="disclosure-trigger inline-flex items-center gap-2xs rounded-sm px-2xs py-3xs font-mono text-body-sm text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+        /* `px-3xs` SOUS `lg`, ET NON `px-2xs` : le declencheur entre desormais
+           dans un en-tete qui compte quatre elements a 320 px de large, ou il
+           ne reste rien. Huit pixels repris ici sont huit pixels rendus au nom
+           du site, qui sinon se coupe en deux lignes.
+
+           LA CIBLE RESTE AU-DESSUS DU MINIMUM : 46 x 28 px, la ou WCAG 2.5.8
+           demande 24 x 24. Ce qui est repris est de la marge, jamais de la
+           surface cliquable utile. */
+        className="disclosure-trigger inline-flex items-center gap-2xs rounded-sm px-3xs py-3xs font-mono text-body-sm text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent lg:px-2xs"
       >
         {/* Le code court est VISIBLE, le rôle du bouton est annoncé. Les deux
             comptent dans le nom accessible : le critère WCAG 2.5.3 « Label in

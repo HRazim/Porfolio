@@ -39,7 +39,14 @@ export function SiteHeader({ locale, page, slug }: SiteHeaderProps) {
         data-site-header
         className="sticky top-0 z-40 bg-paper"
       >
-        <Container className="flex items-center justify-between gap-md py-xs">
+        {/* L’ECART EST UN MINIMUM, PAS UNE MARGE. `justify-between` pousse le
+            nom et le groupe aux deux bouts : l’espace reel entre eux est ce
+            qui reste, et il vaut plusieurs centaines de pixels sur un ecran
+            ordinaire. La valeur declaree ici ne se voit qu’a l’instant ou la
+            place manque — a 320 px — et c’est precisement la qu’elle doit
+            ceder. La resserrer sous `lg` ne change donc RIEN visuellement,
+            sauf d’empecher le nom du site de se couper en deux lignes. */}
+        <Container className="flex items-center justify-between gap-3xs py-xs lg:gap-md">
           {/* LE NOM N’EST PLUS UN LIEN, ET C’EST UNE CORRECTION.
               Il menait a l’accueil, et l’entree « Accueil » de la navigation
               le suit IMMEDIATEMENT dans l’ordre du document : deux liens
@@ -65,27 +72,37 @@ export function SiteHeader({ locale, page, slug }: SiteHeaderProps) {
               REMPLACE le texte au lieu de s’y ajouter, et annoncer « Retour à
               l’accueil » sur un element qui affiche un nom violait le critere
               WCAG 2.5.3 « Label in Name ». */}
-          <span className="inline-block font-mono text-body-sm font-medium tracking-wide text-ink">
+          {/* L’INTERLETTRAGE ELARGI NE VAUT QU’A PARTIR DE `lg`. Sous cette
+              largeur, le nom retombe sur celui de son echelon typographique —
+              aucune valeur n’est inventee ici, l’utilitaire est simplement
+              retire. Il coutait 0,015 em sur dix-neuf caracteres, soit quatre
+              pixels : exactement ce qui manquait pour que le nom tienne sur
+              une ligne a 320 px. */}
+          <span className="inline-block font-mono text-body-sm font-medium text-ink lg:tracking-wide">
             {SITE_NAME}
           </span>
 
-          {/* LE POINT DE RUPTURE REVIENT A `lg`, ou il etait avant que le
-              selecteur n’entre dans l’en-tete. Le deploiement replie ne coute
-              plus que la largeur d’un code court et d’un chevron — la ou quatre
-              options ecrites cote a cote en demandaient environ 130 px — mais
-              les cinq entrees de navigation, elles, n’ont pas maigri : ce sont
-              elles qui fixent le seuil.
+          {/* SEULE LA NAVIGATION PASSE ENCORE DERRIERE LE BOUTON DE MENU.
+              Le selecteur de langue en est sorti : mesure dans un navigateur,
+              le menu deplie faisait 576 px de haut a 320 px de large et
+              descendait a 637 px sur un ecran de 844 — les trois quarts de la
+              hauteur pour cinq entrees et quatre langues. Les langues sont
+              desormais dans l’en-tete a TOUTES les largeurs, et le menu ne
+              porte plus que ce qu’il doit porter.
 
-              Sous 1024 px, navigation et langues passent donc ensemble derriere
-              le bouton de menu, ou les langues s’ecrivent en toutes lettres et
-              n’ont pas besoin d’etre repliees. */}
-          <div className="flex items-center gap-md">
+              LE SEUIL RESTE `lg`, et il est fixe par les cinq entrees de
+              navigation, non par les langues : le declencheur replie ne coute
+              qu’un code court et un chevron.
+
+              LES ECARTS SE RESSERRENT SOUS `lg`, et c’est la reduction la plus
+              economique — voir plus bas pourquoi elle ne suffit pas seule. */}
+          <div className="flex items-center gap-2xs lg:gap-md">
             <SiteNav locale={locale} className="hidden lg:block" />
-            <LanguageDisclosure locale={locale} className="hidden lg:block">
+            <LanguageDisclosure locale={locale}>
               <LanguagePicker locale={locale} page={page} slug={slug} variant="full" />
             </LanguageDisclosure>
             <ModeToggle locale={locale} />
-            <MobileMenu locale={locale} page={page} slug={slug} className="lg:hidden" />
+            <MobileMenu locale={locale} className="lg:hidden" />
           </div>
         </Container>
       </header>
