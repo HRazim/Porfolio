@@ -38,6 +38,7 @@ export interface MobileMenuProps {
 export function MobileMenu({ locale, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
@@ -57,6 +58,33 @@ export function MobileMenu({ locale, className }: MobileMenuProps) {
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, close]);
 
+  /* CLIC EXTERIEUR — AJOUTE, ET IL MANQUAIT. Mesure dans un navigateur avant
+     toute modification : Echap refermait, un clic hors du panneau non. Le
+     selecteur de langue, lui, l’avait depuis sa creation.
+
+     IL FAIT AUSSI L’EXCLUSION MUTUELLE, et c’est pourquoi il n’y a rien de
+     plus a ecrire pour elle. Le declencheur de langue est HORS de ce panneau :
+     l’ouvrir referme donc le menu. Reciproquement, le bouton de menu est hors
+     du `<details>` de langue, dont l’ecouteur symetrique le referme. Deux
+     panneaux flottants ancres a deux declencheurs voisins se recouvriraient a
+     l’ecran : l’exclusion n’est pas un confort, elle evite un chevauchement.
+
+     `pointerdown` et non `click` : la fermeture doit precéder la reaction de
+     la cible, sinon le panneau se referme apres coup et l’on voit un battement.
+
+     Le focus n’est PAS rendu au bouton : l’utilisateur vient de designer autre
+     chose, le lui reprendre irait contre son geste. */
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent): void => {
+      const target = event.target;
+      if (target instanceof Node && rootRef.current?.contains(target) === true) return;
+      setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [open]);
+
   // A l’ouverture, le focus entre dans le panneau. Effet de bord sur le DOM,
   // pas de mise a jour d’etat.
   useEffect(() => {
@@ -64,7 +92,7 @@ export function MobileMenu({ locale, className }: MobileMenuProps) {
   }, [open]);
 
   return (
-    <div className={cn('relative', className)}>
+    <div ref={rootRef} className={cn('relative', className)}>
       <button
         ref={buttonRef}
         type="button"
