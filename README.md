@@ -84,9 +84,15 @@ mentir.
 ├── AUDIT.md                    audit technique du site précédent
 ├── CLAUDE.md                   conventions du dépôt, à lire avant toute modification
 ├── LICENSE                     code sous licence MIT, contenu réservé
+├── captures/                   captures de référence — artefacts, non versionnés
 ├── legacy/                     archive du site vanilla — jamais servie
 ├── public/                     actifs servis tels quels : images AVIF/WebP, CV
-├── scripts/                    contrôles reproductibles (export statique)
+├── scripts/                    contrôles reproductibles
+│   ├── verify-static-export.mjs  export statique
+│   ├── verify-a11y.mjs           accessibilité, sur rendu réel
+│   ├── capture-screens.mjs       captures de référence
+│   ├── browser-harness.mjs       construit, sert, ouvre le navigateur
+│   └── lib/                      décodeur PNG, sonde exécutée dans la page
 └── src/
     ├── app/                    App Router
     │   ├── globals.css         design system — SEUL lieu des valeurs littérales
@@ -118,23 +124,52 @@ mentir.
 ## Commandes
 
 ```bash
-npm install           # installation des dépendances
-npm run dev           # serveur de développement, http://localhost:3000
-npm run build         # compilation de production
-npm run start         # sert la compilation de production
-npm run lint          # ESLint
-npm run verify:export # vérifie que le projet reste exportable en statique
+npm install                      # installation des dépendances
+npx playwright install chromium  # navigateur de vérification, une seule fois
+npm run dev                      # serveur de développement, http://localhost:3000
+npm run build                    # compilation de production
+npm run start                    # sert la compilation de production
+npm run lint                     # ESLint
+npm run verify:export            # vérifie que le projet reste exportable en statique
+npm run verify:a11y              # audit d'accessibilité sur rendu réel
+npm run verify:all               # les quatre contrôles, dans l'ordre
+npm run capture:screens          # captures de référence dans captures/
 ```
+
+### Le navigateur de vérification
+
+`playwright` est une **dépendance de développement**. Il n'est importé que par
+`scripts/`, jamais par `src/` : rien de lui n'entre dans le paquet servi, et
+`npm run verify:a11y` le prouve à chaque exécution par la commande donnée plus
+bas.
+
+Il a été retenu pour trois raisons précises, et non par préférence :
+
+- il pilote Chromium **sans interface**, donc dans une session sans écran ;
+- il donne accès au **protocole de déverminage** du navigateur, seul moyen de
+  forcer un état `:hover` ou `:focus-visible` sans souris et de demander à
+  Chromium **son propre calcul des noms accessibles** plutôt que de le
+  reconstruire ;
+- il télécharge son navigateur **hors du projet**
+  (`%LOCALAPPDATA%\ms-playwright`, `~/.cache/ms-playwright` ailleurs) : rien à
+  ignorer, rien à versionner.
+
+Le navigateur n'est pas installé par `npm install` : la commande
+`npx playwright install chromium` doit être lancée une fois. Sans elle,
+`verify:a11y` échoue en le disant.
 
 ### Vérifications avant publication
 
-Les trois commandes suivantes doivent passer, dans cet ordre :
+Les quatre commandes suivantes doivent passer, dans cet ordre :
 
 ```bash
 npm run build          # compile, et exécute le contrôle de types TypeScript
 npm run lint           # doit être muet
 npm run verify:export  # doit afficher « SUCCÈS »
+npm run verify:a11y    # doit afficher « ERREURS : AUCUNE »
 ```
+
+`npm run verify:all` les enchaîne.
 
 `verify:export` reconstruit le projet avec `STATIC_EXPORT=1`, ce que
 `next.config.ts` traduit en `output: 'export'`. Next.js refuse alors de
@@ -144,6 +179,20 @@ modifie aucun fichier et supprime le `out/` qu'il produit.
 Ce contrôle existe parce que la règle d'export statique, inscrite depuis
 l'origine, n'avait jamais été exécutée — et qu'elle était en défaut. Une règle
 qu'aucune commande ne vérifie n'est pas une règle.
+
+`verify:a11y` construit le site en export statique, le sert sur un port
+éphémère, ouvre chaque page dans Chromium et **mesure les pixels réellement
+peints**. Le contraste n'y est pas déduit des jetons : une passe rend tous les
+textes transparents — rien d'autre ne bouge — et la capture montre alors le
+fond seul, calques translucides, dégradés et opacités héritées compris. Cinq
+états sont mesurés : repos, replis dépliés, survol, focus, et focus des
+éléments qui n'apparaissent qu'à ce moment-là.
+
+Il existe pour la même raison que le précédent. Le calcul depuis les jetons
+déclarait `--color-accent-soft` incompatible avec l'accent — **3,87:1, chiffre
+écrit dans `globals.css`** — et le sélecteur de langue posait pourtant l'un sur
+l'autre. Aucun contrôle ne regardait les paires que le balisage compose
+réellement ; le navigateur, lui, les voit.
 
 ## Branches
 
