@@ -107,6 +107,22 @@ export const COMMON = {
     es: 'nueva ventana',
     ar: 'نافذة جديدة',
   },
+  /**
+   * Nature de la destination, ajoutee au nom accessible d’un lien de lieu.
+   *
+   * ELLE DIT DEUX CHOSES QUE LE NOM DE VILLE SEUL NE DIT PAS : que le lien
+   * mene a une CARTE et non a une page du site, et — parce que le nom de
+   * l’etablissement la precede — QUEL lieu. Trois liens nommes « Trappes »,
+   * « Guyancourt » et « Montigny-le-Bretonneux » sont deja distincts ; le
+   * jour ou deux entrees partageraient une ville, leurs noms accessibles
+   * resteraient differents.
+   */
+  onMap: {
+    fr: 'sur une carte',
+    en: 'on a map',
+    es: 'en un mapa',
+    ar: 'على خريطة',
+  },
   /** Affiche a la place d’une donnee non encore documentee. */
   toBeSpecified: {
     fr: 'À préciser',

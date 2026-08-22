@@ -30,6 +30,23 @@ export interface CareerEntry {
   readonly organisation: Translated | null;
   /** Ville. `null` lorsqu’elle n’est pas documentee separement. */
   readonly location: Translated | null;
+  /**
+   * Requete envoyee au service de cartographie. `null` : aucun lien.
+   *
+   * UNE CHAINE UNIQUE, ET NON UNE `Translated`. Un nom de lieu ne se traduit
+   * pas : « Guyancourt » designe le meme point de la Terre dans les quatre
+   * langues, et les quatre versions de la page doivent mener exactement au
+   * meme endroit. Traduire cette chaine, ce serait ouvrir quatre cartes
+   * differentes.
+   *
+   * ELLE COMBINE L'ETABLISSEMENT ET LA VILLE quand un etablissement existe :
+   * la ville seule centre la carte sur une commune, ce que la localite disait
+   * deja. Aucune adresse ni coordonnee n'est inventee ici — la requete ne dit
+   * rien que `organisation` et `location` ne disent deja.
+   *
+   * AUCUNE URL DANS LES DONNEES : `mapUrlFor` les construit toutes.
+   */
+  readonly mapQuery: string | null;
   readonly period: Period;
   /** Resume en une a deux phrases. `null` tant que la redaction n’a pas eu lieu. */
   readonly summary: Translated | null;
@@ -71,6 +88,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     },
     organisation: invariant('Paris School of Business'),
     location: null,
+    mapQuery: null,
     period: { kind: 'connue', start: '2026', end: '2028' },
     summary: null,
     highlights: {
@@ -92,6 +110,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     },
     organisation: invariant('IUT de Vélizy-Villacoublay — Université Paris-Saclay'),
     location: null,
+    mapQuery: null,
     period: { kind: 'connue', start: '2023', end: '2026' },
     summary: null,
     // L’annee au Quebec est une composante du double diplome, pas une
@@ -132,6 +151,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     },
     organisation: invariant('Lycée Saint-François d’Assise'),
     location: invariant('Montigny-le-Bretonneux'),
+    mapQuery: 'Lycée Saint-François d’Assise, Montigny-le-Bretonneux',
     period: { kind: 'connue', start: '2020', end: '2023' },
     summary: null,
     highlights: {
@@ -153,6 +173,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     },
     organisation: invariant('Egis'),
     location: invariant('Guyancourt'),
+    mapQuery: 'Egis, Guyancourt',
     period: { kind: 'connue', start: '2025-04-14', end: '2025-06-20' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },
@@ -169,6 +190,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     },
     organisation: invariant('Forum de l’orientation'),
     location: invariant('Trappes'),
+    mapQuery: 'Trappes',
     period: { kind: 'connue', start: '2025-02', end: '2025-02' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },
