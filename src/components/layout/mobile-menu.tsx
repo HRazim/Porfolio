@@ -4,17 +4,12 @@ import Link from 'next/link';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { CloseIcon, MenuIcon } from '@/components/ui/icons';
-import type { Locale, PageKey } from '@/content/i18n';
+import type { Locale } from '@/content/i18n';
 import { HEADER, NAVIGATION } from '@/content/site-copy';
 import { cn } from '@/lib/cn';
 
-import { LanguagePicker } from './language-picker';
-
 export interface MobileMenuProps {
   readonly locale: Locale;
-  /** Page courante, transmise au sélecteur de langue du panneau. */
-  readonly page: PageKey | null;
-  readonly slug?: string;
   readonly className?: string;
 }
 
@@ -40,9 +35,10 @@ export interface MobileMenuProps {
  *   - la touche Echap referme le panneau et rend le focus au declencheur.
  * ---------------------------------------------------------------------------
  */
-export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
+export function MobileMenu({ locale, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
@@ -62,6 +58,33 @@ export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, close]);
 
+  /* CLIC EXTERIEUR — AJOUTE, ET IL MANQUAIT. Mesure dans un navigateur avant
+     toute modification : Echap refermait, un clic hors du panneau non. Le
+     selecteur de langue, lui, l’avait depuis sa creation.
+
+     IL FAIT AUSSI L’EXCLUSION MUTUELLE, et c’est pourquoi il n’y a rien de
+     plus a ecrire pour elle. Le declencheur de langue est HORS de ce panneau :
+     l’ouvrir referme donc le menu. Reciproquement, le bouton de menu est hors
+     du `<details>` de langue, dont l’ecouteur symetrique le referme. Deux
+     panneaux flottants ancres a deux declencheurs voisins se recouvriraient a
+     l’ecran : l’exclusion n’est pas un confort, elle evite un chevauchement.
+
+     `pointerdown` et non `click` : la fermeture doit precéder la reaction de
+     la cible, sinon le panneau se referme apres coup et l’on voit un battement.
+
+     Le focus n’est PAS rendu au bouton : l’utilisateur vient de designer autre
+     chose, le lui reprendre irait contre son geste. */
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent): void => {
+      const target = event.target;
+      if (target instanceof Node && rootRef.current?.contains(target) === true) return;
+      setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [open]);
+
   // A l’ouverture, le focus entre dans le panneau. Effet de bord sur le DOM,
   // pas de mise a jour d’etat.
   useEffect(() => {
@@ -69,7 +92,7 @@ export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
   }, [open]);
 
   return (
-    <div className={cn('relative', className)}>
+    <div ref={rootRef} className={cn('relative', className)}>
       <button
         ref={buttonRef}
         type="button"
@@ -77,7 +100,10 @@ export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
         aria-controls={panelId}
         aria-label={open ? HEADER.menuClose[locale] : HEADER.menuOpen[locale]}
         onClick={() => setOpen((previous) => !previous)}
-        className="inline-flex items-center justify-center rounded-sm p-2xs text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent"
+        // `p-3xs` SOUS `lg` : le bouton mesure alors 32 x 32 px au lieu de 40,
+        // huit pixels rendus a un en-tete qui n’en a plus. La cible reste
+        // au-dessus des 24 x 24 px de WCAG 2.5.8, et l’icone ne change pas.
+        className="inline-flex items-center justify-center rounded-sm p-3xs text-ink transition-colors duration-[var(--duration-fast)] ease-out hover:text-accent lg:p-2xs"
       >
         {open ? <CloseIcon /> : <MenuIcon />}
       </button>
@@ -103,15 +129,6 @@ export function MobileMenu({ locale, page, slug, className }: MobileMenuProps) {
             </li>
           ))}
         </ul>
-
-        {/* Les langues s’ecrivent ici en toutes lettres — « Français »,
-            « English », « Español », « العربية » — la ou l’en-tete n’a la
-            place que des codes courts. Ce sont les memes liens : le selecteur
-            ne devient pas un composant client parce qu’il est monte dans un
-            panneau qui, lui, en est un. */}
-        <div className="mt-md border-t border-border pt-md">
-          <LanguagePicker locale={locale} page={page} slug={slug} variant="full" />
-        </div>
       </nav>
     </div>
   );
