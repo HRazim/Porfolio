@@ -114,12 +114,20 @@ export function LanguagePicker({
                 // LANGUE, pas une page — `page` serait plus étroit que vrai
                 // lorsque la page n’a pas d’équivalent traduit.
                 aria-current={isCurrent ? 'true' : undefined}
+                // `text-ink` ET NON `text-accent` SUR CET APLAT. Mesure sur les
+                // pixels rendus : l’accent sur `--color-accent-soft` donne
+                // 3,87:1 dans les deux thèmes — sous les 4,5:1 exigés. Le
+                // chiffre était déjà écrit dans `globals.css`, qui interdit
+                // nommément cette paire ; le calcul depuis les jetons ne l’a
+                // jamais vue parce qu’il vérifie les paires que le système
+                // DÉCLARE, non celles que deux utilitaires forment ici.
+                // L’encre pleine sur le même aplat vaut 10,91:1 en clair et
+                // 10,05:1 en sombre, et distingue mieux l’option courante des
+                // autres, qui restent en encre atténuée.
                 className={cn(
                   LINK_CLASS[variant],
                   'inline-block transition-colors duration-[var(--duration-fast)] ease-out',
-                  isCurrent
-                    ? 'bg-accent-soft text-accent'
-                    : 'text-ink-muted hover:text-accent',
+                  isCurrent ? 'bg-accent-soft text-ink' : 'text-ink-muted hover:text-accent',
                 )}
               >
                 <span className={compact ? undefined : 'sr-only'}>{meta.shortLabel}</span>

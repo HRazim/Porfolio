@@ -86,3 +86,13 @@ coverage/
 # dans CLAUDE.md ; l ignorer evite de resalir l arbre a chaque demarrage.
 # ---------------------------------------------------------------------------
 AGENTS.md
+
+# ---------------------------------------------------------------------------
+# Captures de reference produites par `npm run capture:screens`.
+# Ce sont des ARTEFACTS DE VERIFICATION : elles se regenerent en une commande,
+# et les versionner ferait grossir le depot de plusieurs dizaines de mega-octets
+# a chaque retouche de couleur. Le navigateur qui les produit, lui, est
+# telecharge par Playwright HORS DU PROJET (%LOCALAPPDATA%\ms-playwright sous
+# Windows, ~/.cache/ms-playwright ailleurs) : rien a ignorer pour lui.
+# ---------------------------------------------------------------------------
+captures/

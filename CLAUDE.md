@@ -112,6 +112,7 @@ contrôles avant publication :**
 npm run build          # compile et contrôle les types
 npm run lint           # doit être muet
 npm run verify:export  # doit afficher « SUCCÈS »
+npm run verify:a11y    # doit afficher « ERREURS : AUCUNE »
 ```
 
 `verify:export` construit avec `STATIC_EXPORT=1`, que `next.config.ts` traduit
@@ -135,6 +136,49 @@ Les deux sont sous SIL Open Font License, qui autorise la redistribution.
 
 `strict: true`. Le type `any` est interdit — la règle
 `@typescript-eslint/no-explicit-any` est en erreur.
+
+### 9. Ce qui se voit se mesure dans un navigateur
+
+Pendant toute la construction de ce site, aucune page n'a été observée dans un
+navigateur : les contrôles portaient sur le HTML produit, la feuille de style
+compilée et des modèles de composition. Un modèle ne voit pas ce qu'un moteur
+de rendu peint.
+
+Il l'a prouvé. `globals.css` documente que `--color-accent-soft` ne porte
+jamais l'accent lisible, **et donne le chiffre : 3,87:1**. Le sélecteur de
+langue posait exactement cette paire depuis sa création. Aucun contrôle ne l'a
+vu, parce qu'aucun ne regardait les paires que le BALISAGE compose : le calcul
+depuis les jetons vérifie les paires que le système déclare, pas celles que
+deux utilitaires Tailwind forment en se rencontrant dans un fichier TSX.
+
+```bash
+npm run verify:a11y      # audit sur rendu réel — bloquant avant publication
+npm run capture:screens  # captures de référence dans captures/, non versionnées
+```
+
+`playwright` est une **dépendance de développement**, importée par `scripts/`
+et par rien d'autre. Elle ne doit jamais apparaître dans `src/`. Son navigateur
+se télécharge hors du projet (`npx playwright install chromium`, une fois) : il
+n'y a rien à ignorer pour lui, contrairement à `captures/`.
+
+Trois principes tenus par l'audit, à ne pas régresser :
+
+- **le fond n'est pas déduit, il est lu.** Une passe rend tous les textes
+  transparents et la capture montre le fond seul — calques translucides,
+  dégradés, opacités héritées compris ;
+- **les états comptent.** Repos, replis dépliés, survol, focus, et focus des
+  éléments qui n'apparaissent qu'alors. Un contraste juste au repos peut être
+  faux au survol ;
+- **il faut attendre la fin du mouvement.** Mesurer sans attendre les
+  transitions donne des couleurs intermédiaires : le même déclencheur a rendu
+  2,30:1 puis 5,45:1 selon la largeur, pour une seule règle CSS. Ce n'était pas
+  un défaut du site, c'était un défaut de la mesure ;
+- **une mesure fausse se démontre comme un défaut.** Trois des quatre constats
+  initiaux de cet audit venaient de la sonde, pas du site : du texte compté
+  dans un repli fermé, un lien d'évitement révélé qui recouvrait l'en-tête, un
+  liseret circulaire échantillonné aux coins d'un rectangle. Chacun a été
+  reproduit au pixel avant d'être corrigé. Un audit qui crie au loup est aussi
+  inutile qu'un audit muet.
 
 ## Stratégie de branches
 

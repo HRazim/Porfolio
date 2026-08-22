@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:export": "node scripts/verify-static-export.mjs"
+    "verify:export": "node scripts/verify-static-export.mjs",
+    "verify:a11y": "node scripts/verify-a11y.mjs",
+    "verify:all": "npm run build && npm run lint && npm run verify:export && npm run verify:a11y",
+    "capture:screens": "node scripts/capture-screens.mjs"
   },
   "dependencies": {
     "next": "16.3.1",
@@ -21,6 +24,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
