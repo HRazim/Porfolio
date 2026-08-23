@@ -198,6 +198,22 @@ export function formatPeriod(period: Period, locale: Locale): string | null {
 }
 
 /**
+ * Libelle d’une DATE ISOLEE, hors de toute periode.
+ *
+ * Une date d’obtention ou de fin de validite n’est pas une periode : elle n’a
+ * ni debut ni fin, elle est un point. Elle se compose pourtant exactement
+ * comme une borne — meme gabarit par langue, memes noms de mois, memes
+ * chiffres occidentaux en arabe — et il n’y avait aucune raison d’en ecrire
+ * une seconde mecanique a cote de celle-ci.
+ *
+ * `formatBound` restait interne : cette fonction l’expose sous le nom qui dit
+ * ce qu’elle sert, sans dupliquer une ligne.
+ */
+export function formatDate(value: DatePoint, locale: Locale): string {
+  return formatBound(value, locale);
+}
+
+/**
  * Libelle ANNUEL d’une periode, pour les surfaces contraintes.
  *
  * La vignette compacte de l’accueil dispose d’environ trente-quatre caracteres
