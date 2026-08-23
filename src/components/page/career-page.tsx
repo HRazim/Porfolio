@@ -5,15 +5,17 @@
  */
 import { Container } from '@/components/layout/container';
 import { ExternalLink } from '@/components/ui/external-link';
-import { ChevronDownIcon, LocationIcon } from '@/components/ui/icons';
+import { Disclosure } from '@/components/ui/disclosure';
+import { LocationIcon } from '@/components/ui/icons';
 import { mapUrlFor } from '@/lib/map-url';
 import { bindTail } from '@/lib/no-break';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
-import { formatPeriod, periodDateTime } from '@/content/period';
+import { formatDate, formatPeriod, periodDateTime } from '@/content/period';
 import {
   type CareerEntry,
   type CareerKind,
+  type Certification,
   formatLanguageQualification,
   getCareerEntriesByKind,
   getLanguages,
@@ -140,11 +142,7 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                     exterieur n’ont de sens pour un bloc de texte pose dans le
                     flux, qui ne recouvre rien et n’attrape pas le focus. */}
                 {entry.description[locale].length === 0 ? null : (
-                  <details className="mt-2xs">
-                    <summary className="disclosure-trigger inline-flex items-center gap-2xs rounded-sm font-mono text-body-sm text-accent transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink">
-                      {CAREER.entryDetails[locale]}
-                      <ChevronDownIcon size="sm" className="disclosure-mark" />
-                    </summary>
+                  <Disclosure label={CAREER.entryDetails[locale]}>
                     {/* Un paragraphe par entree de la liste, et l'ecart entre
                         eux vient du conteneur : le composant n'ecrit ni
                         separateur ni marge sur le texte lui-meme.
@@ -156,14 +154,14 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                         toutes. C'est une decision de PRESENTATION, prise ou
                         elle s'applique : la donnee, elle, ne porte aucune
                         insecable. */}
-                    <div className="panel-enter mt-2xs flex max-w-measure flex-col gap-sm">
+                    <div className="flex max-w-measure flex-col gap-sm">
                       {entry.description[locale].map((paragraph) => (
                         <p key={paragraph} className="text-body-md text-ink-muted">
                           {bindTail(paragraph)}
                         </p>
                       ))}
                     </div>
-                  </details>
+                  </Disclosure>
                 )}
               </li>
             );
@@ -175,6 +173,74 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
 }
 
 /** Langues, avec leur niveau et, le cas echeant, leur certification. */
+/**
+ * Detail chiffre d'une certification linguistique.
+ *
+ * LE SCORE TOTAL EST L'INFORMATION PRINCIPALE : il est pose en clair sous la
+ * ligne de qualification, dans l'encre pleine et un cran typographique
+ * au-dessus. Le reste — les epreuves, le niveau, les dates — complete, et
+ * n'a pas a occuper la carte en permanence : la section aligne quatre langues
+ * cote a cote, et six lignes de plus sur une seule desequilibreraient la
+ * rangee. Le repli est celui des descriptions de parcours, le meme composant,
+ * qui s'ouvre sans script.
+ *
+ * UNE LISTE DE DEFINITIONS, ET NON UN TABLEAU. Chaque ligne associe un
+ * libelle a UNE valeur : c'est exactement ce que `<dl>` decrit. Un `<table>`
+ * annoncerait des colonnes et des en-tetes qui n'existent pas.
+ *
+ * `dir="ltr"` SUR LES CHIFFRES ET SUR LE NOM DE L'EPREUVE. En arabe, « 475 /
+ * 495 » et « TOEIC Listening and Reading » sont des suites latines isolees
+ * dans un flux droite-a-gauche : sans direction propre, l'algorithme
+ * bidirectionnel les recompose selon ce qui les entoure. C'est un attribut de
+ * direction, pas une propriete physique.
+ */
+function CertificationDetail({
+  detail,
+  locale,
+}: {
+  readonly detail: Certification;
+  readonly locale: Locale;
+}) {
+  const score = `${detail.score} / ${detail.max}`;
+
+  return (
+    <>
+      <span dir="ltr" className="font-mono text-body-lg text-ink">
+        {score}
+      </span>
+      <Disclosure label={CAREER.entryDetails[locale]}>
+        <dl className="flex flex-col gap-3xs font-mono text-body-sm">
+          {detail.sections.map((section) => (
+            <div key={section.label[locale]} className="flex flex-wrap items-baseline gap-2xs">
+              <dt className="text-ink-subtle">{section.label[locale]}</dt>
+              <dd dir="ltr" className="text-ink">{`${section.score} / ${section.max}`}</dd>
+            </div>
+          ))}
+          {/* PAS DE LIGNE POUR LE NIVEAU ICI. Il est deja sur la ligne de
+              qualification, deux lignes plus haut dans la meme carte, ou il
+              suit la convention des trois autres langues. Le poser une seconde
+              fois derriere le repli, c'etait ecrire deux fois la meme valeur a
+              trois centimetres d'intervalle.
+
+              LA VALEUR RESTE UNIQUE EN DONNEE, et elle vient bien de
+              l'attestation : `qualificationLevel` lit `certificationDetail.level`
+              quand une certification existe, et le champ `level` de l'anglais
+              reste vide. Retirer cette ligne ne change donc pas la source du
+              niveau affiche, seulement le nombre de fois qu'on le lit. */}
+          <div className="flex flex-wrap items-baseline gap-2xs">
+            <dt className="text-ink-subtle">{CAREER.certificationObtained[locale]}</dt>
+            <dd className="text-ink">{formatDate(detail.obtained, locale)}</dd>
+          </div>
+          <div className="flex flex-wrap items-baseline gap-2xs">
+            <dt className="text-ink-subtle">{CAREER.certificationValidUntil[locale]}</dt>
+            <dd className="text-ink">{formatDate(detail.validUntil, locale)}</dd>
+          </div>
+        </dl>
+      </Disclosure>
+    </>
+  );
+}
+
 function LanguagesSection({ locale }: { readonly locale: Locale }) {
   const languages = getLanguages();
 
@@ -199,6 +265,9 @@ function LanguagesSection({ locale }: { readonly locale: Locale }) {
               <span dir="ltr" className="font-mono text-body-sm text-ink-subtle">
                 {formatLanguageQualification(language, locale)}
               </span>
+              {language.certificationDetail === null ? null : (
+                <CertificationDetail detail={language.certificationDetail} locale={locale} />
+              )}
             </li>
           ))}
         </ul>

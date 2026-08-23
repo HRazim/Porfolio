@@ -122,7 +122,18 @@ export interface SocialLink {
   readonly network: SocialNetwork;
   readonly label: string;
   readonly href: string;
-  /** Nom d’utilisateur, pour les donnees structurees. */
+  /**
+   * Nom d’utilisateur, tel qu’il apparait dans l’adresse du profil.
+   *
+   * IL DOIT SUIVRE `href`, ET IL NE L’A PAS FAIT : l’adresse LinkedIn a change
+   * sans que ce champ bouge, et les deux ont designe deux profils differents
+   * jusqu’a ce qu’un controle les compare.
+   *
+   * Aucune surface ne le lit aujourd’hui — les donnees structurees publient
+   * `href`, pas lui. C’est precisement ce qui a permis a la divergence de
+   * passer inapercue : un champ que rien n’emploie ne se contredit jamais a
+   * l’ecran.
+   */
   readonly handle: string;
 }
 
@@ -136,8 +147,8 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
   {
     network: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/hazim-rayan-marouan-8bb382338',
-    handle: 'hazim-rayan-marouan',
+    href: 'https://www.linkedin.com/in/hazimryn/',
+    handle: 'hazimryn',
   },
 ];
 

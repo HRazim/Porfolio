@@ -64,8 +64,8 @@ export interface NavItem {
  * n’a besoin d’apprendre — et que les quatre entrees restantes sont les
  * quatre SECTIONS du site. L’accueil n’est pas une section, c’est le site.
  *
- * Le libelle n’a pas disparu pour autant : il est devenu `HEADER.homeLink`,
- * ou il nomme la destination du lien du nom du site.
+ * Le libelle n’a pas disparu pour autant : il est devenu
+ * `HEADER.homeDestination`, ou il nomme la destination du lien du nom du site.
  */
 export const NAVIGATION: readonly NavItem[] = [
   {
@@ -635,6 +635,29 @@ export const CAREER = {
     en: 'The detail',
     es: 'El detalle',
     ar: 'التفاصيل',
+  },
+  /**
+   * Libelles du detail d’une certification linguistique.
+   *
+   * Ils nomment les valeurs d’une liste de definitions : ce sont des
+   * libelles d’interface, pas de la donnee. Le nom des epreuves, lui, vit
+   * dans `career.ts` avec le score qu’il accompagne.
+   *
+   * PAS DE LIBELLE POUR LE NIVEAU : il en a existe un, et il n’a servi
+   * qu’une fois — a repeter, derriere le repli, ce que la ligne de
+   * qualification affiche deja. La ligne est partie, le libelle avec elle.
+   */
+  certificationObtained: {
+    fr: 'Obtenu le',
+    en: 'Obtained on',
+    es: 'Obtenido el',
+    ar: 'تاريخ الحصول',
+  },
+  certificationValidUntil: {
+    fr: 'Valable jusqu’au',
+    en: 'Valid until',
+    es: 'Válido hasta',
+    ar: 'صالح حتى',
   },
   heading: { fr: 'Parcours', en: 'Career', es: 'Trayectoria', ar: 'المسار' },
   intro: {

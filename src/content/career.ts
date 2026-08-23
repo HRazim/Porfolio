@@ -16,6 +16,7 @@
  */
 
 import { invariant, type Locale, type Translated, type TranslatedList } from './i18n';
+import type { YearMonthDay } from './period';
 import type { Period } from './period';
 
 export type CareerKind = 'formation' | 'experience';
@@ -222,17 +223,65 @@ export const LANGUAGE_LEVEL_LABELS: Readonly<Record<LanguageLevel, Translated>> 
   A1: invariant('A1'),
 };
 
+/**
+ * Une epreuve d’une certification : un libelle, un score, un maximum.
+ *
+ * LE LIBELLE SE TRADUIT, LES CHIFFRES NON. « Comprehension orale » se dit
+ * autrement dans chaque langue ; 475 sur 495 s’ecrit pareil partout.
+ */
+export interface CertificationSection {
+  readonly label: Translated;
+  readonly score: number;
+  readonly max: number;
+}
+
+/**
+ * Detail d’une certification linguistique.
+ *
+ * LE NOM NE SE TRADUIT PAS : « TOEIC Listening and Reading » est le nom propre
+ * d’une epreuve, pas une expression. Il est donc une chaine simple, comme
+ * une requete cartographique et pour la meme raison.
+ *
+ * LES DATES SONT DES DONNEES, pas des chaines redigees : elles se recomposent
+ * par langue avec le meme mecanisme que les bornes de periode. Ecrire
+ * « 17 mars 2025 » dans la donnee aurait impose de la traduire quatre fois, et
+ * d’oublier que l’espagnol insere deux « de ».
+ *
+ * LE NIVEAU EST CELUI QUE L’ATTESTATION ETABLIT, et il devient celui de la
+ * langue : voir `qualificationLevel` plus bas. Une seule source pour un seul
+ * fait.
+ */
+export interface Certification {
+  readonly name: string;
+  readonly score: number;
+  readonly max: number;
+  readonly sections: readonly CertificationSection[];
+  readonly level: LanguageLevel;
+  readonly obtained: YearMonthDay;
+  readonly validUntil: YearMonthDay;
+}
+
 export interface LanguageSkill {
   /** Identifiant stable, en kebab-case. */
   readonly id: string;
   readonly name: Translated;
   /**
-   * Niveau du cadre europeen. `null` lorsqu’un score certifie le remplace :
-   * un chiffre verifiable vaut mieux qu’une auto-evaluation posee a cote.
+   * Niveau du cadre europeen DECLARE. `null` lorsqu’une certification
+   * l’etablit : c’est alors elle qui le porte, et le declarer une seconde
+   * fois ici serait ouvrir deux sources pour un seul fait.
    */
   readonly level: LanguageLevel | null;
-  /** Certification obtenue. `null` en l’absence de certification documentee. */
+  /**
+   * Certification, sous forme courte. `null` en l’absence de certification,
+   * ou lorsque `certificationDetail` la porte au complet.
+   */
   readonly certification: Translated | null;
+  /**
+   * Detail chiffre de la certification. `null` par defaut : une langue sans
+   * certification detaillee s’affiche exactement comme avant, sans libelle
+   * orphelin ni depliant vide.
+   */
+  readonly certificationDetail: Certification | null;
 }
 
 const LANGUAGES: readonly LanguageSkill[] = [
@@ -246,6 +295,7 @@ const LANGUAGES: readonly LanguageSkill[] = [
     },
     level: 'langue-maternelle',
     certification: null,
+    certificationDetail: null,
   },
   {
     id: 'anglais',
@@ -255,10 +305,44 @@ const LANGUAGES: readonly LanguageSkill[] = [
       es: 'Inglés',
       ar: 'الإنجليزية',
     },
-    // Le score se suffit : une equivalence CECRL posee a cote serait une
-    // interpretation de ma part, la que le chiffre est verifiable.
+    // LE NIVEAU N’EST PLUS UNE INTERPRETATION. Il etait laisse vide parce
+    // qu’une equivalence CECRL posee a cote d’un score aurait ete la mienne ;
+    // l’attestation l’etablit desormais, et c’est elle qui le porte.
     level: null,
-    certification: invariant('TOEIC 870'),
+    // La forme courte est remplacee par le detail, qui la contient : garder
+    // « TOEIC 870 » a cote de `score: 870` ouvrirait deux sources pour un
+    // seul chiffre.
+    certification: null,
+    certificationDetail: {
+      name: 'TOEIC Listening and Reading',
+      score: 870,
+      max: 990,
+      sections: [
+        {
+          label: {
+            fr: 'Compréhension orale',
+            en: 'Listening',
+            es: 'Comprensión oral',
+            ar: 'الاستماع',
+          },
+          score: 475,
+          max: 495,
+        },
+        {
+          label: {
+            fr: 'Compréhension écrite',
+            en: 'Reading',
+            es: 'Comprensión escrita',
+            ar: 'القراءة',
+          },
+          score: 395,
+          max: 495,
+        },
+      ],
+      level: 'B2',
+      obtained: '2025-03-17',
+      validUntil: '2027-03-17',
+    },
   },
   {
     id: 'espagnol',
@@ -270,6 +354,7 @@ const LANGUAGES: readonly LanguageSkill[] = [
     },
     level: 'B2',
     certification: null,
+    certificationDetail: null,
   },
   {
     id: 'arabe',
@@ -281,6 +366,7 @@ const LANGUAGES: readonly LanguageSkill[] = [
     },
     level: 'B1',
     certification: null,
+    certificationDetail: null,
   },
 ];
 
@@ -396,12 +482,26 @@ export function getReadings(): readonly Reading[] {
  * deux. La composition vit ici et non dans le composant, celui-ci ne
  * redigeant rien.
  */
+/**
+ * Niveau du cadre europeen a afficher pour une langue.
+ *
+ * UNE SEULE SOURCE. Quand une certification l’etablit, c’est elle qui fait
+ * foi : le champ `level` de la langue reste vide, et le site declare partout
+ * le niveau que l’attestation porte.
+ */
+export function qualificationLevel(language: LanguageSkill): LanguageLevel | null {
+  return language.certificationDetail?.level ?? language.level;
+}
+
 export function formatLanguageQualification(
   language: LanguageSkill,
   locale: Locale,
 ): string {
   const parts: string[] = [];
-  if (language.level !== null) parts.push(LANGUAGE_LEVEL_LABELS[language.level][locale]);
-  if (language.certification !== null) parts.push(language.certification[locale]);
+  const level = qualificationLevel(language);
+  if (level !== null) parts.push(LANGUAGE_LEVEL_LABELS[level][locale]);
+  const detail = language.certificationDetail;
+  if (detail !== null) parts.push(detail.name);
+  else if (language.certification !== null) parts.push(language.certification[locale]);
   return parts.join(' — ');
 }
