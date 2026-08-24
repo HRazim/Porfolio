@@ -15,7 +15,7 @@
  * ---------------------------------------------------------------------------
  */
 
-import { invariant, type Locale, type Translated, type TranslatedList } from './i18n';
+import { invariant, type Translated, type TranslatedList } from './i18n';
 import type { YearMonthDay } from './period';
 import type { Period } from './period';
 
@@ -507,11 +507,6 @@ export function getReadings(): readonly Reading[] {
 }
 
 /**
- * Qualification affichee pour une langue : niveau, certification, ou les
- * deux. La composition vit ici et non dans le composant, celui-ci ne
- * redigeant rien.
- */
-/**
  * Niveau du cadre europeen a afficher pour une langue.
  *
  * UNE SEULE SOURCE. Quand une certification l’etablit, c’est elle qui fait
@@ -520,17 +515,4 @@ export function getReadings(): readonly Reading[] {
  */
 export function qualificationLevel(language: LanguageSkill): LanguageLevel | null {
   return language.certificationDetail?.level ?? language.level;
-}
-
-export function formatLanguageQualification(
-  language: LanguageSkill,
-  locale: Locale,
-): string {
-  const parts: string[] = [];
-  const level = qualificationLevel(language);
-  if (level !== null) parts.push(LANGUAGE_LEVEL_LABELS[level][locale]);
-  const detail = language.certificationDetail;
-  if (detail !== null) parts.push(detail.name);
-  else if (language.certification !== null) parts.push(language.certification[locale]);
-  return parts.join(' — ');
 }

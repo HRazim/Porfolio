@@ -16,9 +16,10 @@ import {
   type CareerEntry,
   type CareerKind,
   type Certification,
-  formatLanguageQualification,
   getCareerEntriesByKind,
   getLanguages,
+  LANGUAGE_LEVEL_LABELS,
+  qualificationLevel,
 } from '@/content/career';
 import type { Locale } from '@/content/i18n';
 import { CAREER, COMMON, MAIN_CONTENT_ID } from '@/content/site-copy';
@@ -209,43 +210,36 @@ function CertificationDetail({
   readonly detail: Certification;
   readonly locale: Locale;
 }) {
-  const score = `${detail.score} / ${detail.max}`;
-
   return (
-    <>
-      <span dir="ltr" className="font-mono text-body-lg text-ink">
-        {score}
-      </span>
-      <Disclosure label={CAREER.entryDetails[locale]}>
-        <dl className="flex flex-col gap-3xs font-mono text-body-sm">
-          {detail.sections.map((section) => (
-            <div key={section.label[locale]} className="flex flex-wrap items-baseline gap-2xs">
-              <dt className="text-ink-subtle">{section.label[locale]}</dt>
-              <dd dir="ltr" className="text-ink">{`${section.score} / ${section.max}`}</dd>
-            </div>
-          ))}
-          {/* PAS DE LIGNE POUR LE NIVEAU ICI. Il est deja sur la ligne de
-              qualification, deux lignes plus haut dans la meme carte, ou il
-              suit la convention des trois autres langues. Le poser une seconde
-              fois derriere le repli, c'etait ecrire deux fois la meme valeur a
-              trois centimetres d'intervalle.
+    <Disclosure label={CAREER.entryDetails[locale]}>
+      <dl className="flex flex-col gap-3xs font-mono text-body-sm">
+        {detail.sections.map((section) => (
+          <div key={section.label[locale]} className="flex flex-wrap items-baseline gap-2xs">
+            <dt className="text-ink-subtle">{section.label[locale]}</dt>
+            <dd dir="ltr" className="text-ink">{`${section.score} / ${section.max}`}</dd>
+          </div>
+        ))}
+        {/* PAS DE LIGNE POUR LE NIVEAU ICI. Il est deja sur la ligne de
+            l'anglais, juste au-dessus du repli, ou il suit la convention des
+            trois autres langues. Le poser une seconde fois derriere le repli,
+            c'etait ecrire deux fois la meme valeur a trois centimetres
+            d'intervalle.
 
-              LA VALEUR RESTE UNIQUE EN DONNEE, et elle vient bien de
-              l'attestation : `qualificationLevel` lit `certificationDetail.level`
-              quand une certification existe, et le champ `level` de l'anglais
-              reste vide. Retirer cette ligne ne change donc pas la source du
-              niveau affiche, seulement le nombre de fois qu'on le lit. */}
-          <div className="flex flex-wrap items-baseline gap-2xs">
-            <dt className="text-ink-subtle">{CAREER.certificationObtained[locale]}</dt>
-            <dd className="text-ink">{formatDate(detail.obtained, locale)}</dd>
-          </div>
-          <div className="flex flex-wrap items-baseline gap-2xs">
-            <dt className="text-ink-subtle">{CAREER.certificationValidUntil[locale]}</dt>
-            <dd className="text-ink">{formatDate(detail.validUntil, locale)}</dd>
-          </div>
-        </dl>
-      </Disclosure>
-    </>
+            LA VALEUR RESTE UNIQUE EN DONNEE, et elle vient bien de
+            l'attestation : `qualificationLevel` lit `certificationDetail.level`
+            quand une certification existe, et le champ `level` de l'anglais
+            reste vide. Retirer cette ligne ne change donc pas la source du
+            niveau affiche, seulement le nombre de fois qu'on le lit. */}
+        <div className="flex flex-wrap items-baseline gap-2xs">
+          <dt className="text-ink-subtle">{CAREER.certificationObtained[locale]}</dt>
+          <dd className="text-ink">{formatDate(detail.obtained, locale)}</dd>
+        </div>
+        <div className="flex flex-wrap items-baseline gap-2xs">
+          <dt className="text-ink-subtle">{CAREER.certificationValidUntil[locale]}</dt>
+          <dd className="text-ink">{formatDate(detail.validUntil, locale)}</dd>
+        </div>
+      </dl>
+    </Disclosure>
   );
 }
 
@@ -263,21 +257,119 @@ function LanguagesSection({ locale }: { readonly locale: Locale }) {
           <p>{CAREER.languagesEmpty[locale]}</p>
         </Prose>
       ) : (
-        <ul className="mt-lg flex list-none flex-wrap gap-md p-0">
-          {languages.map((language) => (
-            <li
-              key={language.id}
-              className="flex flex-col gap-3xs rounded-md border border-border bg-paper px-md py-sm"
-            >
-              <span className="text-body-md text-ink">{language.name[locale]}</span>
-              <span dir="ltr" className="font-mono text-body-sm text-ink-subtle">
-                {formatLanguageQualification(language, locale)}
-              </span>
-              {language.certificationDetail === null ? null : (
-                <CertificationDetail detail={language.certificationDetail} locale={locale} />
-              )}
-            </li>
-          ))}
+        /* UNE LISTE, ET NON UNE GRILLE DE CARTES.
+           Quatre langues portant un nom et un niveau ne remplissent pas
+           quatre cartes. La grille les egalisait — c'etait deja un progres
+           sur la rangee repliee qui les dimensionnait sur leur texte — mais
+           elle imposait a trois d'entre elles la hauteur de la quatrieme :
+           93 px de vide sur 190, la moitie de la carte. Une liste n'a pas de
+           hauteur a remplir.
+
+           ELLE TIRE SA STRUCTURE DE SES FILETS ET DE SON ALIGNEMENT : aucune
+           bordure de boite, aucun fond. Les noms se lisent en colonne, les
+           niveaux se lisent en colonne, et l'oeil compare sans effort ce que
+           quatre boites de tailles differentes rendaient penible.
+
+           `<ul>` ET `<li>` : c'est une liste, elle le reste. Le changement est
+           de presentation, pas de semantique. */
+        <ul className="rule-list mt-lg flex list-none flex-col p-0">
+          {languages.map((language) => {
+            const level = qualificationLevel(language);
+            const detail = language.certificationDetail;
+            /* LE SCHEMA PORTE DEUX FORMES DE CERTIFICATION : un detail
+               complet, et un simple intitule. Aucune langue n'emploie
+               aujourd'hui la seconde, mais le champ existe — le lire ici
+               evite qu'un jour une valeur soit saisie en donnee et
+               n'apparaisse nulle part. */
+            const certification = detail?.name ?? language.certification?.[locale] ?? null;
+
+            return (
+              /* AUCUN ECART DE COLONNE ICI. `Disclosure` porte deja son
+                 propre `mt-2xs` ; un `gap-2xs` sur la colonne s'y serait
+                 ajoute et aurait creuse seize pixels sous la seule ligne qui
+                 en porte un. */
+              <li key={language.id} className="flex flex-col py-2xs">
+                {/* NOM AU DEBUT, NIVEAU A LA FIN. `justify-between` pousse les
+                    deux aux extremites de la ligne — a droite en francais, a
+                    gauche en arabe, sans qu'une propriete directionnelle soit
+                    ecrite.
+
+                    `flex-wrap` PLUTOT QU'UNE TRONCATURE : si le nom et le
+                    niveau ne tiennent pas ensemble, ils s'empilent, chacun
+                    aligne sur le debut de ligne. Rien ne se chevauche et rien
+                    ne se coupe. */}
+                <p className="flex flex-wrap items-center justify-between gap-x-md gap-y-3xs">
+                  {/* `text-body-md`, LA TAILLE DES AUTRES LISTES DU SITE.
+                      La carte precedente employait deja ce rang ; le monter a
+                      `body-lg` aurait rendu a la ligne la hauteur que la
+                      suppression des cartes venait de lui retirer. Ce qui
+                      distingue le nom, ce n'est pas sa taille : c'est
+                      `--color-ink` face au gris de la qualification, et le
+                      serif face au monospace. */}
+                  <span className="text-body-md text-ink">{language.name[locale]}</span>
+                  {/* `items-center` ET NON `items-baseline` : la barre est un
+                      bloc, elle n'a pas de ligne de base a offrir a un
+                      alignement typographique. Sur une ligne d'une seule
+                      ligne de texte de chaque cote, centrer et aligner sur la
+                      base donnent le meme rendu pour le texte, et le seul
+                      alignement correct pour la barre. */}
+                  <span className="flex flex-wrap items-center gap-x-sm gap-y-3xs">
+                    {certification === null ? null : (
+                      /* LE NOM DE L'EPREUVE NE DOIT PAS DOMINER CELUI DE LA
+                         LANGUE : il est d'un rang typographique en dessous,
+                         en monospace comme les autres references du site. */
+                      <span dir="ltr" className="font-mono text-body-sm text-ink-subtle">
+                        {certification}
+                      </span>
+                    )}
+                    {detail === null ? null : (
+                      /* LE SCORE EST LE FAIT, et il se lit avant le niveau
+                         qu'il etablit : un rang au-dessus du reste du groupe,
+                         sans atteindre celui du nom de la langue. */
+                      <span dir="ltr" className="font-mono text-body-md text-ink-muted">
+                        {`${detail.score} / ${detail.max}`}
+                      </span>
+                    )}
+                    {/* PAS DE BARRE POUR LA LANGUE MATERNELLE, et c'est un
+                        choix. L'echelle du cadre europeen compte six niveaux,
+                        de A1 a C2 ; une langue maternelle n'y figure pas. La
+                        remplir entierement reviendrait a la declarer C2 — une
+                        precision que la donnee ne porte pas et que personne
+                        n'a certifiee. La laisser vide la placerait sous A1,
+                        ce qui serait pire.
+
+                        La barre s'efface donc la ou l'echelle ne dit rien. Le
+                        texte, lui, dit « Langue maternelle », qui est plus que
+                        n'importe quel niveau du cadre. */}
+                    {level === null || level === 'langue-maternelle' ? null : (
+                      <span aria-hidden="true" data-level={level} className="level-bar">
+                        <span />
+                      </span>
+                    )}
+                    {level === null ? null : (
+                      /* `dir="ltr"` SEULEMENT SUR UN CODE DU CADRE EUROPEEN.
+                         « B2 » est du latin et doit rester lu de gauche a
+                         droite au milieu d'une ligne arabe ; « اللغة الأم »
+                         ne le doit pas. L'ancienne version enfermait toute la
+                         qualification dans un ilot LTR, y compris la mention
+                         de langue maternelle traduite : le libelle arabe s'y
+                         trouvait force dans le mauvais sens. */
+                      <span
+                        dir={level === 'langue-maternelle' ? undefined : 'ltr'}
+                        className="font-mono text-body-sm text-ink-subtle"
+                      >
+                        {LANGUAGE_LEVEL_LABELS[level][locale]}
+                      </span>
+                    )}
+                  </span>
+                </p>
+
+                {detail === null ? null : (
+                  <CertificationDetail detail={detail} locale={locale} />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
