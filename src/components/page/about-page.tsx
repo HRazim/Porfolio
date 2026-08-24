@@ -4,6 +4,7 @@
  * l'appellent — un par langue — sont les seuls a la declarer.
  */
 import { Container } from '@/components/layout/container';
+import { Grid } from '@/components/layout/grid';
 import { Prose } from '@/components/layout/prose';
 import { Section } from '@/components/layout/section';
 import { getReadings } from '@/content/career';
@@ -73,18 +74,23 @@ export function AboutPage({ locale }: { readonly locale: Locale }) {
               <p>{ABOUT.readingsEmpty[locale]}</p>
             </Prose>
           ) : (
-            <ul className="mt-lg grid list-none grid-cols-1 gap-md p-0 sm:grid-cols-2">
+            /* LA MEME PRIMITIVE QUE PARTOUT AILLEURS. Cette grille etait
+               ecrite a la main — `grid grid-cols-1 gap-md sm:grid-cols-2` —
+               alors que `Grid` produit exactement cela. Le rendu ne change
+               pas d'un pixel ; ce qui change, c'est qu'il n'y a plus deux
+               facons de composer une rangee de cartes dans ce site. */
+            <Grid as="ul" columns={2} gap="md" className="mt-lg">
               {readings.map((reading) => (
                 <li
                   key={reading.id}
-                  className="flex flex-col gap-2xs rounded-md border border-border bg-paper px-md py-md"
+                  className="flex flex-col justify-start gap-2xs rounded-md border border-border bg-paper px-md py-md"
                 >
                   <h3 className="text-body-xl text-ink">{reading.title[locale]}</h3>
                   <p className="font-mono text-body-sm text-ink-subtle">{reading.author[locale]}</p>
                   <p className="max-w-measure text-body-md text-ink-muted">{reading.takeaway[locale]}</p>
                 </li>
               ))}
-            </ul>
+            </Grid>
           )}
         </Container>
       </Section>
