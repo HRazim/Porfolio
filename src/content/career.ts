@@ -48,6 +48,22 @@ export interface CareerEntry {
    * AUCUNE URL DANS LES DONNEES : `mapUrlFor` les construit toutes.
    */
   readonly mapQuery: string | null;
+  /**
+   * Nom court de l’etablissement, employe UNIQUEMENT dans le nom accessible
+   * du lien de lieu. `null` : le nom complet sert.
+   *
+   * POURQUOI IL EXISTE. Le nom accessible d’un lien de lieu reprend le nom de
+   * l’etablissement pour que deux liens ne se ressemblent pas. Quand ce nom
+   * porte deux rattachements universitaires, il fait cinquante-huit caracteres
+   * a lui seul, et le nom accessible en atteint cent douze — plusieurs
+   * secondes de synthese vocale pour designer un lien vers une carte.
+   *
+   * LE TEXTE VISIBLE NE CHANGE PAS. L’affiliation complete reste ecrite dans
+   * la page, ou elle se lit d’un coup d’oeil ; seul le nom ANNONCE est
+   * abrege. Le critere WCAG 2.5.3 reste tenu : le nom accessible doit contenir
+   * le texte visible DU LIEN, qui est la localite, et il le contient.
+   */
+  readonly shortName: string | null;
   readonly period: Period;
   /** Resume en une a deux phrases. `null` tant que la redaction n’a pas eu lieu. */
   readonly summary: Translated | null;
@@ -88,8 +104,9 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
       ar: 'Master Ingénierie d’Affaires (هندسة الأعمال)',
     },
     organisation: invariant('Paris School of Business'),
-    location: null,
-    mapQuery: null,
+    location: invariant('Paris'),
+    mapQuery: 'Paris School of Business, 16 rue Claude Bernard, 75005 Paris',
+    shortName: null,
     period: { kind: 'connue', start: '2026', end: '2028' },
     summary: null,
     highlights: {
@@ -109,9 +126,18 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
       es: 'BUT Informatique (grado en informática), doble titulación',
       ar: 'BUT Informatique (إجازة في المعلوماتية)، شهادة مزدوجة',
     },
-    organisation: invariant('IUT de Vélizy-Villacoublay — Université Paris-Saclay'),
-    location: null,
-    mapQuery: null,
+    // LES DEUX RATTACHEMENTS FIGURENT. L’IUT de Vélizy-Villacoublay est une
+    // composante de l’UVSQ, elle-meme etablissement-composante de
+    // l’Universite Paris-Saclay : n’en citer qu’un des deux etait faux dans
+    // les deux sens. Il a ete rattache a Paris-Saclay seule, puis a l’UVSQ
+    // seule ; ni l’une ni l’autre ne disait la tutelle complete.
+    organisation: invariant('IUT de Vélizy-Villacoublay — UVSQ, Université Paris-Saclay'),
+    location: invariant('Vélizy-Villacoublay'),
+    // L’ADRESSE COMPLETE NE SERT QU’A LA REQUETE. Elle n’est jamais affichee :
+    // la carte a besoin d’un numero de rue pour trouver le bon batiment, la
+    // page n’a besoin que d’une ville.
+    mapQuery: 'IUT de Vélizy-Villacoublay, 10-12 avenue de l’Europe, 78140 Vélizy-Villacoublay',
+    shortName: 'IUT de Vélizy-Villacoublay',
     period: { kind: 'connue', start: '2023', end: '2026' },
     summary: null,
     // L’annee au Quebec est une composante du double diplome, pas une
@@ -153,6 +179,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     organisation: invariant('Lycée Saint-François d’Assise'),
     location: invariant('Montigny-le-Bretonneux'),
     mapQuery: 'Lycée Saint-François d’Assise, Montigny-le-Bretonneux',
+    shortName: null,
     period: { kind: 'connue', start: '2020', end: '2023' },
     summary: null,
     highlights: {
@@ -175,6 +202,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     organisation: invariant('Egis'),
     location: invariant('Guyancourt'),
     mapQuery: 'Egis, Guyancourt',
+    shortName: null,
     period: { kind: 'connue', start: '2025-04-14', end: '2025-06-20' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },
@@ -192,6 +220,7 @@ const CAREER_ENTRIES: readonly CareerEntry[] = [
     organisation: invariant('Forum de l’orientation'),
     location: invariant('Trappes'),
     mapQuery: 'Trappes',
+    shortName: null,
     period: { kind: 'connue', start: '2025-02', end: '2025-02' },
     summary: null,
     highlights: { fr: [], en: [], es: [], ar: [] },

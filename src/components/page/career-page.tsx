@@ -108,8 +108,16 @@ function CareerSection({ locale, kind, headingId, heading, emptyMessage }: Caree
                           >
                             <span dir="ltr">{entry.location[locale]}</span>
                             <LocationIcon size="sm" />
+                            {/* LE NOM COURT PREVAUT S'IL EXISTE. Le nom
+                                accessible reprend l'etablissement pour que
+                                deux liens ne se ressemblent pas ; il n'a pas
+                                besoin d'en reprendre la tutelle. Avec les deux
+                                rattachements universitaires, ce nom atteignait
+                                cent douze caracteres — plusieurs secondes de
+                                synthese vocale pour un lien vers une carte.
+                                Le texte AFFICHE, lui, ne change pas. */}
                             <span className="sr-only">
-                              {` — ${entry.organisation?.[locale] ?? entry.location[locale]} ${COMMON.onMap[locale]}`}
+                              {` — ${entry.shortName ?? entry.organisation?.[locale] ?? entry.location[locale]} ${COMMON.onMap[locale]}`}
                             </span>
                           </ExternalLink>
                         )}
