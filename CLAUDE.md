@@ -112,8 +112,18 @@ contrôles avant publication :**
 npm run build          # compile et contrôle les types
 npm run lint           # doit être muet
 npm run verify:export  # doit afficher « SUCCÈS »
+npm run verify:map     # doit afficher « SUCCÈS »
 npm run verify:a11y    # doit afficher « ERREURS : AUCUNE »
 ```
+
+`verify:map` vérifie **la destination** des liens de lieu, pas leur existence.
+Un lien qui mène au mauvais endroit était invisible pour tout le reste : le
+contrôle des liens internes écarte par construction les cibles qui ne
+commencent pas par `/`, l'audit d'accessibilité juge le nom et le contraste
+d'un lien sans jamais le suivre, et le compilateur ne sait pas qu'Egis n'est
+pas à Trappes. **Un contrôle qui n'a jamais échoué ne prouve rien** : celui-ci
+a été vérifié en intervertissant deux requêtes, ce qu'il signale seize fois —
+deux entrées, deux règles, quatre langues.
 
 `verify:export` construit avec `STATIC_EXPORT=1`, que `next.config.ts` traduit
 en `output: 'export'`. Il ne modifie aucun fichier et nettoie le `out/` produit.
