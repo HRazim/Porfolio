@@ -779,6 +779,88 @@
     color: var(--color-ink-muted);
   }
 
+  /* --- Liste editoriale a filets -------------------------------------------
+     Une liste qui tire sa structure de ses filets et de son alignement, sans
+     boite ni fond. Elle a remplace une grille de cartes : quatre langues
+     portant un nom et un niveau ne remplissaient pas quatre cartes, et la
+     grille imposait a trois d'entre elles la hauteur de la quatrieme.
+
+     `border-block-end` ET NON `border-bottom` : la propriete logique, comme
+     partout ailleurs dans ce fichier. Le filet est en fin de BLOC, ce qui
+     reste le bas dans un mode d'ecriture horizontal, mais rien n'oblige a
+     l'ecrire physiquement.
+
+     PAS DE FILET APRES LA DERNIERE : un trait qui ne separe rien souligne la
+     liste au lieu de la structurer. */
+  .rule-list > li:not(:last-child) {
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  /* --- Indicateur de niveau ------------------------------------------------
+     Une barre fine dont la portion remplie dit le niveau du cadre europeen.
+     PUREMENT DECORATIVE : le niveau est deja ecrit en toutes lettres a cote,
+     et la barre porte `aria-hidden`. Elle n'ajoute aucune information, elle
+     donne une forme a celle qui existe.
+
+     LES SIX PROPORTIONS SONT ICI, PAS DANS LE COMPOSANT. Le TSX ecrit
+     `data-level="B2"` — une donnee — et la feuille de style decide ce que
+     valent quatre sixiemes. C'est la regle 2 du projet : aucune valeur hors
+     de ce fichier.
+
+     ELLE SE REMPLIT DEPUIS LE DEBUT DE LIGNE. Un bloc enfant commence au bord
+     inline-start de son parent : a gauche en francais, a droite en arabe,
+     sans qu'une seule propriete directionnelle soit ecrite.
+
+     AUCUNE TRANSITION. La barre ne change jamais de largeur une fois peinte ;
+     une transition y serait du code mort, et une regle de mouvement a
+     neutraliser sous `prefers-reduced-motion` pour rien.
+
+     CONTRASTES, mesures sur les jetons : la portion remplie vaut 3,02:1 en
+     theme clair et 6,64:1 en sombre contre `--color-surface`, le fond de la
+     section — au-dessus des 3:1 que WCAG 1.4.11 demande a un element non
+     textuel. La piste vide, elle, est un filet : 1,52:1 et 1,76:1. C'est
+     assez pour la voir, pas assez pour porter une information — et elle n'en
+     porte aucune. */
+  .level-bar {
+    /* UNE LARGEUR BORNEE, ET NON LA LARGEUR DE LA LIGNE. Un trait de 1152 px
+       pour dire « B2 » ne se lit plus comme un indicateur : il se lit comme
+       un second filet, et la liste en a deja un entre chaque ligne. Borne a
+       8 rem, la barre reste un signe a cote du texte. */
+    --level-bar-inline-size: 8rem; /* 128px */
+    display: block;
+    inline-size: var(--level-bar-inline-size);
+    block-size: var(--rule-width);
+    border-radius: var(--radius-full);
+    background-color: var(--color-border);
+    overflow: hidden;
+  }
+
+  .level-bar > span {
+    display: block;
+    block-size: 100%;
+    border-radius: inherit;
+    background-color: var(--color-accent-vivid);
+  }
+
+  .level-bar[data-level='A1'] > span {
+    inline-size: 16.6667%;
+  }
+  .level-bar[data-level='A2'] > span {
+    inline-size: 33.3333%;
+  }
+  .level-bar[data-level='B1'] > span {
+    inline-size: 50%;
+  }
+  .level-bar[data-level='B2'] > span {
+    inline-size: 66.6667%;
+  }
+  .level-bar[data-level='C1'] > span {
+    inline-size: 83.3333%;
+  }
+  .level-bar[data-level='C2'] > span {
+    inline-size: 100%;
+  }
+
   /* --- Conteneur borne a une mesure de ligne --------------------------------
      LE JETON BORNE LA LIGNE, PAS LA BOITE. `Prose` porte `max-width` sans
      marges laterales : sa ligne fait exactement la borne. `Container

@@ -89,6 +89,7 @@ mentir.
 ├── public/                     actifs servis tels quels : images AVIF/WebP, CV
 ├── scripts/                    contrôles reproductibles
 │   ├── verify-static-export.mjs  export statique
+│   ├── verify-map-links.mjs      destination des liens de lieu
 │   ├── verify-a11y.mjs           accessibilité, sur rendu réel
 │   ├── capture-screens.mjs       captures de référence
 │   ├── browser-harness.mjs       construit, sert, ouvre le navigateur
@@ -131,6 +132,7 @@ npm run build                    # compilation de production
 npm run start                    # sert la compilation de production
 npm run lint                     # ESLint
 npm run verify:export            # vérifie que le projet reste exportable en statique
+npm run verify:map               # vérifie où mènent les liens de lieu
 npm run verify:a11y              # audit d'accessibilité sur rendu réel
 npm run verify:all               # les quatre contrôles, dans l'ordre
 npm run capture:screens          # captures de référence dans captures/
@@ -166,10 +168,23 @@ Les quatre commandes suivantes doivent passer, dans cet ordre :
 npm run build          # compile, et exécute le contrôle de types TypeScript
 npm run lint           # doit être muet
 npm run verify:export  # doit afficher « SUCCÈS »
+npm run verify:map     # doit afficher « SUCCÈS »
 npm run verify:a11y    # doit afficher « ERREURS : AUCUNE »
 ```
 
 `npm run verify:all` les enchaîne.
+
+`verify:map` vérifie **où mènent** les liens de lieu, sur le HTML généré : que
+chaque requête cartographique nomme l'établissement de l'entrée qui la porte et
+la localité affichée, que deux entrées d'une même page ne mènent jamais au même
+endroit, et que les quatre langues portent le même jeu de destinations.
+
+Il existe parce qu'aucun des autres ne pouvait le faire. Le contrôle des liens
+internes écarte par construction toute cible qui ne commence pas par `/` : un
+lien sortant n'y est jamais examiné. `verify:a11y` vérifie qu'un lien a un nom
+accessible, un contraste, une taille de cible — un nom parfait sur une adresse
+fausse passe. Le compilateur garantit qu'une chaîne est une chaîne ; il ne sait
+pas qu'Egis n'est pas à Trappes.
 
 `verify:export` reconstruit le projet avec `STATIC_EXPORT=1`, ce que
 `next.config.ts` traduit en `output: 'export'`. Next.js refuse alors de
