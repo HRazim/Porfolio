@@ -14,7 +14,7 @@ import type { ContactKind, SocialNetwork } from '@/lib/site';
  * pictogramme affiche, au prix d’une cascade de trois requetes vers un
  * domaine tiers.
  *
- * Ces dix icones pesent ce que pese leur balisage, sont rendues cote
+ * Ces icones pesent ce que pese leur balisage, sont rendues cote
  * serveur, et ne declenchent aucune requete.
  *
  * Regles :
@@ -240,6 +240,32 @@ export function TikTokIcon(props: IconProps) {
   );
 }
 
+/**
+ * Google Play.
+ *
+ * LA SILHOUETTE DE LA MARQUE EST CE TRIANGLE. Ses quatre volets colores se
+ * rejoignent a l'interieur, mais leur contour exterieur est bien un triangle
+ * a bord gauche vertical : rien ne depasse.
+ *
+ * LES PLIS INTERIEURS ONT ETE ESSAYES, ET RETIRES. Traces au filet, le V qui
+ * rend les volets se lit a seize pixels comme un second chevron : l'icone
+ * disait « avance rapide ». Mesure sur rendu, agrandie a cent soixante
+ * pixels, avant d'etre abandonnee — c'etait la seule facon de le voir.
+ *
+ * CE QUI IDENTIFIE LA DESTINATION, C'EST LE LIBELLE. Il nomme Google Play en
+ * toutes lettres, dans les quatre langues, et l'icone porte `aria-hidden` :
+ * elle distingue une ligne des cinq autres, elle ne les nomme pas.
+ *
+ * Pleine, comme les autres marques de ce fichier — GitHub, LinkedIn, X.
+ */
+export function GooglePlayIcon(props: IconProps) {
+  return (
+    <IconBase {...props} filled>
+      <path d="M4.6 2.5 20.4 12 4.6 21.5Z" />
+    </IconBase>
+  );
+}
+
 export function RedditIcon(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -268,6 +294,7 @@ export const SOCIAL_ICONS: Readonly<Record<SocialNetwork, IconComponent>> = {
  */
 export const PROJECT_LINK_ICONS: Readonly<Record<ProjectLinkKind, IconComponent>> = {
   source: GitHubIcon,
+  'google-play': GooglePlayIcon,
   demo: ExternalLinkIcon,
   article: DocumentIcon,
   documentation: DocumentIcon,

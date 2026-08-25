@@ -96,6 +96,7 @@ export type Technology =
  */
 export type ProjectLinkKind =
   | 'source'
+  | 'google-play'
   | 'demo'
   | 'article'
   | 'documentation'
@@ -1180,9 +1181,10 @@ const PROJECTS: readonly Project[] = [
         'تطبيق أندرويد محلي بالكامل يحفظ ما يديم العلاقة، دون خادم ودون إعلانات ودون أدوات تتبّع.',
     },
     category: 'personnel',
-    // Debut date, fin non arretee : la borne « en-cours » dit exactement
-    // cela, la ou la variante `{ kind: 'en-cours' }` perdait la date connue.
-    period: { kind: 'connue', start: '2026-02', end: 'en-cours' },
+    // Periode fermee : l'application est publiee. La borne « en-cours »
+    // disait un travail actif ; elle ne le dit plus, et la variante
+    // `{ kind: 'en-cours' }` aurait en outre perdu la date de debut connue.
+    period: { kind: 'connue', start: '2026-02', end: '2026-09' },
     context: null,
     role: {
       fr:
@@ -1196,13 +1198,13 @@ const PROJECTS: readonly Project[] = [
     },
     roleDetail: {
       fr:
-        'Conception produit, architecture, développement, tests et préparation à la publication.',
+        'Conception produit, architecture, développement, tests et publication.',
       en:
-        'Product design, architecture, development, testing and preparation for release.',
+        'Product design, architecture, development, testing and release.',
       es:
-        'Diseño de producto, arquitectura, desarrollo, pruebas y preparación para la publicación.',
+        'Diseño de producto, arquitectura, desarrollo, pruebas y publicación.',
       ar:
-        'تصميم المنتج والبنية والتطوير والاختبارات والتحضير للنشر.',
+        'تصميم المنتج والبنية والتطوير والاختبارات والنشر.',
     },
     outOfScope: null,
     technologies: [
@@ -1249,13 +1251,13 @@ const PROJECTS: readonly Project[] = [
       },
       resultats: {
         fr:
-          'Base de code d’environ vingt-six mille lignes, sans erreur d’analyse statique. Vingt-deux versions successives du schéma de base de données, dont les migrations de la onzième à la vingt-deuxième sont couvertes par des tests instrumentés incluant des contrôles négatifs. Interface traduite en treize langues. Version 7.1.65 de l’application construite et signée après un audit complet de pré-publication et une phase de durcissement. Application soumise à Google Play, mise en test fermé, accès à la production demandé.',
+          'Base de code d’environ vingt-six mille lignes, sans erreur d’analyse statique. Vingt-deux versions successives du schéma de base de données, dont les migrations de la onzième à la vingt-deuxième sont couvertes par des tests instrumentés incluant des contrôles négatifs. Interface traduite en treize langues. Version 7.1.65 de l’application construite et signée après un audit complet de pré-publication et une phase de durcissement. Application publiée sur Google Play.',
         en:
-          'A code base of about twenty-six thousand lines, with no static analysis error. Twenty-two successive versions of the database schema, of which the migrations from the eleventh to the twenty-second are covered by instrumented tests including negative checks. Interface translated into thirteen languages. Version 7.1.65 of the application built and signed after a full pre-release audit and a hardening phase. Application submitted to Google Play, put into closed testing, production access requested.',
+          'A code base of about twenty-six thousand lines, with no static analysis error. Twenty-two successive versions of the database schema, of which the migrations from the eleventh to the twenty-second are covered by instrumented tests including negative checks. Interface translated into thirteen languages. Version 7.1.65 of the application built and signed after a full pre-release audit and a hardening phase. Application published on Google Play.',
         es:
-          'Base de código de unas veintiséis mil líneas, sin errores de análisis estático. Veintidós versiones sucesivas del esquema de base de datos, de las cuales las migraciones de la undécima a la vigesimosegunda están cubiertas por pruebas instrumentadas que incluyen controles negativos. Interfaz traducida a trece idiomas. Versión 7.1.65 de la aplicación compilada y firmada tras una auditoría completa previa a la publicación y una fase de endurecimiento. Aplicación enviada a Google Play, puesta en prueba cerrada, acceso a producción solicitado.',
+          'Base de código de unas veintiséis mil líneas, sin errores de análisis estático. Veintidós versiones sucesivas del esquema de base de datos, de las cuales las migraciones de la undécima a la vigesimosegunda están cubiertas por pruebas instrumentadas que incluyen controles negativos. Interfaz traducida a trece idiomas. Versión 7.1.65 de la aplicación compilada y firmada tras una auditoría completa previa a la publicación y una fase de endurecimiento. Aplicación publicada en Google Play.',
         ar:
-          'قاعدة شيفرة تناهز ستة وعشرين ألف سطر، دون أي خطأ في التحليل الساكن. واثنتان وعشرون نسخة متعاقبة من مخطّط قاعدة البيانات، عمليات الترحيل فيها من الحادية عشرة إلى الثانية والعشرين مغطّاة باختبارات مُجهَّزة تتضمّن فحوصًا سلبية. وواجهة مترجَمة إلى ثلاث عشرة لغة. والإصدار 7.1.65 من التطبيق مبني وموقَّع بعد تدقيق كامل سابق للنشر ومرحلة تحصين. والتطبيق مُقدَّم إلى Google Play، ومُدرَج في اختبار مغلق، وقد طُلب الوصول إلى الإنتاج.',
+          'قاعدة شيفرة تناهز ستة وعشرين ألف سطر، دون أي خطأ في التحليل الساكن. واثنتان وعشرون نسخة متعاقبة من مخطّط قاعدة البيانات، عمليات الترحيل فيها من الحادية عشرة إلى الثانية والعشرين مغطّاة باختبارات مُجهَّزة تتضمّن فحوصًا سلبية. وواجهة مترجَمة إلى ثلاث عشرة لغة. والإصدار 7.1.65 من التطبيق مبني وموقَّع بعد تدقيق كامل سابق للنشر ومرحلة تحصين. والتطبيق منشور على Google Play.',
       },
     },
     learnings: {
@@ -1285,6 +1287,32 @@ const PROJECTS: readonly Project[] = [
       ],
     },
     links: [
+      /* LA FICHE PUBLIQUE VIENT EN PREMIER. C'est la destination la plus
+         utile de la liste : elle mene a l'application elle-meme, la ou les
+         quatre autres menent a son code ou a ses comptes.
+
+         ADRESSE SANS PARAMETRE DE CAMPAGNE. Google Play accepte un
+         identifiant de partage a la suite de l'identifiant d'application ;
+         il trace l'origine du clic et n'a rien a faire dans un lien
+         permanent ecrit une fois pour toutes. L'adresse se reduit donc a
+         ce qui designe l'application, et rien de plus.
+
+         LE LIBELLE DIT CE QU'ON TROUVE A DESTINATION, et non ou l'on va :
+         c'est la fiche de l'application, pas un telechargement immediat. */
+      {
+        kind: 'google-play',
+        label: {
+          fr:
+            'Fiche de l’application sur Google Play',
+          en:
+            'App listing on Google Play',
+          es:
+            'Ficha de la aplicación en Google Play',
+          ar:
+            'صفحة التطبيق على Google Play',
+        },
+        href: 'https://play.google.com/store/apps/details?id=com.jtr.app',
+      },
       {
         kind: 'source',
         label: {
