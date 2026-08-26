@@ -150,32 +150,52 @@ const hex = ([r, g, b]) =>
  * transparents. Renvoie la couleur dominante et la pire couleur trouvee : une
  * boite peut chevaucher deux fonds, et l'ecart merite d'etre signale.
  */
-function sampleBackground(image, rect, foreground) {
+function sampleBackground(image, rects, foreground) {
   const inset = 1;
-  const x0 = rect.x + inset;
-  const y0 = rect.y + inset;
-  const x1 = rect.x + rect.w - inset;
-  const y1 = rect.y + rect.h - inset;
-  if (x1 <= x0 || y1 <= y0) return null;
+  // UNE BANDE PAR LIGNE. Calculee sur le rectangle englobant d'un texte de
+  // plusieurs lignes, la bande des lettres traverse les interlignes — ou
+  // passent liserets de focus et soulignements — et le fond y parait non uni.
+  // Chaque ligne apporte donc ses propres points, et c'est la couleur
+  // dominante de l'ensemble qui repond.
+  const lignes = Array.isArray(rects) ? rects : [rects];
+  const zones = [];
+  for (const rect of lignes) {
+    const x0 = rect.x + inset;
+    const y0 = rect.y + inset;
+    const x1 = rect.x + rect.w - inset;
+    const y1 = rect.y + rect.h - inset;
+    if (x1 <= x0 || y1 <= y0) continue;
+    zones.push([x0, y0, x1, y1]);
+  }
+  if (zones.length === 0) return null;
 
   // LE FOND SE LIT DANS LA BANDE DES LETTRES, PAS SUR TOUTE LA BOITE. Un
   // soulignement, une bordure ou un liset de focus occupent le bas ou le haut
   // du rectangle sans jamais passer DERRIERE le texte : les inclure faisait
   // conclure a un fond non uni la ou il n'y a qu'une decoration.
-  const bandTop = y0 + (y1 - y0) * 0.15;
-  const bandBottom = y0 + (y1 - y0) * 0.7;
   const counts = new Map();
+  /** Rangees de la grille ou chaque couleur a ete vue. Voir la boucle. */
+  const rangees = new Map();
   const steps = 5;
-  for (let i = 0; i < steps; i += 1) {
-    for (let j = 0; j < steps; j += 1) {
-      const pixel = pixelAt(
-        image,
-        x0 + ((x1 - x0) * (i + 0.5)) / steps,
-        bandTop + ((bandBottom - bandTop) * (j + 0.5)) / steps,
-      );
-      if (pixel === null) continue;
-      const key = `${pixel[0]},${pixel[1]},${pixel[2]}`;
-      counts.set(key, (counts.get(key) ?? 0) + 1);
+  for (const [x0, y0, x1, y1] of zones) {
+    const bandTop = y0 + (y1 - y0) * 0.15;
+    const bandBottom = y0 + (y1 - y0) * 0.7;
+    for (let i = 0; i < steps; i += 1) {
+      for (let j = 0; j < steps; j += 1) {
+        const pixel = pixelAt(
+          image,
+          x0 + ((x1 - x0) * (i + 0.5)) / steps,
+          bandTop + ((bandBottom - bandTop) * (j + 0.5)) / steps,
+        );
+        if (pixel === null) continue;
+        const key = `${pixel[0]},${pixel[1]},${pixel[2]}`;
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+        // Sur quelle RANGEE de la grille cette couleur a-t-elle ete vue ?
+        // Voir plus bas : une couleur confinee a une seule rangee est un
+        // trait, pas un fond.
+        if (!rangees.has(key)) rangees.set(key, new Set());
+        rangees.get(key).add(j);
+      }
     }
   }
   if (counts.size === 0) return null;
@@ -188,6 +208,20 @@ function sampleBackground(image, rect, foreground) {
   let worstRatio = contrast(foreground, dominant);
   for (const [key, n] of entries) {
     if (n / total < 0.15) continue;
+    // UNE COULEUR VUE SUR UNE SEULE RANGEE EST UN TRAIT HORIZONTAL, PAS UN
+    // FOND. La capture est prise en `fullPage` : Chromium l'assemble par
+    // tuiles, et la jointure depose parfois un liseret d'un pixel qui
+    // n'existe pas dans la page. Demontre plutot que suppose — sur
+    // `/ar/projects/jtr` en vue telephone, la capture pleine page porte une
+    // ligne `#92b8e3` continue a y=4708, absente de la capture FENETRE prise
+    // au meme endroit, ou la bande ne contient que le fond et les glyphes.
+    //
+    // La grille compte cinq rangees sur une bande d'une dizaine de pixels :
+    // un trait d'un pixel en occupe exactement une, soit 20 % des points —
+    // au-dessus du seuil de minorite, et donc signale a tort. Le critere
+    // n'est pas la PROPORTION mais la FORME : un fond derriere du texte se
+    // retrouve sur plusieurs rangees ; un trait, sur une seule.
+    if (steps > 1 && (rangees.get(key)?.size ?? 0) <= 1) continue;
     const colour = parse(key);
     const ratio = contrast(foreground, colour);
     if (ratio < worstRatio) {
@@ -212,17 +246,24 @@ function sampleBackground(image, rect, foreground) {
  *
  * Le milieu d'un cote appartient a l'anneau quel que soit le rayon.
  */
-function sampleRing(image, rect, expand) {
+function sampleRing(image, rects, expand) {
   const counts = new Map();
-  const x0 = rect.x - expand;
-  const y0 = rect.y - expand;
-  const x1 = rect.x + rect.w + expand;
-  const y1 = rect.y + rect.h + expand;
   const points = [];
-  for (const part of [0.45, 0.5, 0.55]) {
-    const fx = x0 + (x1 - x0) * part;
-    const fy = y0 + (y1 - y0) * part;
-    points.push([fx, y0], [fx, y1], [x0, fy], [x1, fy]);
+  // UN LISERET PAR RECTANGLE DE LIGNE. Un lien qui court sur plusieurs lignes
+  // porte un contour par ligne ; leur union dessine un escalier dont les
+  // marches ne sont pas peintes. Mesurer sur le rectangle englobant y tombait,
+  // et concluait a l'absence de liseret. Chaque ligne est donc echantillonnee
+  // pour elle-meme, et c'est la couleur DOMINANTE de l'ensemble qui repond.
+  for (const rect of rects) {
+    const x0 = rect.x - expand;
+    const y0 = rect.y - expand;
+    const x1 = rect.x + rect.w + expand;
+    const y1 = rect.y + rect.h + expand;
+    for (const part of [0.45, 0.5, 0.55]) {
+      const fx = x0 + (x1 - x0) * part;
+      const fy = y0 + (y1 - y0) * part;
+      points.push([fx, y0], [fx, y1], [x0, fy], [x1, fy]);
+    }
   }
   for (const [x, y] of points) {
     const pixel = pixelAt(image, x, y);
@@ -250,8 +291,9 @@ function focusRingIssues(focusables, focusImage, restImage) {
     const ring = el.outline;
     if (ring === undefined || ring.width <= 0 || ring.style === 'none') continue;
     const expand = ring.offset + ring.width / 2;
-    const drawn = sampleRing(focusImage, el.rect, expand);
-    const behind = sampleRing(restImage, el.rect, expand);
+    const lignes = el.rects !== undefined && el.rects.length > 0 ? el.rects : [el.rect];
+    const drawn = sampleRing(focusImage, lignes, expand);
+    const behind = sampleRing(restImage, lignes, expand);
     if (drawn === null || behind === null) continue;
     // Si rien n'a change a cet endroit, aucun liseret n'y est peint.
     const changed =
@@ -477,7 +519,7 @@ async function auditRender(browser, origin, page, mode, size) {
 
     const measure = (state, entries, image) => {
       for (const text of entries) {
-        const sample = sampleBackground(image, text.rect, [
+        const sample = sampleBackground(image, text.rects ?? text.rect, [
           text.colour[0],
           text.colour[1],
           text.colour[2],

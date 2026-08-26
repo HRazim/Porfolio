@@ -129,6 +129,25 @@ export function probePage() {
     return { x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height };
   };
 
+  /**
+   * LES RECTANGLES DE LIGNE, EN COORDONNEES DE DOCUMENT.
+   *
+   * Un element qui court sur plusieurs lignes n'a pas un rectangle mais un
+   * par ligne. Les mesurer separement evite deux faux constats : un liseret
+   * de focus en escalier dont les marches ne sont pas peintes, et une bande
+   * de lecture du fond qui traverse les interlignes.
+   *
+   * LE DECALAGE DE DEFILEMENT EST OBLIGATOIRE ICI. La capture est prise en
+   * `fullPage` : ses coordonnees sont celles du DOCUMENT, quand
+   * `getClientRects` rend celles de la FENETRE. L'oubli s'est vu — deux
+   * alertes sur une legende d'image arabe, loin sous la ligne de flottaison,
+   * dont le fond etait lu quelques centaines de pixels plus haut.
+   */
+  const rectsOf = (el) =>
+    [...el.getClientRects()]
+      .filter((r) => r.width > 1 && r.height > 1)
+      .map((r) => ({ x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }));
+
   // --- textes -------------------------------------------------------------
   const texts = [];
   let serial = 0;
@@ -160,6 +179,13 @@ export function probePage() {
         .join(' ')
         .slice(0, 52),
       rect: rectOf(el),
+      // LES RECTANGLES DE LIGNE, POUR LA MEME RAISON QUE PLUS BAS. Le fond se
+      // lit dans la bande des lettres ; sur un texte qui court sur plusieurs
+      // lignes, cette bande calculee sur le rectangle ENGLOBANT traverse les
+      // interlignes, ou passent les liserets et les soulignements. Elle
+      // concluait alors a un fond non uni la ou chaque ligne repose sur un
+      // fond parfaitement uni.
+      rects: rectsOf(el),
       colour,
       opacity,
       size,
@@ -200,6 +226,15 @@ export function probePage() {
       path: pathOf(el),
       text: (el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 34),
       rect: rectOf(el),
+      // LES RECTANGLES DE LIGNE, ET PAS SEULEMENT LEUR UNION.
+      // Un lien qui court sur trois lignes n'a pas un liseret rectangulaire :
+      // il en a un par ligne, et l'ensemble dessine un escalier. Echantillonner
+      // le rectangle ENGLOBANT fait tomber les points de mesure dans les
+      // marches, la ou rien n'est peint — et l'audit criait alors au liseret
+      // absent sur un liseret parfaitement visible. Constate sur la carte
+      // « Forum de l'orientation de Trappes » de la page d'accueil anglaise,
+      // reproduit au pixel, puis corrige ici.
+      rects: rectsOf(el),
       painted: isPainted(el),
       tabindex: el.getAttribute('tabindex'),
       // Liseret de focus, pour le contraste NON TEXTUEL (WCAG 1.4.11) : il se
