@@ -1181,10 +1181,22 @@ const PROJECTS: readonly Project[] = [
         'تطبيق أندرويد محلي بالكامل يحفظ ما يديم العلاقة، دون خادم ودون إعلانات ودون أدوات تتبّع.',
     },
     category: 'personnel',
-    // Periode fermee : l'application est publiee. La borne « en-cours »
-    // disait un travail actif ; elle ne le dit plus, et la variante
-    // `{ kind: 'en-cours' }` aurait en outre perdu la date de debut connue.
-    period: { kind: 'connue', start: '2026-02', end: '2026-09' },
+    // LA FIN EST REOUVERTE, PARCE QU'ELLE N'A PAS ENCORE EU LIEU. La borne
+    // avait ete posee a 2026-09 ; nous sommes en aout 2026. Le site annoncait
+    // donc comme acquise une fin situee un mois plus tard — la seule chose
+    // qu'une fiche de realisation ne doit jamais faire.
+    //
+    // `end: 'en-cours'` GARDE LA DATE DE DEBUT, ce que la variante
+    // `{ kind: 'en-cours' }` aurait perdu : le travail a commence en fevrier
+    // 2026, c'est etabli, et seule sa fin ne l'est pas.
+    //
+    // LA PUBLICATION N'EST PAS LA FIN DU TRAVAIL. L'application est en ligne
+    // sur Google Play — le lien de la fiche y mene — et le developpement
+    // continue. Ce sont deux faits distincts, et le schema n'a aujourd'hui
+    // qu'un seul champ pour les porter : voir la proposition de champ dedie
+    // dans le rapport. Aucune date de publication n'est inscrite ici, parce
+    // qu'aucune ne m'a ete donnee et qu'on n'en invente pas.
+    period: { kind: 'connue', start: '2026-02', end: 'en-cours' },
     context: null,
     role: {
       fr:

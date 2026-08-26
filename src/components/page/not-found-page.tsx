@@ -32,25 +32,44 @@ export function NotFoundPage({ locale }: { readonly locale: Locale }) {
             <p data-enter="1">{NOT_FOUND.message[locale]}</p>
           </Prose>
 
+          {/* LES REALISATIONS D'ABORD, ET C'EST UNE CORRECTION.
+              L'en-tete porte deja un lien vers l'accueil : le nom du site, en
+              haut a gauche. Sur une vue telephone, la navigation se replie
+              derriere un bouton, et plus AUCUN lien ne s'intercale entre ce
+              nom et le premier lien du corps. Les deux menaient a la meme
+              adresse, l'un derriere l'autre : c'est le motif que la technique
+              WCAG H2 signale, et que l'audit a releve six fois — deux themes,
+              trois langues.
+
+              LA 404 FRANCAISE LE PORTAIT DEPUIS TOUJOURS SANS QUE RIEN NE LE
+              VOIE : `404.html` et `_not-found.html` sont declares hors
+              contenu dans le harnais, donc jamais audites. Les trois pages
+              par prefixe, elles, sont des pages ordinaires — et l'ont
+              revele.
+
+              Intervertir suffit : l'index des realisations s'intercale, les
+              deux liens vers l'accueil ne se suivent plus. Et sur une page
+              introuvable, l'action utile est celle que l'en-tete n'offre
+              pas. */}
           <ul
             data-enter="2"
             className="mt-2xl flex list-none flex-col gap-sm p-0 sm:flex-row sm:gap-lg"
           >
             <li>
               <Link
-                href={pathFor('home', locale)}
+                href={pathFor('projects', locale)}
                 className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
               >
-                {NOT_FOUND.homeLink[locale]}
+                {NOT_FOUND.projectsLink[locale]}
                 <ArrowIcon size="sm" />
               </Link>
             </li>
             <li>
               <Link
-                href={pathFor('projects', locale)}
+                href={pathFor('home', locale)}
                 className="inline-flex items-center gap-2xs font-mono text-body-sm text-accent link-sweep transition-colors duration-[var(--duration-fast)] ease-out hover:text-ink"
               >
-                {NOT_FOUND.projectsLink[locale]}
+                {NOT_FOUND.homeLink[locale]}
                 <ArrowIcon size="sm" />
               </Link>
             </li>

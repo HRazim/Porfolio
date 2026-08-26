@@ -382,37 +382,35 @@ export const MOTION_INVENTORY: readonly MotionEntry[] = [
 export interface FontToken {
   readonly name: string;
   readonly cssVar: string;
+  /** Pile complete, telle que globals.css la declare. */
   readonly family: string;
   readonly role: string;
-  /** Graisses REELLEMENT telechargees. Aucune autre ne doit etre employee. */
-  readonly weights: readonly number[];
-  readonly subsets: readonly string[];
 }
 
+/**
+ * AUCUNE POLICE WEB. Les trois roles s'appuient sur les familles du systeme
+ * du visiteur : rien n'est telecharge, rien n'est prechargee, et le rendu
+ * varie donc d'une machine a l'autre. Ni graisse ni sous-ensemble ne figurent
+ * plus ici — il n'y a plus de fichier dont on puisse les affirmer.
+ */
 export const FONT_TOKENS: readonly FontToken[] = [
   {
     name: 'display',
     cssVar: '--font-display',
-    family: 'Instrument Serif',
-    role: 'Titres — la hierarchie se construit par la taille et l’interlettrage',
-    weights: [400],
-    subsets: ['latin', 'latin-ext'],
+    family: "'Iowan Old Style', Georgia, 'Times New Roman', serif",
+    role: 'Titres — serif du systeme',
   },
   {
     name: 'body',
     cssVar: '--font-body',
-    family: 'Instrument Sans',
-    role: 'Corps de texte et interface',
-    weights: [400, 500, 600],
-    subsets: ['latin', 'latin-ext'],
+    family: "system-ui, -apple-system, 'Segoe UI', sans-serif",
+    role: 'Corps de texte et interface — sans-serif du systeme',
   },
   {
     name: 'mono',
     cssVar: '--font-mono',
-    family: 'JetBrains Mono',
-    role: 'Metadonnees, labels, chiffres, notations techniques et grecques',
-    weights: [400, 500],
-    subsets: ['latin', 'latin-ext', 'greek'],
+    family: "ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono', monospace",
+    role: 'Metadonnees, labels, chiffres et notations — monospace du systeme',
   },
 ] as const;
 

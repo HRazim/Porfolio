@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
 import { LOCALE_META, type Locale } from '@/content/i18n';
-import { fontVariables } from '@/lib/fonts';
 import { SITE_ADDRESS, SITE_NAME, SITE_URL, SOCIAL_LINKS, STRUCTURED_CONTACT } from '@/lib/site';
 import { DEFAULT_MODE, THEME_BOOT_SCRIPT } from '@/lib/theme';
 
@@ -29,20 +28,10 @@ import { DEFAULT_MODE, THEME_BOOT_SCRIPT } from '@/lib/theme';
  */
 export interface SiteDocumentProps {
   readonly locale: Locale;
-  /**
-   * Classe de fonte supplementaire, apportee par la mise en page racine.
-   *
-   * Le corps commun du document ne connait donc AUCUNE fonte propre a une
-   * langue : la racine arabe apporte la sienne, les trois autres n'en
-   * apportent aucune. La classe n'apparait ainsi que sur les documents
-   * arabes, ce qu'une recherche sur le HTML produit suffit a constater —
-   * contrairement au comportement du navigateur, qui, lui, ne se lit pas.
-   */
-  readonly extraFontClass?: string;
   readonly children: ReactNode;
 }
 
-export function SiteDocument({ locale, extraFontClass, children }: SiteDocumentProps) {
+export function SiteDocument({ locale, children }: SiteDocumentProps) {
   const meta = LOCALE_META[locale];
   /**
    * Données structurées `Person`.
@@ -100,7 +89,7 @@ export function SiteDocument({ locale, extraFontClass, children }: SiteDocumentP
             memorisee, et rendait le francais inatteignable — sa racine EST la
             racine nue. La justification complete est dans src/content/i18n.ts. */}
       </head>
-      <body className={extraFontClass === undefined ? fontVariables : `${fontVariables} ${extraFontClass}`}>
+      <body>
         <script
           type="application/ld+json"
           // Donnees produites par le projet, jamais par une saisie utilisateur.

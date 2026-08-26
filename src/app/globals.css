@@ -52,33 +52,39 @@
   --ease-*: initial;
 
   /* =========================================================================
-     1. FAMILLES TYPOGRAPHIQUES
+     1. FAMILLES TYPOGRAPHIQUES — CELLES DU SYSTEME DU VISITEUR
      -------------------------------------------------------------------------
-     Les variables `--font-*-face` sont posees sur <html> par next/font
-     (voir src/lib/fonts.ts). Les piles completes sont composees ici.
+     AUCUNE POLICE WEB N'EST CHARGEE, ET C'EST UNE DECISION.
+
+     Le site en a declare quatre depuis l'origine, par `next/font`. Elles
+     n'ont jamais rien peint : les piles etaient composees ici, sur `:root`,
+     a partir de variables que le chargeur ne posait que sur `<body>` — une
+     reference irresolue rend la propriete invalide au calcul, et c'est la
+     valeur invalide qui descendait. Trente-six pages composees par le
+     systeme, et cent dix kilo-octets de fontes telechargees pour rien.
+
+     Le cablage a ete repare, puis le duo remplace ; le rendu compare, le
+     rendu SYSTEME a ete prefere. Les declarations sont donc retirees plutot
+     que laissees inertes : plus une seule requete de police, plus un seul
+     prechargement, et ces trois piles disent enfin ce qu'elles font.
+
+     CE QUE CHAQUE PILE PRIVILEGIE.
+       display  une serif de systeme, pour les titres ;
+       body     la sans-serif d'interface du systeme, pour la prose ;
+       mono     la monospace du systeme, pour chiffres et notations.
+
+     L'ARABE N'A PLUS BESOIN D'ETRE NOMME. Les piles systeme aboutissent a
+     `serif`, `sans-serif` et `monospace`, mots-cles generiques que tout
+     systeme resout vers une fonte couvrant l'ecriture du document. Le repli
+     glyphe par glyphe opere comme avant : un mot latin dans une phrase arabe
+     est rendu par la premiere famille qui le porte.
+
      Utilitaires generes : font-display, font-body, font-mono.
      ========================================================================= */
-  /* LA FONTE ARABE EST DANS LES TROIS PILES, ET C'EST TOUT LE MECANISME.
-     Le repli de police se fait GLYPHE PAR GLYPHE : Instrument Serif et
-     Instrument Sans ne portent aucun caractere arabe, le navigateur passe
-     donc a la famille suivante pour ces caracteres-la, et pour eux seuls.
-     Un mot latin au milieu d'une phrase arabe — Egis, Kotlin — reste rendu
-     par Instrument. Aucune regle `:lang()` n'est necessaire.
-
-     La valeur de repli du `var()` n'est pas une politesse : sans elle, une
-     variable indefinie rendrait la declaration entiere invalide sur les
-     pages non arabes, ou `--font-arabic-face` n'est pas posee. Le nom cite
-     ne designe alors qu'une fonte eventuellement installee localement, et
-     rien n'est telecharge. */
-  --font-display: var(--font-display-face),
-    var(--font-arabic-face, 'IBM Plex Sans Arabic'), 'Iowan Old Style', Georgia,
-    'Times New Roman', serif;
-  --font-body: var(--font-body-face),
-    var(--font-arabic-face, 'IBM Plex Sans Arabic'), system-ui, -apple-system,
-    'Segoe UI', sans-serif;
-  --font-mono: var(--font-mono-face),
-    var(--font-arabic-face, 'IBM Plex Sans Arabic'), ui-monospace,
-    'SFMono-Regular', Menlo, 'Cascadia Mono', monospace;
+  --font-display: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono',
+    monospace;
 
   /* =========================================================================
      2. ECHELLE TYPOGRAPHIQUE — MODULAIRE, RATIO CONSTANT 1.25
@@ -508,6 +514,32 @@
    STYLES DE BASE
    =========================================================================== */
 @layer base {
+  /* ---------------------------------------------------------------------
+     MESURE DE LIGNE — UN CRAN PLUS LARGE EN ARABE
+     ---------------------------------------------------------------------
+     `ch` vaut la largeur du chiffre « 0 » de la fonte du conteneur. Le
+     nombre de caracteres qu'une colonne porte vaut donc le jeton divise par
+     le rapport « chasse moyenne / largeur du zero », et ce rapport depend de
+     l'ECRITURE autant que de la fonte.
+
+     Mesure sur rendu, colonne de 502 px, polices systeme :
+         francais   61 caracteres
+         anglais    60
+         espagnol   60
+         ARABE      59   <- sous les 60 que la regle du projet fixe
+
+     Les glyphes arabes de Segoe UI sont plus etroits que ses glyphes latins :
+     a jeton egal, la ligne en porte moins. 52ch porte la colonne a 543 px,
+     soit environ 64 caracteres — dans la bande, et sans toucher au latin,
+     qui reste a 48ch et au rendu de la version deployee.
+
+     Le selecteur porte sur `:root[lang='ar']`, l'attribut que la mise en page
+     racine arabe est seule a poser. Aucune autre langue n'est touchee.
+     --------------------------------------------------------------------- */
+  :root[lang='ar'] {
+    --container-measure: 52ch;
+  }
+
   html {
     /* Repli : les dix blocs de combinaison posent la valeur reelle. */
     color-scheme: light;
