@@ -567,6 +567,12 @@ export const PROJECT_DETAIL = {
     es: 'Tecnologías',
     ar: 'التقنيات',
   },
+  skillsHeading: {
+    fr: 'Compétences',
+    en: 'Skills',
+    es: 'Competencias',
+    ar: 'المهارات',
+  },
   featuresHeading: {
     fr: 'Fonctionnalités',
     en: 'Features',

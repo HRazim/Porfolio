@@ -172,6 +172,23 @@ export interface Project {
    */
   readonly outOfScope: Translated | null;
   readonly technologies: readonly Technology[];
+  /**
+   * Competences mises en oeuvre, pour une realisation qui n'est pas
+   * technique.
+   *
+   * POURQUOI UN CHAMP DE PLUS, ET NON `technologies`. Celui-ci porte des
+   * `Technology`, une union fermee de noms d'outils qui ne se traduisent pas
+   * — « PHP 8.3 », « Room ». Une competence, elle, se dit dans la langue du
+   * lecteur : « Prise de parole en public » n'est pas un outil. Les deux
+   * listes ont des types differents parce qu'elles portent des choses
+   * differentes, et les melanger aurait oblige a traduire des noms propres ou
+   * a laisser des competences en francais sur les pages arabes.
+   *
+   * VIDE PARTOUT AILLEURS. Les quatre autres realisations declarent une liste
+   * vide et la section n'est pas rendue — exactement comme la section des
+   * technologies ne l'est pas sur celle-ci.
+   */
+  readonly skills: TranslatedList;
   readonly features: TranslatedList;
   readonly star: ProjectStar;
   readonly learnings: TranslatedList;
@@ -342,6 +359,7 @@ const PROJECTS: readonly Project[] = [
       ar:
         'لم تكن واجهة الويب ولا مكتبات المراقبة الخاصة بتطبيقات Node.js و React ضمن ما سلّمته عند نهاية التدريب.',
     },
+    skills: { fr: [], en: [], es: [], ar: [] },
     technologies: [
       'PHP 8.3',
       'Symfony 6.4 LTS',
@@ -470,7 +488,36 @@ const PROJECTS: readonly Project[] = [
     },
     roleDetail: null,
     outOfScope: null,
-    // Realisation deliberement non technique.
+    /* REALISATION DELIBEREMENT NON TECHNIQUE, et la fiche ne s'en excuse pas.
+       Elle ne porte aucun outil : la section « Technologies » n'est donc pas
+       rendue, le composant la conditionnant a une liste non vide. Ce que la
+       journee a demande se dit autrement, et c'est `skills` qui le porte. */
+    skills: {
+      fr: [
+        'Prise de parole en public',
+        'Découverte du besoin',
+        'Conseil individualisé',
+        'Adaptation au profil de l’interlocuteur',
+      ],
+      en: [
+        'Public speaking',
+        'Needs discovery',
+        'One-to-one advice',
+        'Adapting to the person in front of you',
+      ],
+      es: [
+        'Hablar en público',
+        'Detección de la necesidad',
+        'Asesoramiento individualizado',
+        'Adaptación al perfil del interlocutor',
+      ],
+      ar: [
+        'الخطابة أمام الجمهور',
+        'استكشاف الحاجة',
+        'مشورة فردية',
+        'التكيّف مع ملف المحاور',
+      ],
+    },
     technologies: [],
     features: { fr: [], en: [], es: [], ar: [] },
     star: {
@@ -594,6 +641,7 @@ const PROJECTS: readonly Project[] = [
         'مشروع أُنجز ضمن فريق، في إطار BUT Informatique (إجازة في المعلوماتية) في IUT de Vélizy-Villacoublay.',
     },
     outOfScope: null,
+    skills: { fr: [], en: [], es: [], ar: [] },
     technologies: ['PHP', 'MySQL', 'HTML', 'CSS', 'JavaScript', 'Raspberry Pi', 'SSH'],
     features: {
       fr: [
@@ -991,6 +1039,7 @@ const PROJECTS: readonly Project[] = [
         'مشروع أُنجز في إطار BUT Informatique (إجازة في المعلوماتية) في IUT de Vélizy-Villacoublay.',
     },
     outOfScope: null,
+    skills: { fr: [], en: [], es: [], ar: [] },
     technologies: ['Python', 'Flask', 'SQLAlchemy Core', 'SQLite', 'Jinja2'],
     features: {
       fr: [
@@ -1219,6 +1268,7 @@ const PROJECTS: readonly Project[] = [
         'تصميم المنتج والبنية والتطوير والاختبارات والنشر.',
     },
     outOfScope: null,
+    skills: { fr: [], en: [], es: [], ar: [] },
     technologies: [
       'Kotlin',
       'Jetpack Compose',
