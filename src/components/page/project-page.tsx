@@ -71,10 +71,11 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
   // « Contexte » suivi de rien.
   const hasContext = project.context !== null;
   const hasTechnologies = project.technologies.length > 0;
+  const hasSkills = project.skills[locale].length > 0;
   const hasFeatures = project.features[locale].length > 0;
   const hasVisuals = project.visuals.length > 0;
   const hasLinks = project.links.length > 0;
-  const hasPresentation = hasContext || hasTechnologies || hasFeatures;
+  const hasPresentation = hasContext || hasTechnologies || hasSkills || hasFeatures;
 
   return (
     /* CASCADE D'OUVERTURE. Les blocs entrent dans l'ordre de lecture, un rang
@@ -171,10 +172,41 @@ export function ProjectPage({ locale, slug }: ProjectPageProps) {
               </>
             ) : null}
 
-            {hasFeatures ? (
+            {/* LES COMPETENCES PRENNENT LA PLACE DES TECHNOLOGIES, jamais les
+                deux : une realisation technique montre ses outils, une
+                realisation qui n'en emploie aucun montre ce qu'elle a demande.
+                La section est conditionnee comme les autres — pas de titre
+                suivi du vide.
+
+                PAS DE `dir="ltr"` ICI, contrairement aux pastilles de
+                technologie. Un nom d'outil est un nom propre latin qu'il faut
+                forcer dans son sens de lecture au milieu d'une phrase arabe ;
+                une competence est traduite, et suit le sens de la page.
+
+                PAS DE `font-mono` NON PLUS. Le monospace signale une valeur,
+                un identifiant, une notation ; « Prise de parole en public »
+                n'en est pas une. */}
+            {hasSkills ? (
               <>
                 <h2
                   className={`${hasContext || hasTechnologies ? 'mt-2xl' : ''} section-rule text-display-sm text-ink`}
+                >
+                  {PROJECT_DETAIL.skillsHeading[locale]}
+                </h2>
+                <ul className="mt-md flex list-none flex-wrap gap-2xs p-0">
+                  {project.skills[locale].map((skill) => (
+                    <li key={skill} className="accent-chip px-sm py-2xs text-body-sm">
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+
+            {hasFeatures ? (
+              <>
+                <h2
+                  className={`${hasContext || hasTechnologies || hasSkills ? 'mt-2xl' : ''} section-rule text-display-sm text-ink`}
                 >
                   {PROJECT_DETAIL.featuresHeading[locale]}
                 </h2>
