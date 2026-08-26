@@ -486,7 +486,16 @@ const PROJECTS: readonly Project[] = [
       ar:
         'متحدّث',
     },
-    roleDetail: null,
+    roleDetail: {
+      fr:
+        'Prise de parole devant des assemblées et entretiens individuels d’orientation.',
+      en:
+        'Public speaking in front of audiences, and one-to-one guidance conversations.',
+      es:
+        'Intervenciones públicas ante el público y entrevistas individuales de orientación.',
+      ar:
+        'إلقاء كلمات أمام الحضور ومقابلات فردية للتوجيه.',
+    },
     outOfScope: null,
     /* REALISATION DELIBEREMENT NON TECHNIQUE, et la fiche ne s'en excuse pas.
        Elle ne porte aucun outil : la section « Technologies » n'est donc pas
@@ -523,61 +532,61 @@ const PROJECTS: readonly Project[] = [
     star: {
       situation: {
         fr:
-          'Les lycéens et étudiants qui s’orientent connaissent mal les filières informatiques et se déterminent souvent sur des représentations approximatives du métier.',
+          'Les lycéens et étudiants qui s’orientent connaissent mal les filières informatiques et se déterminent souvent sur des représentations approximatives du métier. Un forum les met en présence de personnes qui suivent ces filières, et permet de poser les questions auxquelles une brochure ne répond pas : à quoi ressemble le quotidien d’un étudiant en informatique, et ce que la filière demande vraiment.',
         en:
-          'Secondary school and university students choosing a course know little about computer science programmes, and often decide on a rough idea of what the job is.',
+          'Secondary school and university students choosing a course know little about computer science programmes, and often decide on a rough idea of what the job is. A careers fair puts them in front of people who are actually on those programmes, and lets them ask what no brochure answers: what a computer science student’s day really looks like, and what the course actually demands.',
         es:
-          'Los alumnos de secundaria y los estudiantes que eligen itinerario conocen mal las carreras de informática y a menudo se deciden a partir de una idea aproximada de la profesión.',
+          'Los alumnos de secundaria y los estudiantes que eligen itinerario conocen mal las carreras de informática y a menudo se deciden a partir de una idea aproximada de la profesión. Una feria los pone frente a personas que cursan esos itinerarios y permite hacer las preguntas que ningún folleto responde: cómo es el día a día de un estudiante de informática y qué exige realmente la carrera.',
         ar:
-          'يعرف طلاب الثانوية والجامعة الذين يختارون توجّههم القليل عن مسارات المعلوماتية، وكثيرًا ما يقرّرون بناءً على تصوّر تقريبي عن المهنة.',
+          'يعرف طلاب الثانوية والجامعة الذين يختارون توجّههم القليل عن مسارات المعلوماتية، وكثيرًا ما يقرّرون بناءً على تصوّر تقريبي عن المهنة. والملتقى يضعهم أمام أشخاص يدرسون في هذه المسارات، ويتيح طرح الأسئلة التي لا يجيب عنها أي كتيّب: كيف يبدو يوم طالب المعلوماتية فعلًا، وما الذي يتطلّبه المسار حقًّا.',
       },
       taches: {
         fr:
-          'Représenter ces filières lors du forum, devant des assemblées comme en entretien individuel.',
+          'Représenter ces filières lors du forum, sous deux formes qui ne demandent pas la même chose : présenter devant des assemblées de lycéens et d’étudiants, et recevoir en entretien individuel.',
         en:
-          'Representing those programmes at the fair, in front of audiences as well as in one-to-one conversations.',
+          'Representing those programmes at the fair, in two forms that do not ask for the same thing: presenting to audiences of secondary school and university students, and meeting people one at a time.',
         es:
-          'Representar esos itinerarios en la feria, tanto ante el público como en entrevistas individuales.',
+          'Representar esos itinerarios en la feria, en dos formas que no exigen lo mismo: presentar ante grupos de alumnos de secundaria y estudiantes, y recibir en entrevista individual.',
         ar:
-          'تمثيل تلك المسارات في الملتقى، أمام الحضور وفي المقابلات الفردية على حدّ سواء.',
+          'تمثيل تلك المسارات في الملتقى، بصيغتين لا تتطلّبان الشيء نفسه: التقديم أمام مجموعات من طلاب الثانوية والجامعة، والاستقبال في مقابلة فردية.',
       },
       actions: {
         fr:
-          'Prise de parole publique et présentation des filières devant des groupes de lycéens et d’étudiants. Puis accompagnement individualisé : comprendre le profil et les ambitions de chaque personne pour l’orienter vers la filière qui lui correspond réellement.',
+          'Devant les assemblées : présenter les filières informatiques, ce qu’elles recouvrent et ce à quoi elles mènent. L’exercice demande une structure et un rythme, et s’adresse à une salle dont on ne connaît pas les profils. En entretien : conduire la conversation autour de trois sujets — le quotidien réel d’un étudiant en informatique, les questions que la personne se posait sur la filière, et le choix d’orientation qu’elle avait à faire. Comprendre son profil et ses ambitions avant de proposer une direction, plutôt que de présenter la même filière à tout le monde.',
         en:
-          'Public speaking and presentation of the programmes in front of groups of secondary school and university students. Then individual guidance: understanding each person’s profile and ambitions in order to point them towards the programme that genuinely fits them.',
+          'In front of audiences: presenting the computer science programmes, what they cover and where they lead. That exercise calls for structure and pace, and addresses a room whose profiles are unknown. One to one: steering the conversation around three subjects — what a computer science student’s day really looks like, the questions that person had about the course, and the choice they had to make. Understanding their profile and ambitions before suggesting a direction, rather than presenting the same course to everyone.',
         es:
-          'Intervenciones públicas y presentación de los itinerarios ante grupos de alumnos de secundaria y estudiantes. Después, acompañamiento individual: entender el perfil y las ambiciones de cada persona para orientarla hacia el itinerario que realmente le corresponde.',
+          'Ante los grupos: presentar los itinerarios de informática, lo que abarcan y adónde llevan. El ejercicio exige estructura y ritmo, y se dirige a una sala cuyos perfiles se desconocen. En entrevista: llevar la conversación en torno a tres temas — el día a día real de un estudiante de informática, las preguntas que esa persona se hacía sobre la carrera, y la elección de orientación que tenía por delante. Entender su perfil y sus ambiciones antes de proponer una dirección, en vez de presentar el mismo itinerario a todo el mundo.',
         ar:
-          'إلقاء كلمات وتقديم المسارات أمام مجموعات من طلاب الثانوية والجامعة. ثم مرافقة فردية: فهم ملف كل شخص وطموحاته لتوجيهه نحو المسار الذي يناسبه فعلًا.',
+          'أمام الحضور: تقديم مسارات المعلوماتية، وما تشمله وما تؤدّي إليه. يتطلّب هذا التمرين بنية وإيقاعًا، ويخاطب قاعة لا تُعرف ملفات من فيها. وفي المقابلة الفردية: إدارة الحديث حول ثلاثة مواضيع — يوم طالب المعلوماتية كما هو فعلًا، والأسئلة التي كان الشخص يطرحها عن المسار، والاختيار الذي كان عليه أن يتّخذه. وفهم ملفه وطموحاته قبل اقتراح أي وجهة، بدل تقديم المسار نفسه للجميع.',
       },
       resultats: {
         fr:
-          'Une quinzaine d’entretiens individuels menés dans la journée, de dix à quinze minutes chacun, en complément des présentations devant les assemblées.',
+          'Dix-sept entretiens individuels menés dans la journée, en complément des présentations devant les assemblées. Chacun a porté sur les mêmes trois sujets : le quotidien réel de la filière, les questions propres à la personne, et le choix d’orientation qu’elle avait devant elle.',
         en:
-          'Around fifteen one-to-one conversations held during the day, ten to fifteen minutes each, alongside the presentations to audiences.',
+          'Seventeen one-to-one conversations held during the day, alongside the presentations to audiences. Each covered the same three subjects: what the course is really like day to day, that person’s own questions, and the choice of direction in front of them.',
         es:
-          'Una quincena de entrevistas individuales realizadas durante la jornada, de diez a quince minutos cada una, además de las presentaciones ante el público.',
+          'Diecisiete entrevistas individuales realizadas durante la jornada, además de las presentaciones ante el público. Cada una trató los mismos tres temas: el día a día real de la carrera, las preguntas propias de la persona, y la elección de orientación que tenía por delante.',
         ar:
-          'نحو خمس عشرة مقابلة فردية أُجريت خلال اليوم، مدّة كل منها عشر إلى خمس عشرة دقيقة، إلى جانب العروض أمام الحضور.',
+          'سبع عشرة مقابلة فردية أُجريت خلال اليوم، إلى جانب العروض أمام الحضور. وتناولت كل واحدة منها المواضيع الثلاثة نفسها: واقع المسار يومًا بيوم، وأسئلة الشخص الخاصة، والاختيار الذي كان أمامه.',
       },
     },
     learnings: {
       fr: [
-        'Convaincre une assemblée et convaincre une personne sont deux exercices différents. Le premier demande une structure et un rythme ; le second demande d’écouter avant de proposer.',
-        'Conseiller utilement suppose de comprendre l’objectif de l’interlocuteur avant de présenter une solution. Une orientation proposée sans avoir compris l’ambition de la personne est une réponse à une question qui n’a pas été posée.',
+        'Convaincre une assemblée et convaincre une personne sont deux exercices différents. Le premier demande une structure et un rythme ; le second demande d’écouter avant de proposer. La même journée a demandé les deux, à quelques minutes d’intervalle.',
+        'Conseiller utilement suppose de comprendre l’objectif de l’interlocuteur avant de présenter une solution. Une orientation proposée sans avoir compris l’ambition de la personne est une réponse à une question qui n’a pas été posée. Dix-sept conversations ont suivi le même ordre : comprendre d’abord, proposer ensuite.',
       ],
       en: [
-        'Convincing an audience and convincing one person are two different exercises. The first calls for structure and pace; the second calls for listening before proposing.',
-        'Advising usefully means understanding the other person’s goal before presenting a solution. A course suggested without having understood that person’s ambition is an answer to a question nobody asked.',
+        'Convincing an audience and convincing one person are two different exercises. The first calls for structure and pace; the second calls for listening before proposing. The same day asked for both, minutes apart.',
+        'Advising usefully means understanding the other person’s goal before presenting a solution. A course suggested without having understood that person’s ambition is an answer to a question nobody asked. Seventeen conversations followed the same order: understand first, suggest second.',
       ],
       es: [
-        'Convencer a un público y convencer a una persona son dos ejercicios distintos. El primero exige estructura y ritmo; el segundo exige escuchar antes de proponer.',
-        'Asesorar de forma útil supone entender el objetivo del interlocutor antes de presentar una solución. Una orientación propuesta sin haber entendido la ambición de la persona es una respuesta a una pregunta que no se ha hecho.',
+        'Convencer a un público y convencer a una persona son dos ejercicios distintos. El primero exige estructura y ritmo; el segundo exige escuchar antes de proponer. La misma jornada exigió los dos, con minutos de diferencia.',
+        'Asesorar de forma útil supone entender el objetivo del interlocutor antes de presentar una solución. Una orientación propuesta sin haber entendido la ambición de la persona es una respuesta a una pregunta que no se ha hecho. Diecisiete conversaciones siguieron el mismo orden: entender primero, proponer después.',
       ],
       ar: [
-        'إقناع جمهور وإقناع شخص واحد تمرينان مختلفان. الأول يتطلّب بنية وإيقاعًا؛ والثاني يتطلّب الإصغاء قبل الاقتراح.',
-        'تقديم مشورة نافعة يفترض فهم هدف المحاور قبل عرض أي حل. توجيه يُقترح دون فهم طموح صاحبه هو جواب عن سؤال لم يُطرح.',
+        'إقناع جمهور وإقناع شخص واحد تمرينان مختلفان. الأول يتطلّب بنية وإيقاعًا؛ والثاني يتطلّب الإصغاء قبل الاقتراح. وقد تطلّب اليوم نفسه كليهما، بفارق دقائق.',
+        'تقديم مشورة نافعة يفترض فهم هدف المحاور قبل عرض أي حل. توجيه يُقترح دون فهم طموح صاحبه هو جواب عن سؤال لم يُطرح. وقد اتّبعت سبع عشرة محادثة الترتيب نفسه: الفهم أولًا، ثم الاقتراح.',
       ],
     },
     links: [],
