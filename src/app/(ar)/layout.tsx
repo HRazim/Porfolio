@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import { SiteDocument } from '@/components/layout/site-document';
 import type { Locale } from '@/content/i18n';
-import { fontArabic } from '@/lib/fonts';
 import { rootMetadata } from '@/lib/page-metadata';
 
 import '../globals.css';
@@ -49,7 +48,7 @@ export default function RootLayout({
   // arabes : c'est la troisieme barriere, et la seule qu'une recherche
   // textuelle sur le HTML puisse constater.
   return (
-    <SiteDocument locale={locale} extraFontClass={fontArabic.variable}>
+    <SiteDocument locale={locale}>
       {children}
     </SiteDocument>
   );

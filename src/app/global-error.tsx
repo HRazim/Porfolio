@@ -1,7 +1,6 @@
 'use client';
 
 import { GLOBAL_ERROR } from '@/content/site-copy';
-import { fontVariables } from '@/lib/fonts';
 
 import './globals.css';
 
@@ -53,7 +52,7 @@ import './globals.css';
 export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <html lang={GLOBAL_ERROR.lang}>
-      <body className={fontVariables}>
+      <body>
         <main className="mx-gutter flex min-h-svh max-w-measure flex-col justify-center py-section-spacious">
           <p className="font-mono text-body-sm text-ink-subtle">{GLOBAL_ERROR.eyebrow}</p>
           <h1 className="section-rule mt-sm text-display-lg text-ink">

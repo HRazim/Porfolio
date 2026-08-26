@@ -172,8 +172,6 @@ export default function StyleguidePage() {
                 <div className="flex flex-wrap items-baseline gap-x-md gap-y-3xs font-mono text-body-sm text-ink-subtle">
                   <span className="font-medium text-ink">{font.cssVar}</span>
                   <span>{font.family}</span>
-                  <span>graisses : {font.weights.join(', ')}</span>
-                  <span>sous-ensembles : {font.subsets.join(', ')}</span>
                 </div>
                 <p className="mt-2xs text-body-sm text-ink-muted">{font.role}</p>
 
