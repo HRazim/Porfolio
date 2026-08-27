@@ -131,11 +131,41 @@
   /* --- Niveaux display ----------------------------------------------------
      Interlettrage negatif croissant avec la taille ; interlignage 1,05 -> 1,15.
 
-     LA GRAISSE RESTE A 400 ICI. Elle valait cette valeur parce que la serif
-     de systeme qui composait les titres n'offrait pas d'autre variante utile.
-     L'unification vient de supprimer le contraste de famille sur lequel la
-     hierarchie reposait pour moitie ; le remplacer est un reglage a part, et
-     il ne se fait pas dans le meme geste que le rassemblement des dessins. */
+     LA GRAISSE VAUT 450, ET CE CHIFFRE EST LE RESULTAT D'UNE MESURE, PAS D'UN
+     GOUT. Elle a valu 400 tant que les titres etaient composes dans une serif
+     de systeme : l'opposition serif / sans-serif portait alors la hierarchie.
+     L'unification des familles a supprime cet ecart, et la graisse est passee
+     a 600 pour le remplacer. Trop : le trace est devenu lourd.
+
+     CE QUE LES POLICES DE SYSTEME SAVENT REELLEMENT RENDRE. Chrome a ete
+     interroge sur la fonte qu'il charge, au pas de 10, de 400 a 620 :
+
+         400 … 490   Segoe UI            hampe  9 px a 120 px, aire d encre 18 360
+         500 … 620   Segoe UI Semibold   hampe 13 px a 120 px, aire d encre 24 695
+
+     ENTRE LES DEUX, IL N'Y A RIEN. Segoe UI ne possede pas de fonte demi-grasse
+     intermediaire, et Chrome ne l'invente pas : il replie la valeur demandee
+     sur l'une des deux fontes reelles. Sous Windows, la seule question est donc
+     de savoir de quel cote de la bascule on se place — et la bascule est a 500.
+
+     450 SE PLACE DU COTE LEGER, ET C'EST DELIBERE. Sous Windows le titre
+     retrouve le Regular ; sur les systemes dont la police d'interface est
+     variable — SF Pro sous macOS, Roboto sous Android, Noto Sans ou Inter sous
+     Linux — 450 est un poids reellement interpole, plus leger que le Medium et
+     plus gras que le Regular. Une valeur intermediaire y existe vraiment ; ici
+     elle n'existe pas, et il valait mieux le dire que poser 500, qui aurait
+     rendu EXACTEMENT le meme trace qu'aujourd'hui sans rien alleger.
+
+     AUCUNE SYNTHESE, NULLE PART. La synthese de graisse n'intervient que
+     lorsqu'une fonte grasse est demandee et qu'aucune n'existe ; 450 atteint
+     toujours une fonte reelle, ici le Regular.
+
+     CE QUE LA HIERARCHIE PERD, ET SUR QUOI ELLE REPOSE DESORMAIS. Sous
+     Windows, titre et prose partagent le Regular : la graisse n'apporte plus
+     rien, et l'ecart tient a la taille — deux crans pleins de l'echelle au
+     minimum —, a l'interlettrage negatif que la prose n'a pas, et a
+     l'interlignage serre. C'est mesure plus bas dans ce fichier ; ce n'est pas
+     suppose. */
 
   /* 61.04px -> 76.29px */
   --text-display-xl: clamp(3.8147rem, 3.4968rem + 1.4129vw, 4.7684rem);
@@ -152,25 +182,25 @@
      composition — les trois autres niveaux gardent leurs valeurs. */
   --text-display-xl--line-height: 1.05;
   --text-display-xl--letter-spacing: -0.03em;
-  --text-display-xl--font-weight: 400;
+  --text-display-xl--font-weight: 450;
 
   /* 48.83px -> 61.04px */
   --text-display-lg: clamp(3.0518rem, 2.7975rem + 1.1302vw, 3.8147rem);
   --text-display-lg--line-height: 1.05;
   --text-display-lg--letter-spacing: -0.025em;
-  --text-display-lg--font-weight: 400;
+  --text-display-lg--font-weight: 450;
 
   /* 39.06px -> 48.83px */
   --text-display-md: clamp(2.4414rem, 2.2379rem + 0.9043vw, 3.0518rem);
   --text-display-md--line-height: 1.1;
   --text-display-md--letter-spacing: -0.02em;
-  --text-display-md--font-weight: 400;
+  --text-display-md--font-weight: 450;
 
   /* 31.25px -> 39.06px */
   --text-display-sm: clamp(1.9531rem, 1.7903rem + 0.7234vw, 2.4414rem);
   --text-display-sm--line-height: 1.15;
   --text-display-sm--letter-spacing: -0.015em;
-  --text-display-sm--font-weight: 400;
+  --text-display-sm--font-weight: 450;
 
   /* --- Niveaux de corps : Instrument Sans --------------------------------- */
   /* Interlignage 1.6 -> 1.7, decroissant quand la taille croit */
@@ -600,16 +630,30 @@
   }
 
   /* ---------------------------------------------------------------------
-     TITRES — PLUS DE FAMILLE PROPRE
+     TITRES — PLUS DE FAMILLE PROPRE, ET UNE GRAISSE QUI TRANCHE
      ---------------------------------------------------------------------
      AUCUNE DECLARATION DE FAMILLE ICI. Les titres heritent celle du
-     document : c'est desormais la meme pour tout le texte, et la redire
-     n'ajouterait qu'un endroit de plus a corriger le jour ou elle change.
+     document : c'est desormais la meme, et la redire n'ajouterait qu'un
+     endroit de plus a corriger le jour ou elle change.
+
+     LA GRAISSE DES TITRES SE DECIDE DANS LES JETONS DE NIVEAU, pas ici. Les
+     quatre niveaux d'affichage valent 450 ; le bloc `@theme` explique le
+     chiffre et la mesure qui l'a produit.
+
+     LE 600 CI-DESSOUS NE PEINT RIEN, et c'est verifie : sur les 42 pages du
+     site, 276 titres sont rendus, et TOUS portent un utilitaire de niveau —
+     225 a un niveau d'affichage, 51 a un niveau de corps. L'utilitaire l'a
+     toujours sur la regle d'element. Cette declaration n'est donc qu'un
+     dernier recours, pour un titre qui n'existe pas encore.
+
+     ELLE RESTE UNE INCOHERENCE EN PUISSANCE : le jour ou un titre sera ecrit
+     sans utilitaire de niveau, il sortira plus gras que tous les autres. La
+     ramener a 450 sortirait du perimetre de cette retouche, qui ne porte que
+     sur les niveaux d'affichage ; c'est signale, pas corrige.
 
      Le commentaire precedent justifiait 400 par « Instrument Serif ne possede
      que cette graisse » — une police que le site ne charge plus depuis la
-     v1.10.0. Il documentait une contrainte disparue. La graisse, elle, n'est
-     pas touchee par ce remaniement.
+     v1.10.0. Il documentait une contrainte disparue.
 
      `text-wrap: balance` reste : il repartit les lignes d'un titre court au
      lieu de remplir la premiere, et ne depend d'aucune famille. */
@@ -619,7 +663,7 @@
   h4,
   h5,
   h6 {
-    font-weight: 400;
+    font-weight: 600;
     text-wrap: balance;
   }
 
