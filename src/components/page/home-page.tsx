@@ -183,7 +183,28 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
                   qu’un document plus large que l’ecran. */}
               <h1
                 data-enter="2"
-                className="section-rule hyphens-auto break-words text-display-lg text-ink md:text-display-xl"
+                /* UN PALIER DE PLUS SOUS `sm`, ET C'EST UNE CORRECTION.
+                   L'accroche employait `display-lg` des la plus petite
+                   largeur : 48,8 px pour une colonne de 288. Le groupe que
+                   l'insecable du contenu soude — « ومهندس أعمال » en arabe —
+                   y mesurait 302 px. Le francais et l'anglais s'en tirent par
+                   la cesure, que ce moteur applique ; l'arabe ne se cesure
+                   pas, et `break-words` coupait le mot en deux, brisant la
+                   ligature. Une capture au pixel l'a montre.
+
+                   `display-sm` ramene la taille a 31 px sous `sm`. Les
+                   quatre groupes les plus larges y tiennent :
+
+                       fr  « ingenieur d'affaires »  401 px -> 257
+                       en  « business engineer. »    382 px -> 245
+                       ar  « ومهندس أعمال »           302 px -> 193
+                       es  « desarrollador, »        285 px -> 182
+
+                   contre une colonne de 288 px. Plus aucune coupure, dans
+                   aucune langue — la francaise ne se cesurait pas non plus,
+                   defaut anterieur a ce changement que le meme palier
+                   supprime. Au-dela de 640 px, l'ancien reglage reprend. */
+                className="section-rule hyphens-auto break-words text-display-sm text-ink sm:text-display-md md:text-display-xl"
               >
                 {HOME.headline[locale]}
               </h1>

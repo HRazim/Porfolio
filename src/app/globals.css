@@ -66,22 +66,41 @@
      Le cablage a ete repare, puis le duo remplace ; le rendu compare, le
      rendu SYSTEME a ete prefere. Les declarations sont donc retirees plutot
      que laissees inertes : plus une seule requete de police, plus un seul
-     prechargement, et ces trois piles disent enfin ce qu'elles font.
+     prechargement, et ces deux piles disent enfin ce qu'elles font.
 
-     CE QUE CHAQUE PILE PRIVILEGIE.
-       display  une serif de systeme, pour les titres ;
-       body     la sans-serif d'interface du systeme, pour la prose ;
-       mono     la monospace du systeme, pour chiffres et notations.
+     DEUX DESSINS, ET NON TROIS.
+       body  la sans-serif d'interface du systeme — TITRES ET PROSE ;
+       mono  la monospace du systeme, pour chiffres et metadonnees.
 
-     L'ARABE N'A PLUS BESOIN D'ETRE NOMME. Les piles systeme aboutissent a
-     `serif`, `sans-serif` et `monospace`, mots-cles generiques que tout
-     systeme resout vers une fonte couvrant l'ecriture du document. Le repli
-     glyphe par glyphe opere comme avant : un mot latin dans une phrase arabe
-     est rendu par la premiere famille qui le porte.
+     LA PILE D'AFFICHAGE A ETE SUPPRIMEE, ET C'EST LE POINT DE CE BLOC. Elle
+     designait une serif de systeme — Iowan Old Style, Georgia, Times New
+     Roman — choisie a l'origine comme REPLI d'Instrument Serif, pour tenir
+     la place le temps qu'une police web arrive. Aucune n'arrive plus : ce
+     repli est devenu le rendu principal, et le site affichait une serif pour
+     les titres, une sans-serif pour la prose et une monospace pour les
+     chiffres. Trois dessins sans parente, la ou deux suffisent.
 
-     Utilitaires generes : font-display, font-body, font-mono.
+     `--font-display` N'EST PAS DEVENUE UN ALIAS DE `--font-body`, elle a
+     disparu. Un jeton nomme « display » qui resout vers la pile du corps est
+     un piege pour qui le lira ensuite : il promet une distinction que rien
+     n'honore, et le premier lecteur qui s'y fie ecrira une regle inutile.
+     Les titres n'ont plus de famille propre a declarer — ils heritent celle
+     du document, comme tout le reste.
+
+     LA MONOSPACE PORTE DESORMAIS SEULE LE CONTRASTE TYPOGRAPHIQUE. Elle n'est
+     plus une voix parmi trois mais la seule qui tranche : chacun de ses
+     emplois doit se justifier par une FONCTION — un chiffre a aligner, une
+     donnee, une metadonnee — et non par l'envie de varier.
+
+     L'ARABE N'A PAS BESOIN D'ETRE NOMME. Les piles systeme aboutissent a
+     `sans-serif` et `monospace`, mots-cles generiques que tout systeme resout
+     vers une fonte couvrant l'ecriture du document. Le repli glyphe par
+     glyphe opere comme avant : un mot latin dans une phrase arabe est rendu
+     par la premiere famille qui le porte. L'unification ne la touche pas —
+     elle repond a une contrainte de couverture, pas a un gout.
+
+     Utilitaires generes : font-body, font-mono.
      ========================================================================= */
-  --font-display: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono',
     monospace;
@@ -109,12 +128,29 @@
      recherche.
      ========================================================================= */
 
-  /* --- Niveaux display : Instrument Serif, graisse 400 unique ------------- */
-  /* Interlettrage negatif croissant avec la taille ; interlignage 1.0 -> 1.15 */
+  /* --- Niveaux display ----------------------------------------------------
+     Interlettrage negatif croissant avec la taille ; interlignage 1,05 -> 1,15.
+
+     LA GRAISSE RESTE A 400 ICI. Elle valait cette valeur parce que la serif
+     de systeme qui composait les titres n'offrait pas d'autre variante utile.
+     L'unification vient de supprimer le contraste de famille sur lequel la
+     hierarchie reposait pour moitie ; le remplacer est un reglage a part, et
+     il ne se fait pas dans le meme geste que le rassemblement des dessins. */
 
   /* 61.04px -> 76.29px */
   --text-display-xl: clamp(3.8147rem, 3.4968rem + 1.4129vw, 4.7684rem);
-  --text-display-xl--line-height: 1;
+  /* 1 NE LAISSE AUCUNE MARGE AVEC CETTE FAMILLE, et c'est mesure. A 74 px,
+     les glyphes de l'accroche occupent 74,0 px de haut pour une boite de
+     ligne de 74,0 px : zero de jeu. Sur un titre d'une seule ligne cela ne
+     se voit pas ; des qu'il en fait deux — l'accroche de l'accueil en fait
+     deux ou trois selon la largeur — les jambages de la premiere ligne
+     touchent les hampes de la suivante.
+
+     La serif de systeme qui occupait cette place avait un oeil plus petit
+     (48 contre 50 a 100 px) et des extremes plus courts : 1 lui suffisait.
+     1,05 rend le jeu que la nouvelle famille demande, sans desserrer la
+     composition — les trois autres niveaux gardent leurs valeurs. */
+  --text-display-xl--line-height: 1.05;
   --text-display-xl--letter-spacing: -0.03em;
   --text-display-xl--font-weight: 400;
 
@@ -563,15 +599,27 @@
       color var(--duration-base) var(--ease-out);
   }
 
-  /* Titres : famille display par defaut, la taille restant explicite. */
+  /* ---------------------------------------------------------------------
+     TITRES — PLUS DE FAMILLE PROPRE
+     ---------------------------------------------------------------------
+     AUCUNE DECLARATION DE FAMILLE ICI. Les titres heritent celle du
+     document : c'est desormais la meme pour tout le texte, et la redire
+     n'ajouterait qu'un endroit de plus a corriger le jour ou elle change.
+
+     Le commentaire precedent justifiait 400 par « Instrument Serif ne possede
+     que cette graisse » — une police que le site ne charge plus depuis la
+     v1.10.0. Il documentait une contrainte disparue. La graisse, elle, n'est
+     pas touchee par ce remaniement.
+
+     `text-wrap: balance` reste : il repartit les lignes d'un titre court au
+     lieu de remplir la premiere, et ne depend d'aucune famille. */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-display);
-    font-weight: 400; /* Instrument Serif ne possede que cette graisse. */
+    font-weight: 400;
     text-wrap: balance;
   }
 

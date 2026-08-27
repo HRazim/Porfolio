@@ -104,7 +104,6 @@ const SECTION_DENSITY = [
 ] as const;
 
 const FAMILY_CLASS: Record<string, string> = {
-  display: 'font-display',
   body: 'font-body',
   mono: 'font-mono',
 };

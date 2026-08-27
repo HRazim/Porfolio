@@ -106,8 +106,15 @@ export const COLOR_TOKENS: readonly ColorToken[] = [
 export interface TypeToken {
   readonly name: string;
   readonly cssVar: string;
-  /** Famille effectivement appliquee a ce niveau. */
-  readonly family: 'display' | 'body';
+  /**
+   * Famille effectivement appliquee a ce niveau.
+   *
+   * UNE SEULE VALEUR DEPUIS L'UNIFICATION. Les quatre niveaux `display-*`
+   * employaient une serif de systeme ; ils emploient desormais la meme pile
+   * que le corps. Le champ subsiste parce que le guide l'affiche et qu'il
+   * doit dire vrai — pas parce qu'il reste un choix a faire.
+   */
+  readonly family: 'body';
   /** Usage prevu, en francais. */
   readonly usage: string;
 }
@@ -116,25 +123,25 @@ export const TYPE_TOKENS: readonly TypeToken[] = [
   {
     name: 'display-xl',
     cssVar: '--text-display-xl',
-    family: 'display',
+    family: 'body',
     usage: "Titre d'ouverture, un seul par page",
   },
   {
     name: 'display-lg',
     cssVar: '--text-display-lg',
-    family: 'display',
+    family: 'body',
     usage: 'Titre de page secondaire',
   },
   {
     name: 'display-md',
     cssVar: '--text-display-md',
-    family: 'display',
+    family: 'body',
     usage: 'Titre de section',
   },
   {
     name: 'display-sm',
     cssVar: '--text-display-sm',
-    family: 'display',
+    family: 'body',
     usage: 'Titre de sous-section, titre de carte',
   },
   {
@@ -388,23 +395,19 @@ export interface FontToken {
 }
 
 /**
- * AUCUNE POLICE WEB. Les trois roles s'appuient sur les familles du systeme
+ * AUCUNE POLICE WEB, ET DEUX ROLES SEULEMENT. Les titres ont perdu leur
+ * famille propre : ils emploient celle du corps. Les deux roles s'appuient
+ * sur les familles du systeme
  * du visiteur : rien n'est telecharge, rien n'est prechargee, et le rendu
  * varie donc d'une machine a l'autre. Ni graisse ni sous-ensemble ne figurent
  * plus ici — il n'y a plus de fichier dont on puisse les affirmer.
  */
 export const FONT_TOKENS: readonly FontToken[] = [
   {
-    name: 'display',
-    cssVar: '--font-display',
-    family: "'Iowan Old Style', Georgia, 'Times New Roman', serif",
-    role: 'Titres — serif du systeme',
-  },
-  {
     name: 'body',
     cssVar: '--font-body',
     family: "system-ui, -apple-system, 'Segoe UI', sans-serif",
-    role: 'Corps de texte et interface — sans-serif du systeme',
+    role: 'Titres, corps de texte et interface — sans-serif du systeme',
   },
   {
     name: 'mono',
