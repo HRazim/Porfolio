@@ -12,10 +12,12 @@ const TYPE_VARS = TYPE_TOKENS.map((token) => token.cssVar);
  * statiquement et ne verrait pas une classe assemblee a l'execution.
  */
 const LEVEL_CLASS: Record<string, string> = {
-  'display-xl': 'text-display-xl font-display',
-  'display-lg': 'text-display-lg font-display',
-  'display-md': 'text-display-md font-display',
-  'display-sm': 'text-display-sm font-display',
+  // Les niveaux d'affichage n'ont plus de classe de famille : depuis
+  // l'unification, ils emploient celle du corps, qui est celle du document.
+  'display-xl': 'text-display-xl',
+  'display-lg': 'text-display-lg',
+  'display-md': 'text-display-md',
+  'display-sm': 'text-display-sm',
   'body-xl': 'text-body-xl font-body',
   'body-lg': 'text-body-lg font-body',
   'body-md': 'text-body-md font-body',

@@ -66,22 +66,46 @@
      Le cablage a ete repare, puis le duo remplace ; le rendu compare, le
      rendu SYSTEME a ete prefere. Les declarations sont donc retirees plutot
      que laissees inertes : plus une seule requete de police, plus un seul
-     prechargement, et ces trois piles disent enfin ce qu'elles font.
+     prechargement, et ces deux piles disent enfin ce qu'elles font.
 
-     CE QUE CHAQUE PILE PRIVILEGIE.
-       display  une serif de systeme, pour les titres ;
-       body     la sans-serif d'interface du systeme, pour la prose ;
-       mono     la monospace du systeme, pour chiffres et notations.
+     DEUX DESSINS, ET NON TROIS.
+       body  la sans-serif d'interface du systeme — TITRES ET PROSE ;
+       mono  la monospace du systeme, pour chiffres et metadonnees.
 
-     L'ARABE N'A PLUS BESOIN D'ETRE NOMME. Les piles systeme aboutissent a
-     `serif`, `sans-serif` et `monospace`, mots-cles generiques que tout
-     systeme resout vers une fonte couvrant l'ecriture du document. Le repli
-     glyphe par glyphe opere comme avant : un mot latin dans une phrase arabe
-     est rendu par la premiere famille qui le porte.
+     LA PILE D'AFFICHAGE A ETE SUPPRIMEE, ET C'EST LE POINT DE CE BLOC. Elle
+     designait une serif de systeme — Iowan Old Style, Georgia, Times New
+     Roman — choisie a l'origine comme REPLI d'Instrument Serif, pour tenir
+     la place le temps qu'une police web arrive. Aucune n'arrive plus : ce
+     repli est devenu le rendu principal, et le site affichait une serif pour
+     les titres, une sans-serif pour la prose et une monospace pour les
+     chiffres. Trois dessins sans parente, la ou deux suffisent.
 
-     Utilitaires generes : font-display, font-body, font-mono.
+     `--font-display` N'EST PAS DEVENUE UN ALIAS DE `--font-body`, elle a
+     disparu. Un jeton nomme « display » qui resout vers la pile du corps est
+     un piege pour qui le lira ensuite : il promet une distinction que rien
+     n'honore, et le premier lecteur qui s'y fie ecrira une regle inutile.
+     Les titres n'ont plus de famille propre a declarer — ils heritent celle
+     du document, comme tout le reste.
+
+     LA MONOSPACE PORTE DESORMAIS SEULE LE CONTRASTE TYPOGRAPHIQUE. Elle n'est
+     plus une voix parmi trois mais la seule qui tranche : chacun de ses
+     emplois doit se justifier par une FONCTION — un chiffre a aligner, une
+     donnee, une metadonnee — et non par l'envie de varier.
+
+     L'ARABE DEMANDE UNE PRECISION, ET UNE SEULE. Les piles systeme aboutissent
+     a `sans-serif` et `monospace`, mots-cles generiques que tout systeme
+     resout vers une fonte couvrant l'ecriture du document. Le repli glyphe par
+     glyphe opere comme avant : un mot latin dans une phrase arabe est rendu
+     par la premiere famille qui le porte.
+
+     Pour la MONOSPACE, ce repli generique ramenait une SERIF : Cascadia Mono
+     ne couvre pas l'ecriture arabe, et Windows resout `monospace` vers Times
+     New Roman. Un troisieme dessin, precisement ce que ce bloc supprime
+     ailleurs, et dans la seule ecriture ou personne ne l'aurait vu. La pile
+     est donc redeclaree sous `:root[lang='ar']`, plus bas dans ce fichier.
+
+     Utilitaires generes : font-body, font-mono.
      ========================================================================= */
-  --font-display: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono',
     monospace;
@@ -109,32 +133,79 @@
      recherche.
      ========================================================================= */
 
-  /* --- Niveaux display : Instrument Serif, graisse 400 unique ------------- */
-  /* Interlettrage negatif croissant avec la taille ; interlignage 1.0 -> 1.15 */
+  /* --- Niveaux display ----------------------------------------------------
+     Interlettrage negatif croissant avec la taille ; interlignage 1,05 -> 1,15.
+
+     LA GRAISSE VAUT 450, ET CE CHIFFRE EST LE RESULTAT D'UNE MESURE, PAS D'UN
+     GOUT. Elle a valu 400 tant que les titres etaient composes dans une serif
+     de systeme : l'opposition serif / sans-serif portait alors la hierarchie.
+     L'unification des familles a supprime cet ecart, et la graisse est passee
+     a 600 pour le remplacer. Trop : le trace est devenu lourd.
+
+     CE QUE LES POLICES DE SYSTEME SAVENT REELLEMENT RENDRE. Chrome a ete
+     interroge sur la fonte qu'il charge, au pas de 10, de 400 a 620 :
+
+         400 … 490   Segoe UI            hampe  9 px a 120 px, aire d encre 18 360
+         500 … 620   Segoe UI Semibold   hampe 13 px a 120 px, aire d encre 24 695
+
+     ENTRE LES DEUX, IL N'Y A RIEN. Segoe UI ne possede pas de fonte demi-grasse
+     intermediaire, et Chrome ne l'invente pas : il replie la valeur demandee
+     sur l'une des deux fontes reelles. Sous Windows, la seule question est donc
+     de savoir de quel cote de la bascule on se place — et la bascule est a 500.
+
+     450 SE PLACE DU COTE LEGER, ET C'EST DELIBERE. Sous Windows le titre
+     retrouve le Regular ; sur les systemes dont la police d'interface est
+     variable — SF Pro sous macOS, Roboto sous Android, Noto Sans ou Inter sous
+     Linux — 450 est un poids reellement interpole, plus leger que le Medium et
+     plus gras que le Regular. Une valeur intermediaire y existe vraiment ; ici
+     elle n'existe pas, et il valait mieux le dire que poser 500, qui aurait
+     rendu EXACTEMENT le meme trace qu'aujourd'hui sans rien alleger.
+
+     AUCUNE SYNTHESE, NULLE PART. La synthese de graisse n'intervient que
+     lorsqu'une fonte grasse est demandee et qu'aucune n'existe ; 450 atteint
+     toujours une fonte reelle, ici le Regular.
+
+     CE QUE LA HIERARCHIE PERD, ET SUR QUOI ELLE REPOSE DESORMAIS. Sous
+     Windows, titre et prose partagent le Regular : la graisse n'apporte plus
+     rien, et l'ecart tient a la taille — deux crans pleins de l'echelle au
+     minimum —, a l'interlettrage negatif que la prose n'a pas, et a
+     l'interlignage serre. C'est mesure plus bas dans ce fichier ; ce n'est pas
+     suppose. */
 
   /* 61.04px -> 76.29px */
   --text-display-xl: clamp(3.8147rem, 3.4968rem + 1.4129vw, 4.7684rem);
-  --text-display-xl--line-height: 1;
+  /* 1 NE LAISSE AUCUNE MARGE AVEC CETTE FAMILLE, et c'est mesure. A 74 px,
+     les glyphes de l'accroche occupent 74,0 px de haut pour une boite de
+     ligne de 74,0 px : zero de jeu. Sur un titre d'une seule ligne cela ne
+     se voit pas ; des qu'il en fait deux — l'accroche de l'accueil en fait
+     deux ou trois selon la largeur — les jambages de la premiere ligne
+     touchent les hampes de la suivante.
+
+     La serif de systeme qui occupait cette place avait un oeil plus petit
+     (48 contre 50 a 100 px) et des extremes plus courts : 1 lui suffisait.
+     1,05 rend le jeu que la nouvelle famille demande, sans desserrer la
+     composition — les trois autres niveaux gardent leurs valeurs. */
+  --text-display-xl--line-height: 1.05;
   --text-display-xl--letter-spacing: -0.03em;
-  --text-display-xl--font-weight: 400;
+  --text-display-xl--font-weight: 450;
 
   /* 48.83px -> 61.04px */
   --text-display-lg: clamp(3.0518rem, 2.7975rem + 1.1302vw, 3.8147rem);
   --text-display-lg--line-height: 1.05;
   --text-display-lg--letter-spacing: -0.025em;
-  --text-display-lg--font-weight: 400;
+  --text-display-lg--font-weight: 450;
 
   /* 39.06px -> 48.83px */
   --text-display-md: clamp(2.4414rem, 2.2379rem + 0.9043vw, 3.0518rem);
   --text-display-md--line-height: 1.1;
   --text-display-md--letter-spacing: -0.02em;
-  --text-display-md--font-weight: 400;
+  --text-display-md--font-weight: 450;
 
   /* 31.25px -> 39.06px */
   --text-display-sm: clamp(1.9531rem, 1.7903rem + 0.7234vw, 2.4414rem);
   --text-display-sm--line-height: 1.15;
   --text-display-sm--letter-spacing: -0.015em;
-  --text-display-sm--font-weight: 400;
+  --text-display-sm--font-weight: 450;
 
   /* --- Niveaux de corps : Instrument Sans --------------------------------- */
   /* Interlignage 1.6 -> 1.7, decroissant quand la taille croit */
@@ -538,6 +609,36 @@
      --------------------------------------------------------------------- */
   :root[lang='ar'] {
     --container-measure: 52ch;
+
+    /* -------------------------------------------------------------------
+       LE MONOSPACE ARABE NE DOIT PAS RETOMBER SUR UNE SERIF
+       -------------------------------------------------------------------
+       CE QUI SE PASSAIT, ET C'EST MESURE. Cascadia Mono ne couvre pas
+       l'ecriture arabe. La pile `--font-mono` se termine par le mot-cle
+       generique `monospace`, que Windows resout vers Times New Roman : les
+       dix pages arabes peignaient 1 524 glyphes dans une serif — legendes
+       d'image, ligne de copyright, surtitres, lien d'evitement, libelles de
+       la methode STAR. Un TROISIEME dessin, sans parente avec les deux que
+       le site declare, et visible seulement en arabe.
+
+       CE QUI CHANGE. La tete de pile est INCHANGEE : `ui-monospace` puis
+       Cascadia Mono servent toujours les chiffres, les dates et les
+       notations latines, dont l'alignement des caracteres est la raison
+       d'etre du monospace. Seule la FIN de la pile change : au lieu du
+       generique qui appelle une serif, elle appelle la famille du corps,
+       qui couvre l'arabe. Un glyphe arabe est donc rendu par Segoe UI comme
+       le reste de la page.
+
+       `var(--font-body)` PLUTOT QUE LA PILE RECOPIEE : le jour ou la famille
+       du corps change, elle change ici aussi. Le jeton est declare sur
+       `:root` par le bloc `@theme`, et ce selecteur est lui aussi la racine —
+       la substitution a donc bien lieu. Recopier la pile aurait cree un
+       second endroit a corriger, et le premier oubli aurait ramene la serif.
+
+       LE LATIN N'EST PAS TOUCHE : le selecteur porte sur `[lang='ar']`, que
+       seule la mise en page racine arabe pose. ------------------------- */
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono',
+      var(--font-body);
   }
 
   html {
@@ -563,15 +664,41 @@
       color var(--duration-base) var(--ease-out);
   }
 
-  /* Titres : famille display par defaut, la taille restant explicite. */
+  /* ---------------------------------------------------------------------
+     TITRES — PLUS DE FAMILLE PROPRE, ET UNE GRAISSE QUI TRANCHE
+     ---------------------------------------------------------------------
+     AUCUNE DECLARATION DE FAMILLE ICI. Les titres heritent celle du
+     document : c'est desormais la meme, et la redire n'ajouterait qu'un
+     endroit de plus a corriger le jour ou elle change.
+
+     LA GRAISSE DES TITRES SE DECIDE DANS LES JETONS DE NIVEAU, pas ici. Les
+     quatre niveaux d'affichage valent 450 ; le bloc `@theme` explique le
+     chiffre et la mesure qui l'a produit.
+
+     LE 600 CI-DESSOUS NE PEINT RIEN, et c'est verifie : sur les 42 pages du
+     site, 276 titres sont rendus, et TOUS portent un utilitaire de niveau —
+     225 a un niveau d'affichage, 51 a un niveau de corps. L'utilitaire l'a
+     toujours sur la regle d'element. Cette declaration n'est donc qu'un
+     dernier recours, pour un titre qui n'existe pas encore.
+
+     ELLE RESTE UNE INCOHERENCE EN PUISSANCE : le jour ou un titre sera ecrit
+     sans utilitaire de niveau, il sortira plus gras que tous les autres. La
+     ramener a 450 sortirait du perimetre de cette retouche, qui ne porte que
+     sur les niveaux d'affichage ; c'est signale, pas corrige.
+
+     Le commentaire precedent justifiait 400 par « Instrument Serif ne possede
+     que cette graisse » — une police que le site ne charge plus depuis la
+     v1.10.0. Il documentait une contrainte disparue.
+
+     `text-wrap: balance` reste : il repartit les lignes d'un titre court au
+     lieu de remplir la premiere, et ne depend d'aucune famille. */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-display);
-    font-weight: 400; /* Instrument Serif ne possede que cette graisse. */
+    font-weight: 600;
     text-wrap: balance;
   }
 
