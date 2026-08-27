@@ -92,12 +92,17 @@
      emplois doit se justifier par une FONCTION — un chiffre a aligner, une
      donnee, une metadonnee — et non par l'envie de varier.
 
-     L'ARABE N'A PAS BESOIN D'ETRE NOMME. Les piles systeme aboutissent a
-     `sans-serif` et `monospace`, mots-cles generiques que tout systeme resout
-     vers une fonte couvrant l'ecriture du document. Le repli glyphe par
+     L'ARABE DEMANDE UNE PRECISION, ET UNE SEULE. Les piles systeme aboutissent
+     a `sans-serif` et `monospace`, mots-cles generiques que tout systeme
+     resout vers une fonte couvrant l'ecriture du document. Le repli glyphe par
      glyphe opere comme avant : un mot latin dans une phrase arabe est rendu
-     par la premiere famille qui le porte. L'unification ne la touche pas —
-     elle repond a une contrainte de couverture, pas a un gout.
+     par la premiere famille qui le porte.
+
+     Pour la MONOSPACE, ce repli generique ramenait une SERIF : Cascadia Mono
+     ne couvre pas l'ecriture arabe, et Windows resout `monospace` vers Times
+     New Roman. Un troisieme dessin, precisement ce que ce bloc supprime
+     ailleurs, et dans la seule ecriture ou personne ne l'aurait vu. La pile
+     est donc redeclaree sous `:root[lang='ar']`, plus bas dans ce fichier.
 
      Utilitaires generes : font-body, font-mono.
      ========================================================================= */
@@ -604,6 +609,36 @@
      --------------------------------------------------------------------- */
   :root[lang='ar'] {
     --container-measure: 52ch;
+
+    /* -------------------------------------------------------------------
+       LE MONOSPACE ARABE NE DOIT PAS RETOMBER SUR UNE SERIF
+       -------------------------------------------------------------------
+       CE QUI SE PASSAIT, ET C'EST MESURE. Cascadia Mono ne couvre pas
+       l'ecriture arabe. La pile `--font-mono` se termine par le mot-cle
+       generique `monospace`, que Windows resout vers Times New Roman : les
+       dix pages arabes peignaient 1 524 glyphes dans une serif — legendes
+       d'image, ligne de copyright, surtitres, lien d'evitement, libelles de
+       la methode STAR. Un TROISIEME dessin, sans parente avec les deux que
+       le site declare, et visible seulement en arabe.
+
+       CE QUI CHANGE. La tete de pile est INCHANGEE : `ui-monospace` puis
+       Cascadia Mono servent toujours les chiffres, les dates et les
+       notations latines, dont l'alignement des caracteres est la raison
+       d'etre du monospace. Seule la FIN de la pile change : au lieu du
+       generique qui appelle une serif, elle appelle la famille du corps,
+       qui couvre l'arabe. Un glyphe arabe est donc rendu par Segoe UI comme
+       le reste de la page.
+
+       `var(--font-body)` PLUTOT QUE LA PILE RECOPIEE : le jour ou la famille
+       du corps change, elle change ici aussi. Le jeton est declare sur
+       `:root` par le bloc `@theme`, et ce selecteur est lui aussi la racine —
+       la substitution a donc bien lieu. Recopier la pile aurait cree un
+       second endroit a corriger, et le premier oubli aurait ramene la serif.
+
+       LE LATIN N'EST PAS TOUCHE : le selecteur porte sur `[lang='ar']`, que
+       seule la mise en page racine arabe pose. ------------------------- */
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, 'Cascadia Mono',
+      var(--font-body);
   }
 
   html {
