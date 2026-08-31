@@ -1425,7 +1425,7 @@ const PROJECTS: readonly Project[] = [
           ar:
             'JTR على Instagram',
         },
-        href: 'https://www.instagram.com/justtorememberapp/',
+        href: 'https://www.instagram.com/jtr_app/',
       },
       {
         kind: 'x',
@@ -1453,7 +1453,7 @@ const PROJECTS: readonly Project[] = [
           ar:
             'JTR على TikTok',
         },
-        href: 'https://www.tiktok.com/@justtoremember_app',
+        href: 'https://www.tiktok.com/@justoremember_app',
       },
       {
         kind: 'reddit',
