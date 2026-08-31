@@ -39,7 +39,8 @@ export type ProjectSlug =
   | 'forum-orientation-trappes'
   | 'plateforme-web-calculs'
   | 'archilog'
-  | 'jtr';
+  | 'jtr'
+  | 'inx';
 
 /**
  * Categorie de la realisation.
@@ -1683,6 +1684,203 @@ const PROJECTS: readonly Project[] = [
       },
     ],
     featuredRank: 2,
+  },
+  {
+    slug: 'inx',
+    title: {
+      fr:
+        'InX — Budget du quotidien',
+      en:
+        'InX — Everyday budgeting',
+      es:
+        'InX — Presupuesto del día a día',
+      ar:
+        'InX — ميزانية الحياة اليومية',
+    },
+    tagline: {
+      fr:
+        'Une application Android qui répond à une seule question — combien puis-je dépenser aujourd’hui — en raisonnant sur le cycle de paie plutôt que sur le mois calendaire.',
+      en:
+        'An Android application that answers a single question — how much can I spend today — reasoning over the pay cycle rather than the calendar month.',
+      es:
+        'Una aplicación Android que responde a una sola pregunta —cuánto puedo gastar hoy— razonando sobre el ciclo de pago y no sobre el mes natural.',
+      ar:
+        'تطبيق أندرويد يجيب عن سؤال واحد — كم يمكنني أن أنفق اليوم — بالاعتماد على دورة الراتب لا على الشهر التقويمي.',
+    },
+    category: 'personnel',
+    // Periode fournie par le proprietaire : ce sont les dates qu’il envisage.
+    // Elles sont posterieures a la redaction de cette fiche ; il en a ete
+    // informe et les maintient. Le schema ne connait pas la notion d’avenir
+    // et ne les traite pas differemment.
+    period: { kind: 'connue', start: '2026-09', end: '2026-10' },
+    context: {
+      fr:
+        'Les applications de finances personnelles s’adressent à qui veut analyser ses dépenses. InX vise les jeunes actifs, qui se posent une question plus immédiate : ce qu’il leur reste à dépenser d’ici la prochaine paie. La saisie est manuelle, sans connexion bancaire, et aucune donnée ne quitte l’appareil.',
+      en:
+        'Personal finance applications are built for people who want to analyse their spending. InX targets young working adults, who ask a more immediate question: what is left to spend before the next payday. Entry is manual, there is no bank connection, and no data leaves the device.',
+      es:
+        'Las aplicaciones de finanzas personales se dirigen a quien quiere analizar sus gastos. InX apunta a los jóvenes profesionales, que se hacen una pregunta más inmediata: cuánto les queda por gastar hasta el próximo pago. La entrada es manual, sin conexión bancaria, y ningún dato sale del dispositivo.',
+      ar:
+        'تطبيقات الإدارة المالية الشخصية موجَّهة لمن يريد تحليل نفقاته. أمّا InX فيستهدف الشباب العاملين الذين يطرحون سؤالًا أكثر إلحاحًا: ما المتبقّي لهم للإنفاق حتى الراتب القادم. الإدخال يدوي، دون أي ربط مصرفي، ولا تغادر أي بيانات الجهاز.',
+    },
+    role: {
+      fr:
+        'Concepteur et développeur unique',
+      en:
+        'Sole designer and developer',
+      es:
+        'Diseñador y desarrollador único',
+      ar:
+        'المصمّم والمطوّر الوحيد',
+    },
+    roleDetail: {
+      fr:
+        'Projet personnel mené seul, du cadrage du besoin au binaire signé : choix de la cible, arbitrage du périmètre, développement, tests et livraison.',
+      en:
+        'A personal project carried out alone, from framing the need to the signed binary: choosing the audience, deciding what to leave out, development, testing and delivery.',
+      es:
+        'Proyecto personal realizado en solitario, del encuadre de la necesidad al binario firmado: elección del público, arbitraje del alcance, desarrollo, pruebas y entrega.',
+      ar:
+        'مشروع شخصي أُنجز منفردًا، من تأطير الحاجة إلى الملف التنفيذي الموقَّع: اختيار الفئة المستهدفة، وتحديد النطاق، والتطوير، والاختبار، والتسليم.',
+    },
+    outOfScope: {
+      fr:
+        'Aucune connexion bancaire, aucune synchronisation, aucun compte : la saisie reste manuelle et les données ne quittent pas l’appareil. Le dépôt est privé et l’application n’est distribuée sur aucune boutique — cette fiche ne porte donc ni lien de code, ni lien de téléchargement.',
+      en:
+        'No bank connection, no synchronisation, no account: entry stays manual and the data never leaves the device. The repository is private and the application is distributed on no store — so this entry carries neither a source link nor a download link.',
+      es:
+        'Sin conexión bancaria, sin sincronización, sin cuenta: la entrada sigue siendo manual y los datos no salen del dispositivo. El repositorio es privado y la aplicación no se distribuye en ninguna tienda, por lo que esta ficha no incluye enlace al código ni enlace de descarga.',
+      ar:
+        'لا ربط مصرفي، ولا مزامنة، ولا حساب: يبقى الإدخال يدويًا ولا تغادر البيانات الجهاز. المستودع خاص والتطبيق غير موزَّع على أي متجر — لذلك لا تتضمّن هذه البطاقة رابطًا للشيفرة ولا رابطًا للتحميل.',
+    },
+    skills: {
+      fr: [
+        'Cadrage du besoin et choix d’une cible',
+        'Arbitrage de périmètre',
+        'Conduite de projet en autonomie',
+        'Qualité et non-régression',
+      ],
+      en: [
+        'Framing the need and choosing an audience',
+        'Scope arbitration',
+        'Running a project independently',
+        'Quality and regression control',
+      ],
+      es: [
+        'Encuadre de la necesidad y elección del público',
+        'Arbitraje del alcance',
+        'Gestión de proyecto en autonomía',
+        'Calidad y no regresión',
+      ],
+      ar: [
+        'تأطير الحاجة واختيار الفئة المستهدفة',
+        'تحديد النطاق والمفاضلة',
+        'إدارة المشروع باستقلالية',
+        'الجودة ومنع الانحدار',
+      ],
+    },
+    technologies: ['Kotlin', 'Jetpack Compose', 'Room', 'MVVM', 'Android'],
+    features: {
+      fr: [
+        'Solde disponible calculé sur le cycle de paie, d’un versement au suivant',
+        'Saisie d’une dépense en trois appuis',
+        'Rapports mensuels et répartition des dépenses par catégorie',
+        'Courbe d’évolution des soldes',
+        'Sauvegarde et restauration complètes, export CSV',
+        'Interface lisible jusqu’à 200 % de taille de texte, compatible avec les lecteurs d’écran',
+      ],
+      en: [
+        'Available balance computed over the pay cycle, from one payment to the next',
+        'Recording an expense in three taps',
+        'Monthly reports and spending broken down by category',
+        'Balance trend chart',
+        'Full backup and restore, CSV export',
+        'Interface legible up to 200% text size, compatible with screen readers',
+      ],
+      es: [
+        'Saldo disponible calculado sobre el ciclo de pago, de un ingreso al siguiente',
+        'Registro de un gasto en tres toques',
+        'Informes mensuales y reparto de los gastos por categoría',
+        'Curva de evolución de los saldos',
+        'Copia de seguridad y restauración completas, exportación CSV',
+        'Interfaz legible hasta el 200 % de tamaño de texto, compatible con lectores de pantalla',
+      ],
+      ar: [
+        'الرصيد المتاح محسوبًا على دورة الراتب، من دفعة إلى التي تليها',
+        'تسجيل نفقة بثلاث نقرات',
+        'تقارير شهرية وتوزيع النفقات حسب الفئة',
+        'منحنى تطوّر الأرصدة',
+        'نسخ احتياطي واستعادة كاملان، وتصدير بصيغة CSV',
+        'واجهة مقروءة حتى 200 % من حجم النص، ومتوافقة مع قارئات الشاشة',
+      ],
+    },
+    star: {
+      situation: {
+        fr:
+          'Les jeunes actifs suivent leur budget sur un mois calendaire alors qu’ils vivent au rythme de leur paie, et renoncent aux applications qui exigent de connecter un compte bancaire.',
+        en:
+          'Young working adults track their budget over a calendar month while living to the rhythm of their pay, and give up on applications that require connecting a bank account.',
+        es:
+          'Los jóvenes profesionales controlan su presupuesto sobre un mes natural aunque viven al ritmo de su nómina, y abandonan las aplicaciones que exigen conectar una cuenta bancaria.',
+        ar:
+          'يتابع الشباب العاملون ميزانيتهم على أساس الشهر التقويمي بينما يعيشون على إيقاع رواتبهم، ويعزفون عن التطبيقات التي تشترط ربط حساب مصرفي.',
+      },
+      taches: {
+        fr:
+          'Concevoir une application qui réponde à une seule question — combien puis-je dépenser aujourd’hui — et livrer un produit fini plutôt qu’un prototype.',
+        en:
+          'Designing an application that answers a single question — how much can I spend today — and delivering a finished product rather than a prototype.',
+        es:
+          'Diseñar una aplicación que responda a una sola pregunta —cuánto puedo gastar hoy— y entregar un producto acabado y no un prototipo.',
+        ar:
+          'تصميم تطبيق يجيب عن سؤال واحد — كم يمكنني أن أنفق اليوم — وتسليم منتج مكتمل لا نموذجًا أوليًا.',
+      },
+      actions: {
+        fr:
+          'Caler le calcul sur le cycle de paie plutôt que sur le mois, ramener la saisie d’une dépense à trois appuis mesurés sur appareil physique, écarter la connexion bancaire et la synchronisation pour tenir la promesse de confidentialité, puis couvrir l’ensemble par 557 tests unitaires et trois migrations de base de données appliquées sans perte.',
+        en:
+          'Anchoring the calculation on the pay cycle rather than the month, bringing expense entry down to three taps measured on a physical device, ruling out bank connection and synchronisation to hold the privacy promise, then covering the whole with 557 unit tests and three database migrations applied without loss.',
+        es:
+          'Ajustar el cálculo al ciclo de pago en lugar del mes, reducir el registro de un gasto a tres toques medidos en un dispositivo físico, descartar la conexión bancaria y la sincronización para cumplir la promesa de confidencialidad, y cubrirlo todo con 557 pruebas unitarias y tres migraciones de base de datos aplicadas sin pérdida.',
+        ar:
+          'ضبط الحساب على دورة الراتب بدل الشهر، وتقليص تسجيل النفقة إلى ثلاث نقرات مقيسة على جهاز فعلي، واستبعاد الربط المصرفي والمزامنة وفاءً بوعد الخصوصية، ثم تغطية ذلك كله بـ557 اختبار وحدة وثلاث ترحيلات لقاعدة البيانات طُبِّقت دون فقدان.',
+      },
+      resultats: {
+        fr:
+          'Une application livrée et versionnée, du cadrage au binaire signé : rapports mensuels, dépenses par catégorie, courbe des soldes, sauvegarde, restauration et export CSV, avec une interface vérifiée jusqu’à 200 % de taille de texte et compatible avec les lecteurs d’écran.',
+        en:
+          'A delivered, versioned application, from framing to signed binary: monthly reports, spending by category, balance chart, backup, restore and CSV export, with an interface checked up to 200% text size and compatible with screen readers.',
+        es:
+          'Una aplicación entregada y versionada, del encuadre al binario firmado: informes mensuales, gastos por categoría, curva de saldos, copia de seguridad, restauración y exportación CSV, con una interfaz verificada hasta el 200 % de tamaño de texto y compatible con lectores de pantalla.',
+        ar:
+          'تطبيق مُسلَّم ومُصدَر بإصدارات، من التأطير إلى الملف التنفيذي الموقَّع: تقارير شهرية، ونفقات حسب الفئة، ومنحنى للأرصدة، ونسخ احتياطي واستعادة وتصدير CSV، بواجهة جرى التحقّق منها حتى 200 % من حجم النص ومتوافقة مع قارئات الشاشة.',
+      },
+    },
+    learnings: {
+      fr: [
+        'Choisir une cible, c’est surtout choisir ce qu’on ne fera pas. La connexion bancaire était la première demande que je pouvais imaginer ; y renoncer est ce qui a rendu la promesse — aucune donnée ne quitte l’appareil — tenable et vérifiable.',
+        'Un calcul juste sur la mauvaise période ne sert à rien. Raisonner sur le cycle de paie plutôt que sur le mois calendaire n’a rien changé à la difficulté technique, et tout à l’utilité de la réponse.',
+      ],
+      en: [
+        'Choosing an audience is mostly choosing what you will not build. A bank connection was the first request I could imagine; giving it up is what made the promise — no data leaves the device — both tenable and verifiable.',
+        'A correct calculation over the wrong period is useless. Reasoning over the pay cycle rather than the calendar month changed nothing about the technical difficulty, and everything about how useful the answer is.',
+      ],
+      es: [
+        'Elegir un público es, sobre todo, elegir lo que no se hará. La conexión bancaria era la primera petición que podía imaginar; renunciar a ella es lo que hizo que la promesa —ningún dato sale del dispositivo— fuera sostenible y verificable.',
+        'Un cálculo correcto sobre el periodo equivocado no sirve de nada. Razonar sobre el ciclo de pago en lugar del mes natural no cambió nada de la dificultad técnica, y sí todo de la utilidad de la respuesta.',
+      ],
+      ar: [
+        'اختيار الفئة المستهدفة هو قبل كل شيء اختيار ما لن تصنعه. كان الربط المصرفي أول طلب يمكن أن أتخيّله، والتخلّي عنه هو ما جعل الوعد — ألّا تغادر أي بيانات الجهاز — قابلًا للصمود وللتحقّق.',
+        'حساب صحيح على المدة الخاطئة لا فائدة منه. الاعتماد على دورة الراتب بدل الشهر التقويمي لم يغيّر شيئًا في الصعوبة التقنية، وغيّر كل شيء في فائدة الجواب.',
+      ],
+    },
+    // Depot prive, aucune publication sur une boutique : le tableau reste
+    // vide et `hasLinks` empeche la section d'etre rendue. Aucun bouton mort.
+    links: [],
+    // Aucune capture n'a ete fournie. Deux realisations declarent deja un
+    // tableau vide ; `hasVisuals` fait le reste.
+    visuals: [],
+    featuredRank: null,
   },
 ];
 
