@@ -10,7 +10,8 @@
     "verify:export": "node scripts/verify-static-export.mjs",
     "verify:a11y": "node scripts/verify-a11y.mjs",
     "verify:map": "node scripts/verify-map-links.mjs",
-    "verify:all": "npm run build && npm run lint && npm run verify:export && npm run verify:map && npm run verify:a11y",
+    "verify:links": "node scripts/verify-links.mjs",
+    "verify:all": "npm run build && npm run lint && npm run verify:export && npm run verify:map && npm run verify:links && npm run verify:a11y",
     "capture:screens": "node scripts/capture-screens.mjs"
   },
   "dependencies": {
