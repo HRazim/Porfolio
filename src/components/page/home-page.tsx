@@ -237,12 +237,39 @@ export function HomePage({ locale }: { readonly locale: Locale }) {
             {HOME.featuredHeading[locale]}
           </h2>
 
+          {/* DEUX COLONNES, ET NON QUATRE, POUR QUATRE CARTES.
+              La quatrieme mise en avant a impose de choisir. Les deux
+              dispositions ont ete mesurees sur rendu reel, dans les quatre
+              langues :
+
+                quatre colonnes   carte 212 px a 1024, 235 px a 1440 ;
+                                  titres sur 3 a 4 lignes ; jusqu'a QUATRE
+                                  mots coupes par rendu en francais ;
+                deux rangees      carte 455 px a 1024, 502 px a 1440 ;
+                                  titres sur 1 a 2 lignes ; AUCUN mot coupe.
+
+              La largeur double, le titre passe de quatre lignes a deux, et
+              les coupures disparaissent. Ce n'est pas un principe, c'est
+              l'ecart mesure.
+
+              `auto-rows-fr` EST LA CONTREPARTIE, ET ELLE EST NECESSAIRE. Sur
+              deux rangees, chacune se dimensionne sur son propre contenu : la
+              premiere rendait 341 px et la seconde 303 px, et les quatre
+              cartes n'etaient plus identiques. `grid-auto-rows: minmax(0,
+              1fr)` leur donne a toutes la hauteur de la plus haute, ce que
+              les cartes d'une meme rangee faisaient deja par `h-full`.
+              Verifie a quatorze largeurs et dans quatre langues : une seule
+              hauteur partout.
+
+              LA CLASSE EST POSEE ICI, PAS DANS `Grid`. Le composant sert
+              aussi l'index des realisations, dont les rangees n'ont aucune
+              raison d'etre egalisees ; la retouche reste locale. */}
           {featured.length === 0 ? (
             <Prose className="mt-lg">
               <p>{HOME.featuredEmpty[locale]}</p>
             </Prose>
           ) : (
-            <Grid as="ul" columns={3} gap="lg" className="mt-lg">
+            <Grid as="ul" columns={2} gap="lg" className="mt-lg auto-rows-fr">
               {featured.map((project) => (
                 <li key={project.slug}>
                   <ProjectCardCompact locale={locale} project={project} headingLevel={3} />
