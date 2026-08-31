@@ -1880,7 +1880,9 @@ const PROJECTS: readonly Project[] = [
     // Aucune capture n'a ete fournie. Deux realisations declarent deja un
     // tableau vide ; `hasVisuals` fait le reste.
     visuals: [],
-    featuredRank: null,
+    // Quatrieme mise en avant. Les rangs 1 a 3 sont pris par Egis, JTR et le
+    // Forum, dans cet ordre ; aucun n'est deplace.
+    featuredRank: 4,
   },
 ];
 
