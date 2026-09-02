@@ -1877,9 +1877,242 @@ const PROJECTS: readonly Project[] = [
     // Depot prive, aucune publication sur une boutique : le tableau reste
     // vide et `hasLinks` empeche la section d'etre rendue. Aucun bouton mort.
     links: [],
-    // Aucune capture n'a ete fournie. Deux realisations declarent deja un
-    // tableau vide ; `hasVisuals` fait le reste.
-    visuals: [],
+    // Captures de l'application, prises sur telephone. Tout le texte visible
+    // y est INCRUSTE et en francais : il ne se traduit pas, et aucune
+    // technologie d'assistance ne le lit. Le texte alternatif decrit donc ce
+    // que l'ECRAN montre, dans la langue de la page, et la legende nomme
+    // l'ecran ; ni l'un ni l'autre ne recopie ce qui est ecrit dans l'image.
+    //
+    // L'ORDRE SUIT UN PARCOURS DANS L'APPLICATION, et non l'ordre des
+    // fichiers : les quatre onglets dans l'ordre de la barre de navigation
+    // (accueil, budget, rapports, reglages), et dans chacun, l'ecran principal
+    // avant celui qu'il ouvre.
+    //
+    // UN SEUL CADRE POUR LES HUIT : 1080 x 2133 a la source, 800 x 1580 et
+    // 400 x 790 servis. C'est l'ecran du telephone prive de ses deux barres
+    // systeme — 98 lignes de barre d'etat en haut, 144 de barre de navigation
+    // Android en bas, mesurees et non devinees. Trois captures sont DEFILANTES
+    // et couvraient un ecran plus haut que le telephone : elles ont ete
+    // RECADREES sur la portion qui porte l'information, non reduites. Une
+    // capture d'ecran ramenee au quart de sa taille ne se lit plus.
+    //
+    // POURQUOI 2133 ET NON 2158. 800/1080 vaut 20/27 et 400/1080 vaut 10/27 :
+    // seule une hauteur multiple de 27 se reduit SANS ARRONDI aux deux
+    // largeurs. A 2158 on obtenait 800 x 1599 et 400 x 799, dont les rapports
+    // different de 0,06 % — assez pour que la boite reservee par `width` et
+    // `height` ne soit pas celle que l'image occupe une fois chargee : 0,44 px
+    // de saut par figure, mesures a 320 et a 390 px de fenetre. A 2133, le
+    // saut vaut zero.
+    visuals: [
+      {
+        src: '/images/projets/inx/accueil-reste-a-depenser',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Écran d’accueil de l’application sur téléphone : le solde restant en grands caractères, le montant disponible par jour, la date de fin de période, un lien qui explique d’où vient le chiffre, puis le début de la liste des dépenses groupées par jour, chacune avec sa catégorie, sa note et son montant.',
+          en:
+            'The application home screen on a phone: the remaining balance in large type, the amount available per day, the date the period ends, a link explaining where the figure comes from, then the start of the list of expenses grouped by day, each with its category, note and amount.',
+          es:
+            'Pantalla de inicio de la aplicación en un teléfono: el saldo restante en grande, el importe disponible por día, la fecha en que acaba el periodo, un enlace que explica de dónde sale la cifra y, debajo, el principio de la lista de gastos agrupados por día, cada uno con su categoría, su nota y su importe.',
+          ar:
+            'الشاشة الرئيسية للتطبيق على الهاتف: المبلغ المتبقّي بخطّ كبير، والمبلغ المتاح لكل يوم، وتاريخ انتهاء الفترة، ورابط يوضّح مصدر الرقم، ثم بداية قائمة المصروفات مجمَّعة حسب اليوم، لكلٍّ منها فئتها وملاحظتها ومبلغها.',
+        },
+        caption: {
+          fr:
+            'Accueil : ce qu’il reste à dépenser et les dépenses de la période',
+          en:
+            'Home: what is left to spend, and the period’s expenses',
+          es:
+            'Inicio: lo que queda por gastar y los gastos del periodo',
+          ar:
+            'الرئيسية: ما تبقّى للإنفاق ومصروفات الفترة',
+        },
+      },
+      {
+        src: '/images/projets/inx/budget-revenus-charges',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Écran du budget : le bloc des revenus au complet — deux revenus récurrents avec leur montant, leur périodicité, leur date de début et des actions pour les modifier ou les supprimer, puis leur total mensuel et un bouton d’ajout — suivi du début de la liste des charges fixes, construites de la même façon.',
+          en:
+            'The budget screen: the income block in full — two recurring incomes with their amount, frequency and start date, actions to edit or delete them, then their monthly total and an add button — followed by the start of the list of fixed charges, built the same way.',
+          es:
+            'Pantalla de presupuesto: el bloque de ingresos completo — dos ingresos recurrentes con su importe, su periodicidad, su fecha de inicio y acciones para modificarlos o eliminarlos, seguidos de su total mensual y de un botón para añadir — y después el principio de la lista de cargas fijas, construidas igual.',
+          ar:
+            'شاشة الميزانية: كتلة الدخل كاملةً — مصدرا دخل متكرّران بمبلغهما ودوريّتهما وتاريخ بدايتهما وإجراءات لتعديلهما أو حذفهما، يليهما مجموعهما الشهري وزرّ إضافة — ثم بداية قائمة الأعباء الثابتة، المبنيّة بالطريقة نفسها.',
+        },
+        caption: {
+          fr:
+            'Budget : les revenus récurrents, leur total mensuel, et le début des charges fixes',
+          en:
+            'Budget: recurring income, its monthly total, and the start of the fixed charges',
+          es:
+            'Presupuesto: los ingresos recurrentes, su total mensual y el principio de las cargas fijas',
+          ar:
+            'الميزانية: الدخل المتكرّر ومجموعه الشهري وبداية الأعباء الثابتة',
+        },
+      },
+      {
+        src: '/images/projets/inx/ajout-revenu',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Boîte de dialogue d’ajout d’un revenu par-dessus l’écran du budget : un champ pour le nom, un champ pour le montant, un choix entre mensuel et hebdomadaire, une date de début, puis les actions annuler et enregistrer.',
+          en:
+            'An add-income dialog over the budget screen: a field for the name, a field for the amount, a choice between monthly and weekly, a start date, then the cancel and save actions.',
+          es:
+            'Cuadro de diálogo para añadir un ingreso sobre la pantalla de presupuesto: un campo para el nombre, otro para el importe, una elección entre mensual y semanal, una fecha de inicio y las acciones de cancelar y guardar.',
+          ar:
+            'نافذة إضافة دخل فوق شاشة الميزانية: حقل للاسم وحقل للمبلغ واختيار بين شهري وأسبوعي وتاريخ بداية، ثم إجراءا الإلغاء والحفظ.',
+        },
+        caption: {
+          fr:
+            'Ajout d’un revenu : nom, montant, périodicité et date de début',
+          en:
+            'Adding an income: name, amount, frequency and start date',
+          es:
+            'Añadir un ingreso: nombre, importe, periodicidad y fecha de inicio',
+          ar:
+            'إضافة دخل: الاسم والمبلغ والدوريّة وتاريخ البداية',
+        },
+      },
+      {
+        src: '/images/projets/inx/rapport-mensuel',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Rapport d’un mois : le mois consulté en tête, le montant non dépensé en grands caractères, un récapitulatif de ce qui a été gagné, des charges fixes et de ce qui a été dépensé, deux comparaisons avec le mois précédent et avec la moyenne, une action d’export, et une courbe mois par mois sur douze mois.',
+          en:
+            'A monthly report: the month being viewed at the top, the unspent amount in large type, a summary of what was earned, the fixed charges and what was spent, two comparisons with the previous month and with the average, an export action, and a month-by-month curve over twelve months.',
+          es:
+            'Informe de un mes: el mes consultado en la cabecera, el importe no gastado en grande, un resumen de lo ganado, las cargas fijas y lo gastado, dos comparaciones con el mes anterior y con la media, una acción de exportación y una curva mes a mes sobre doce meses.',
+          ar:
+            'تقرير شهر: الشهر المعروض في الأعلى، والمبلغ غير المُنفَق بخطّ كبير، وملخّص لما كُسب وللأعباء الثابتة ولما أُنفق، ومقارنتان بالشهر السابق وبالمتوسّط، وإجراء للتصدير، ومنحنى شهرًا بشهر على اثني عشر شهرًا.',
+        },
+        caption: {
+          fr:
+            'Rapport mensuel : le reste du mois, son détail et la courbe sur douze mois',
+          en:
+            'Monthly report: what is left of the month, its breakdown and a twelve-month curve',
+          es:
+            'Informe mensual: lo que queda del mes, su detalle y la curva de doce meses',
+          ar:
+            'التقرير الشهري: ما تبقّى من الشهر وتفصيله ومنحنى اثني عشر شهرًا',
+        },
+      },
+      {
+        src: '/images/projets/inx/selecteur-mois',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Sélecteur de mois ouvert par-dessus le rapport : une grille des douze mois de l’année, chacun portant son solde, le mois consulté étant mis en évidence.',
+          en:
+            'A month picker open over the report: a grid of the twelve months of the year, each carrying its balance, with the month being viewed highlighted.',
+          es:
+            'Selector de mes abierto sobre el informe: una cuadrícula con los doce meses del año, cada uno con su saldo y el mes consultado resaltado.',
+          ar:
+            'مُنتقي الأشهر مفتوح فوق التقرير: شبكة لأشهر السنة الاثني عشر، يحمل كلٌّ منها رصيده، مع إبراز الشهر المعروض.',
+        },
+        caption: {
+          fr:
+            'Sélecteur de mois : le solde de chaque mois de l’année',
+          en:
+            'Month picker: the balance of each month of the year',
+          es:
+            'Selector de mes: el saldo de cada mes del año',
+          ar:
+            'مُنتقي الأشهر: رصيد كل شهر من السنة',
+        },
+      },
+      {
+        src: '/images/projets/inx/reglages',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Écran des réglages : quatre entrées — les données, la corbeille avec son décompte, l’apparence et les informations sur l’application — chacune décrite par une ligne d’explication.',
+          en:
+            'The settings screen: four entries — the data, the bin with its count, the appearance and the information about the application — each described by a single line.',
+          es:
+            'Pantalla de ajustes: cuatro entradas — los datos, la papelera con su recuento, la apariencia y la información sobre la aplicación — cada una descrita por una línea de explicación.',
+          ar:
+            'شاشة الإعدادات: أربعة مداخل — البيانات، وسلّة المحذوفات مع عدّادها، والمظهر، والمعلومات عن التطبيق — يشرح كلًّا منها سطر واحد.',
+        },
+        caption: {
+          fr:
+            'Réglages : données, corbeille, apparence et informations',
+          en:
+            'Settings: data, bin, appearance and information',
+          es:
+            'Ajustes: datos, papelera, apariencia e información',
+          ar:
+            'الإعدادات: البيانات وسلّة المحذوفات والمظهر والمعلومات',
+        },
+      },
+      {
+        src: '/images/projets/inx/mes-donnees',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Écran de gestion des données : mettre les données à l’abri dans un fichier, repartir d’une sauvegarde en remplaçant tout, et ouvrir l’historique des dépenses dans un tableur.',
+          en:
+            'The data screen: put the data somewhere safe in a file, start again from a backup by replacing everything, and open the expense history in a spreadsheet.',
+          es:
+            'Pantalla de gestión de datos: poner los datos a salvo en un archivo, partir de una copia de seguridad reemplazándolo todo y abrir el historial de gastos en una hoja de cálculo.',
+          ar:
+            'شاشة إدارة البيانات: حفظ البيانات في ملف، والانطلاق من نسخة احتياطية باستبدال كل شيء، وفتح سجلّ المصروفات في جدول بيانات.',
+        },
+        caption: {
+          fr:
+            'Mes données : sauvegarde, restauration et export vers un tableur',
+          en:
+            'My data: backup, restore and export to a spreadsheet',
+          es:
+            'Mis datos: copia de seguridad, restauración y exportación a una hoja de cálculo',
+          ar:
+            'بياناتي: النسخ الاحتياطي والاستعادة والتصدير إلى جدول بيانات',
+        },
+      },
+      {
+        src: '/images/projets/inx/apparence',
+        widths: [400, 800],
+        width: 800,
+        height: 1580,
+        alt: {
+          fr:
+            'Écran d’apparence : cinq réglages — le thème, la langue de l’application, la devise, la palette de couleurs et la taille du texte — chacun avec sa valeur courante et un menu déroulant.',
+          en:
+            'The appearance screen: five settings — the theme, the application language, the currency, the colour palette and the text size — each with its current value and a dropdown.',
+          es:
+            'Pantalla de apariencia: cinco ajustes — el tema, el idioma de la aplicación, la moneda, la paleta de colores y el tamaño del texto — cada uno con su valor actual y un menú desplegable.',
+          ar:
+            'شاشة المظهر: خمسة إعدادات — السمة، ولغة التطبيق، والعملة، ولوحة الألوان، وحجم النص — لكلٍّ منها قيمته الحالية وقائمة منسدلة.',
+        },
+        caption: {
+          fr:
+            'Apparence : thème, langue, devise, palette et taille du texte',
+          en:
+            'Appearance: theme, language, currency, palette and text size',
+          es:
+            'Apariencia: tema, idioma, moneda, paleta y tamaño del texto',
+          ar:
+            'المظهر: السمة واللغة والعملة ولوحة الألوان وحجم النص',
+        },
+      },
+    ],
     // Quatrieme mise en avant. Les rangs 1 a 3 sont pris par Egis, JTR et le
     // Forum, dans cet ordre ; aucun n'est deplace.
     featuredRank: 4,
