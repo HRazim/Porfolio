@@ -129,12 +129,6 @@ export interface ProjectLink {
  * obligatoires : sans elles le navigateur ne peut pas reserver la place de
  * l’image, et la page saute au chargement.
  */
-/**
- * CAPTURE D'ECRAN, encodee a l'avance en deux formats et deux resolutions.
- *
- * `widths` est ce qui distingue une capture d'une illustration : elle seule
- * se decline en plusieurs resolutions, parce qu'elle seule est matricielle.
- */
 export interface ProjectVisual {
   readonly src: `/images/${string}`;
   readonly widths: readonly number[];
@@ -143,46 +137,6 @@ export interface ProjectVisual {
   readonly alt: Translated;
   readonly caption: Translated;
 }
-
-/**
- * ILLUSTRATION VECTORIELLE, une version par mode.
- *
- * POURQUOI UN TYPE DISTINCT ET NON UN CHAMP DE PLUS SUR `ProjectVisual`.
- * Une capture et une illustration ne partagent presque rien : la premiere est
- * matricielle, verticale, declinee en quatre fichiers (deux formats, deux
- * resolutions) et servie par negociation de type ; la seconde est vectorielle,
- * paysage, unique par mode, et n'a ni resolution ni format alternatif. Les
- * reunir aurait impose des champs facultatifs des deux cotes, et un
- * `widths: []` sur une illustration n'aurait rien voulu dire.
- *
- * `src` est la BASE : le suffixe de mode et l'extension sont ajoutes au rendu.
- * Declarer `/images/projets/x/illustration` engendre `illustration-clair.svg`
- * et `illustration-sombre.svg`.
- *
- * `caption` peut valoir `null`, et c'est le cas des deux illustrations
- * actuelles. Une legende sous une composition abstraite ne pourrait que
- * repeter le texte alternatif — qui la decrit deja entierement — ou lui
- * preter un sens que l'image n'enonce pas. Les captures, elles, gardent leur
- * legende : « Liste des entrees financieres » nomme ce que l'image montre et
- * que l'alternative ne dit pas deux fois.
- */
-export interface ProjectIllustration {
-  readonly src: `/images/${string}`;
-  readonly width: number;
-  readonly height: number;
-  readonly alt: Translated;
-  readonly caption: Translated | null;
-}
-
-/**
- * Ce qu'une galerie sait rendre.
- *
- * L'union n'est PAS discriminee par un champ `kind` : cela aurait oblige a
- * ajouter `kind: 'capture'` aux dix-neuf captures existantes, donc a modifier
- * quatre realisations qui n'ont rien demande. La distinction se lit sur la
- * forme — `'widths' in media` —, ce que TypeScript resout aussi bien.
- */
-export type ProjectMedia = ProjectVisual | ProjectIllustration;
 
 /**
  * Methode STAR : situation, taches, actions, resultats.
@@ -241,7 +195,7 @@ export interface Project {
   readonly learnings: TranslatedList;
   /** Tableau vide plutot que champ optionnel : un absent se lit, il ne se devine pas. */
   readonly links: readonly ProjectLink[];
-  readonly visuals: readonly ProjectMedia[];
+  readonly visuals: readonly ProjectVisual[];
   /**
    * Rang de mise en avant sur l’accueil. `null` = non mise en avant.
    *
@@ -494,37 +448,8 @@ const PROJECTS: readonly Project[] = [
     },
     // Depot interne a l’entreprise : aucun lien public.
     links: [],
-    // ILLUSTRATION PLUTOT QUE CAPTURE. Le contenu de cette realisation n'est
-    // pas publiable ; l'illustration ne montre donc rien du produit, elle en
-    // figure le PRINCIPE. Le texte alternatif decrit la composition, pas ce
-    // qu'elle represente : un lecteur d'ecran ne doit pas se voir imposer une
-    // interpretation que l'image n'enonce pas.
-    //
-    // AUCUNE LEGENDE. `caption` vaut `null`, et c'est un choix. Sous une
-    // composition abstraite, une legende ne pourrait que repeter le texte
-    // alternatif ou lui preter un sens. Les captures des autres fiches gardent
-    // la leur : « Liste des entrees financieres » nomme ce que l'image montre.
-    //
-    // DEUX FICHIERS, UN PAR MODE. `src` est la base ; la galerie ajoute
-    // `-clair.svg` et `-sombre.svg`. Voir `ProjectIllustration`.
-    visuals: [
-      {
-        src: '/images/projets/egis-systeme-supervision/illustration',
-        width: 1600,
-        height: 900,
-        alt: {
-          fr:
-            'Composition abstraite : douze formes identiques disposées autour d’un point central, l’une d’elles décalée de sa position et mise en évidence.',
-          en:
-            'Abstract composition: twelve identical shapes arranged around a central point, one of them displaced from its position and highlighted.',
-          es:
-            'Composición abstracta: doce formas idénticas dispuestas alrededor de un punto central, una de ellas desplazada de su posición y resaltada.',
-          ar:
-            'تكوين تجريدي: اثنا عشر شكلًا متطابقًا موزّعة حول نقطة مركزية، أحدها مُزاح عن موضعه ومُبرَز.',
-        },
-        caption: null,
-      },
-    ],
+    // Contenu propriete de l’entreprise : aucun visuel.
+    visuals: [],
     featuredRank: 1,
   },
   {
@@ -666,37 +591,7 @@ const PROJECTS: readonly Project[] = [
       ],
     },
     links: [],
-    // ILLUSTRATION PLUTOT QUE CAPTURE. Le contenu de cette realisation n'est
-    // pas publiable ; l'illustration ne montre donc rien du produit, elle en
-    // figure le PRINCIPE. Le texte alternatif decrit la composition, pas ce
-    // qu'elle represente : un lecteur d'ecran ne doit pas se voir imposer une
-    // interpretation que l'image n'enonce pas.
-    //
-    // AUCUNE LEGENDE. `caption` vaut `null`, et c'est un choix. Sous une
-    // composition abstraite, une legende ne pourrait que repeter le texte
-    // alternatif ou lui preter un sens. Les captures des autres fiches gardent
-    // la leur : « Liste des entrees financieres » nomme ce que l'image montre.
-    //
-    // DEUX FICHIERS, UN PAR MODE. `src` est la base ; la galerie ajoute
-    // `-clair.svg` et `-sombre.svg`. Voir `ProjectIllustration`.
-    visuals: [
-      {
-        src: '/images/projets/forum-orientation-trappes/illustration',
-        width: 1600,
-        height: 900,
-        alt: {
-          fr:
-            'Composition abstraite : sept trajectoires divergentes issues d’un même point, l’une d’elles longée sur une partie de son parcours.',
-          en:
-            'Abstract composition: seven diverging paths from a single point, one of them accompanied along part of its course.',
-          es:
-            'Composición abstracta: siete trayectorias divergentes que parten de un mismo punto, una de ellas acompañada en parte de su recorrido.',
-          ar:
-            'تكوين تجريدي: سبعة مسارات متفرّعة من نقطة واحدة، أحدها مرافَق على جزء من مساره.',
-        },
-        caption: null,
-      },
-    ],
+    visuals: [],
     featuredRank: 3,
   },
   {
