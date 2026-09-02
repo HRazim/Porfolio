@@ -543,6 +543,34 @@
   color-scheme: dark;
 }
 
+/* ---------------------------------------------------------------------------
+   ILLUSTRATIONS DE REALISATION — DEUX FICHIERS, UN SEUL VISIBLE
+   ---------------------------------------------------------------------------
+   Deux realisations portent une illustration vectorielle declinee en clair et
+   en sombre. Les deux versions sont dans le document ; ce selecteur decide
+   laquelle se voit.
+
+   POURQUOI UN SELECTEUR ET NON `prefers-color-scheme`. La source de verite du
+   mode est `data-mode` sur `<html>`, que la bascule du site modifie. Une
+   requete de media ne lit pas un attribut : un visiteur au systeme clair qui
+   choisit le sombre garderait l'illustration claire, definitivement. Ici, la
+   bascule est suivie sans rechargement et sans une ligne de script de plus.
+
+   AUCUN CONTENU N'EST MASQUE PAR DEFAUT. `data-mode` est ecrit par le serveur
+   dans le balisage — `<html lang="fr" dir="ltr" data-mode="light">` — et non
+   par un script au chargement. Sans JavaScript, l'attribut vaut `light` et
+   l'illustration claire s'affiche. La regle ne depend d'aucun evenement.
+
+   LE SELECTEUR N'EST PAS ANCRE A `:root`, comme les blocs de jetons qui
+   suivent : la page /styleguide pose `data-mode` sur des sous-arbres pour
+   montrer les deux modes cote a cote, et une illustration qui s'y trouverait
+   suivrait son conteneur.
+   --------------------------------------------------------------------------- */
+[data-mode='light'] .illustration-sombre,
+[data-mode='dark'] .illustration-claire {
+  display: none;
+}
+
 /* --- Mode clair ---------------------------------------------------------- */
 [data-mode='light'] {
   --color-paper: #ecf5ff;
